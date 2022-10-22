@@ -4,108 +4,132 @@
 #include <map>
 #include <string>
 
+#include "../../libs/enum.h"
+
 namespace lexer {
-enum TokenType {
-  eof = 1,
-  COMMENT,
+BETTER_ENUM(   // NOLINT
+    TokenType, // NOLINT
+    char, INVALID = 1, eof, COMMENT,
 
-  literal_beg,
-  INTEGER, // 12345, -12345, $ABC, &567, %101
-  FLOAT,   // 123.123
-  CHAR,    // 'a'
-  STRING,  // 'abc'
-  literal_end,
+    ID,
+    INTEGER, FLOAT, CHAR, STRING,
 
-  operator_beg,
-  ADD, // +
-  SUB, // -
-  MUL, // *
-  QUO, // /
-  REM, // %
+    ADD, ADDASSIGN,
 
-  AND, // and
-  OR,  // or
+    SUB, SUBASSIGN,
 
-  EQL, // =
-  NEQ, // <>
+    MUL, MULASSIGN,
 
-  ASSIGN,    // :=
-  ADDASSIGN, // +=
-  SUBASSIGN, // -=
-  MULASSIGN, // *=
-  QUOASSIGN, // /=
-  operator_end,
+    QUO, QUOASSIGN,
 
-  separator_beg,
-  LPAREN,    // (
-  RPAREN,    // )
-  LBRACK,    // [
-  RBRACK,    // ]
-  LBRACE,    // {
-  RBRACE,    // }
-  COMMA,     // ,
-  PERIOD,    // .
-  SEMICOLON, // ;
-  COLON,     // :
-  separator_end,
+    EQL,
 
-  keywords_beg,
-  BREAK,
-  CASE,
-  CONST,
-  CONTINUE,
-  ELSE,
-  FOR,
-  FUNCTION,
-  PROCEDURE,
-  GOTO,
-  IF,
-  keywords_end,
-};
+    LES, NEQ, LEQ,
 
-const std::map<TokenType, std::string> tokens = {
+    GTR, GEQ,
+
+    ASSIGN,
+
+    DEREF,
+
+    AND, OR,
+
+    NOT,
+
+    XOR, SHL, SHR,
+
+    IDIV, MDIV,
+
+    INCLUDE, EXCLUDE, IN,
+
+    IS, AS,
+
+    LPAREN, RPAREN, LBRACK, RBRACK, LBRACE, RBRACE, COMMA, PERIOD, ELLIPSIS,
+    SEMICOLON, COLON,
+
+    BREAK, CASE, CONST, CONTINUE, ELSE, FOR, FUNCTION, PROCEDURE, GOTO, IF)
+
+[[maybe_unused]] const std::map<std::string, TokenType> tokens = {
+    {"INVALID", TokenType::INVALID},
+    {"eof", TokenType::eof},
+    {"COMMENT", TokenType::COMMENT},
+
+    {"ID", TokenType::ID},
     // literals
-    {INTEGER, "Integer"},
-    {FLOAT, "Float"},
-    {CHAR, "Char"},
-    {STRING, "String"},
+    {"Integer", TokenType::INTEGER},
+    {"Float", TokenType::FLOAT},
+    {"Char", TokenType::CHAR},
+    {"String", TokenType::STRING},
+
     // operators
-    {ADD, "+"},
-    {SUB, "-"},
-    {MUL, "*"},
-    {QUO, "/"},
-    {REM, "%"},
-    {AND, "and"},
-    {OR, "or"},
-    {EQL, "="},
-    {NEQ, "<>"},
-    {ASSIGN, ":="},
-    {ADDASSIGN, "+="},
-    {SUBASSIGN, "-="},
-    {MULASSIGN, "*="},
-    {QUOASSIGN, "/="},
+    {"+", TokenType::ADD},
+    {"+=", TokenType::ADDASSIGN},
+
+    {"-", TokenType::SUB},
+    {"-=", TokenType::SUBASSIGN},
+
+    {"*", TokenType::MUL},
+    {"*=", TokenType::MULASSIGN},
+
+    {"/", TokenType::QUO},
+    {"/=", TokenType::QUOASSIGN},
+
+    {"=", TokenType::EQL},
+
+    {"<", TokenType::LES},
+    {"<>", TokenType::NEQ},
+    {"<=", TokenType::LEQ},
+
+    {">", TokenType::GTR},
+    {">=", TokenType::GEQ},
+
+    {":=", TokenType::ASSIGN},
+
+    {"^", TokenType::DEREF},
+
+    {"and", TokenType::AND},
+    {"or", TokenType::OR},
+
+    {"not", TokenType::NOT},
+
+    {"xor", TokenType::XOR},
+    {"shl", TokenType::SHL},
+    {"shr", TokenType::SHR},
+
+    {"div", TokenType::IDIV},
+    {"mod", TokenType::MDIV},
+
+    {"include", TokenType::INCLUDE},
+    {"exclude", TokenType::EXCLUDE},
+    {"in", TokenType::IN},
+
+    {"is", TokenType::IS},
+    {"as", TokenType::AS},
+
     // separators
-    {LPAREN, "("},
-    {RPAREN, ")"},
-    {LBRACK, "["},
-    {RBRACK, "]"},
-    {LBRACE, "{"},
-    {RBRACE, "}"},
-    {COMMA, ","},
-    {PERIOD, "."},
-    {SEMICOLON, ";"},
-    {COLON, ":"},
+    {"(", TokenType::LPAREN},
+    {")", TokenType::RPAREN},
+    {"[", TokenType::LBRACK},
+    {"]", TokenType::RBRACK},
+    {"{", TokenType::LBRACE},
+    {"}", TokenType::RBRACE},
+    {",", TokenType::COMMA},
+    {".", TokenType::PERIOD},
+    {"..", TokenType::ELLIPSIS},
+    {";", TokenType::SEMICOLON},
+    {":", TokenType::COLON},
+
     // keywords
-    {BREAK, "break"},
-    {CASE, "case"},
-    {CONST, "const"},
-    {CONTINUE, "continue"},
-    {ELSE, "else"},
-    {FOR, "for"},
-    {FUNCTION, "function"},
-    {PROCEDURE, "procedure"},
-    {GOTO, "goto"},
-    {IF, "if"},
+    {"break", TokenType::BREAK},
+    {"case", TokenType::CASE},
+    {"const", TokenType::CONST},
+    {"continue", TokenType::CONTINUE},
+    {"else", TokenType::ELSE},
+    {"for", TokenType::FOR},
+    {"function", TokenType::FUNCTION},
+    {"procedure", TokenType::PROCEDURE},
+    {"goto", TokenType::GOTO},
+    {"if", TokenType::IF},
 };
 } // namespace lexer
 

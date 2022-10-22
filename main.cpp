@@ -1,15 +1,7 @@
-#include <fstream>
-#include <iostream>
-#include <regex>
-
-#include "./lexer/scanner.hpp"
-#include "./lexer/tokens/token.hpp"
+#include "tests/lexer.h"
 
 int main() {
-  lexer::Token token(1, 1, "Integer", "17", "$11");
-  std::cout << token << std::endl;
-  std::ifstream in("filename.ext", std::ios_base::in);
-  lexer::Scanner scanner(in);
-  scanner.start();
-  return 0;
+  int status_code = 0;
+  status_code |= run_lexer_tests();
+  return status_code;
 }
