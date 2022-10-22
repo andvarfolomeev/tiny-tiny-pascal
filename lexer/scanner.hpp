@@ -26,7 +26,7 @@ class Scanner {
   void skip_line_comment();
   static bool is_start_of_identifier(char c);
   static bool is_remainig_of_identifier(char c);
-  void scan_identifier();
+  TokenType scan_identifier_or_keyword();
 
 public:
   explicit Scanner(std::ifstream &input_stream)

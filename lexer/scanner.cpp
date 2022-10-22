@@ -138,11 +138,7 @@ Token Scanner::next_token() { // NOLINT(misc-no-recursion)
       token_type = TokenType::INTEGER;
     }
     if (is_start_of_identifier(this->buffer_peek())) {
-      this->scan_identifier();
-      token_type = TokenType::ID;
-      if (tokens.find(this->buffer) != tokens.end()) {
-        token_type = tokens.at(this->buffer);
-      }
+      token_type = this->scan_identifier_or_keyword();
     }
     break;
   }
@@ -337,10 +333,15 @@ bool Scanner::is_remainig_of_identifier(char c) {
   return is_start_of_identifier(c) || is_digit(c);
 }
 
-void Scanner::scan_identifier() {
+TokenType Scanner::scan_identifier_or_keyword() {
   while (is_remainig_of_identifier(this->peek())) {
     this->consume();
   }
+  auto result = TokenType::ID;
+  if (tokens.find(this->buffer) != tokens.end()) {
+    result = tokens.at(this->buffer);
+  }
+  return result;
 }
 
 bool Scanner::eof() const { return this->is_eof; }
