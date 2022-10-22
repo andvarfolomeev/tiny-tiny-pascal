@@ -44,9 +44,6 @@ Token Scanner::next_token() { // NOLINT(misc-no-recursion)
   case '/':
     if (try_consume('=')) {
       token_type = TokenType::QUOASSIGN;
-    } else if (try_consume('*')) {
-      this->skip_block_comment();
-      return this->next_token();
     } else if (try_consume('/')) {
       this->skip_line_comment();
       ++this->current_line;
@@ -98,11 +95,8 @@ Token Scanner::next_token() { // NOLINT(misc-no-recursion)
     token_type = TokenType::RBRACK;
     break;
   case '{':
-    token_type = TokenType::LBRACE;
-    break;
-  case '}':
-    token_type = TokenType::RBRACE;
-    break;
+    this->skip_block_comment();
+    return this->next_token();
   case ',':
     token_type = TokenType::COMMA;
     break;
@@ -309,10 +303,12 @@ TokenType Scanner::scan_number_literal(int numeral_system) {
 
 void Scanner::skip_block_comment() {
   for (;;) {
-    // TODO: unterminated block comment exception
     this->consume();
-    if (this->buffer_peek() == '*' && this->try_consume('/')) {
+    if (this->buffer_peek() == '}') {
       return;
+    } else if (this->buffer_peek() == EOF) {
+      throw ScannerException(this->current_line, this->current_column,
+                             "Unterminated block comment");
     }
   }
 }

@@ -44,7 +44,7 @@ BETTER_ENUM(   // NOLINT
 
     IS, AS,
 
-    LPAREN, RPAREN, LBRACK, RBRACK, LBRACE, RBRACE, COMMA, PERIOD, ELLIPSIS,
+    LPAREN, RPAREN, LBRACK, RBRACK, COMMA, PERIOD, ELLIPSIS,
     SEMICOLON, COLON,
 
     BREAK, CASE, CONST, CONTINUE, ELSE, FOR, FUNCTION, PROCEDURE, GOTO, IF)
@@ -111,8 +111,6 @@ BETTER_ENUM(   // NOLINT
     {")", TokenType::RPAREN},
     {"[", TokenType::LBRACK},
     {"]", TokenType::RBRACK},
-    {"{", TokenType::LBRACE},
-    {"}", TokenType::RBRACE},
     {",", TokenType::COMMA},
     {".", TokenType::PERIOD},
     {"..", TokenType::ELLIPSIS},
