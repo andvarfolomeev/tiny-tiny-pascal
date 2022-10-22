@@ -121,21 +121,17 @@ Token Scanner::next_token() { // NOLINT(misc-no-recursion)
     token_type = TokenType::STRING;
     break;
   case '$':
-    this->scan_number_literal(16);
-    token_type = TokenType::INTEGER;
+    token_type = this->scan_number_literal(16);
     break;
   case '&':
-    this->scan_number_literal(8);
-    token_type = TokenType::INTEGER;
+    token_type = this->scan_number_literal(8);
     break;
   case '%':
-    this->scan_number_literal(2);
-    token_type = TokenType::INTEGER;
+    token_type = this->scan_number_literal(2);
     break;
   default:
     if (is_digit(this->buffer_peek())) {
-      this->scan_number_literal(10);
-      token_type = TokenType::INTEGER;
+      token_type = this->scan_number_literal(10);
     }
     if (is_start_of_identifier(this->buffer_peek())) {
       token_type = this->scan_identifier_or_keyword();
@@ -213,7 +209,7 @@ void Scanner::scan_string_literal() {
 
 bool Scanner::is_digit(char c) { return '0' <= c && c <= '9'; }
 
-void Scanner::scan_number_literal(int numeral_system) {
+TokenType Scanner::scan_number_literal(int numeral_system) {
   enum state {
     number = 1,
     number_after_dot,
@@ -226,6 +222,8 @@ void Scanner::scan_number_literal(int numeral_system) {
 
   state current_state;
   char c;
+
+  auto result = TokenType::INTEGER;
 
   switch (numeral_system) {
   case 10:
@@ -257,8 +255,10 @@ void Scanner::scan_number_literal(int numeral_system) {
         // consume
       } else if (c == '.' && this->try_consume(is_digit)) { // check next
         current_state = state::number_after_dot;
+        result = TokenType::FLOAT;
       } else if (c == 'e' && this->try_consume(is_digit)) {
         current_state = state::number_after_e;
+        result = TokenType::FLOAT;
       } else {
         this->unconsume(); // give back .
         current_state = finish;
@@ -304,6 +304,7 @@ void Scanner::scan_number_literal(int numeral_system) {
 #pragma clang diagnostic pop
     }
   }
+  return result;
 }
 
 void Scanner::skip_block_comment() {

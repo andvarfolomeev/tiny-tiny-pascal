@@ -21,7 +21,7 @@ class Scanner {
   char buffer_peek();
   void scan_string_literal();
   static bool is_digit(char c);
-  void scan_number_literal(int numeral_system);
+  TokenType scan_number_literal(int numeral_system);
   void skip_block_comment();
   void skip_line_comment();
   static bool is_start_of_identifier(char c);
