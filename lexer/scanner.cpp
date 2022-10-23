@@ -8,7 +8,7 @@ namespace lexer {
 
 Token Scanner::next_token() { // NOLINT(misc-no-recursion)
 
-  while (this->is_space(this->peek())) {
+  while (lexer::Scanner::is_space(this->peek())) {
     this->consume();
   }
 
@@ -150,30 +150,45 @@ Token Scanner::next_token() { // NOLINT(misc-no-recursion)
 }
 
 bool Scanner::is_space(char c) {
-  if (c == '\n') {
-    ++this->current_line;
-    this->current_column = 0;
-  }
   return c == '\t' || c == ' ' || c == '\n';
 }
 
+/*
+ * move to next character in stream and save character to buffer
+ */
 char Scanner::consume() {
   char c = (char)this->input_stream.get();
   buffer.push_back(c);
-  ++current_column;
+  if (c == '\n') {
+    ++this->current_line;
+    this->current_column = 1;
+  } else {
+    ++this->current_column;
+  }
   return c;
 }
 
+/*
+ * move to previous character in stream and delete last character from buffer
+ */
 void Scanner::unconsume() {
   this->input_stream.unget();
   if (!this->buffer.empty()) {
+    if (this->buffer_peek() != '\n') {
+      --this->current_column;
+    }
+    // TODO: restore current_line after unconsume '\n'
     this->buffer.pop_back();
   } else {
-    // TODO:
+    // TODO: is this block of code reachable?
     assert(true);
   }
 }
 
+/*
+ * move to the next character in the stream if that character is equal to the
+ * character in the argument
+ */
 char Scanner::try_consume(char c) {
   if (this->input_stream.peek() == c) {
     this->consume();
@@ -182,6 +197,10 @@ char Scanner::try_consume(char c) {
   return false;
 }
 
+/*
+ * move to the next character in the stream if that character is equal to the
+ * character in the argument
+ */
 char Scanner::try_consume(bool (*func)(char)) {
   if (func((char)this->input_stream.peek())) {
     this->consume();
@@ -190,8 +209,14 @@ char Scanner::try_consume(bool (*func)(char)) {
   return false;
 }
 
+/*
+ * get the next character from the stream without move to it
+ */
 char Scanner::peek() { return (char)this->input_stream.peek(); }
 
+/*
+ * get the last character from buffer
+ */
 char Scanner::buffer_peek() {
   assert(!this->buffer.empty());
   return this->buffer[this->buffer.size() - 1];

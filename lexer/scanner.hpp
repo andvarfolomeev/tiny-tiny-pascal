@@ -1,4 +1,5 @@
 #include <fstream>
+#include <sstream>
 
 #include "tokens/token.hpp"
 
@@ -13,11 +14,11 @@ class Scanner {
   std::string buffer;
   bool is_eof;
 
-  bool is_space(char c);
+  static bool is_space(char c);
   char consume();
   void unconsume();
   char try_consume(char c);
-  char try_consume(bool (*func) (char));
+  char try_consume(bool (*func)(char));
   char peek();
   char buffer_peek();
   void scan_string_literal();
