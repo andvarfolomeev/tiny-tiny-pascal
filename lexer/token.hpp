@@ -5,7 +5,7 @@
 #include <string>
 #include <utility>
 
-#include "../tokens/token_type.hpp"
+#include "token_type.hpp"
 
 namespace lexer {
 class Token {

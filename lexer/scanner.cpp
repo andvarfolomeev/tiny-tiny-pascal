@@ -2,7 +2,7 @@
 #include <iostream>
 
 #include "scanner.hpp"
-#include "tokens/token.hpp"
+#include "token.hpp"
 
 namespace lexer {
 

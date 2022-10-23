@@ -1,7 +1,7 @@
 #include <fstream>
 #include <sstream>
 
-#include "tokens/token.hpp"
+#include "token.hpp"
 
 #ifndef LEXER_SCANNER_H
 #define LEXER_SCANNER_H

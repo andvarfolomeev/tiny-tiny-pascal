@@ -4,7 +4,7 @@
 #include <map>
 #include <string>
 
-#include "../../libs/enum.h"
+#include "../libs/enum.h"
 
 namespace lexer {
 BETTER_ENUM(   // NOLINT

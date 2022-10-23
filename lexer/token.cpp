@@ -1,6 +1,6 @@
 #include <sstream>
 
-#include "../tokens/token.hpp"
+#include "token.hpp"
 
 namespace lexer {
 std::ostream &operator<<(std::ostream &os, const lexer::Token &token) {
