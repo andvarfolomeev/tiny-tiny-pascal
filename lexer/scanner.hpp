@@ -8,6 +8,7 @@
 namespace lexer {
 class Scanner {
   std::ifstream &input_stream;
+  unsigned int last_line = 1, last_column = 1;
   unsigned int current_line, current_column;
   std::string buffer;
   bool is_eof;

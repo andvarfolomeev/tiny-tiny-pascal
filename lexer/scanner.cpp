@@ -12,6 +12,9 @@ Token Scanner::next_token() { // NOLINT(misc-no-recursion)
     this->consume();
   }
 
+  this->last_column = this->current_column;
+  this->last_line = this->current_line;
+
   TokenType token_type = TokenType::INVALID;
 
   this->buffer.clear();
@@ -138,13 +141,12 @@ Token Scanner::next_token() { // NOLINT(misc-no-recursion)
 
   if (token_type._value == TokenType::eof) {
     from_buffer = "EOF";
-    return {this->current_line, this->current_column - 1, token_type,
-            from_buffer, from_buffer};
+    return {this->last_line, this->last_column, token_type, from_buffer,
+            from_buffer};
   }
 
-  return {this->current_line,
-          static_cast<unsigned int>(this->current_column - from_buffer.size()),
-          token_type, from_buffer, from_buffer};
+  return {this->last_line, this->last_column, token_type, from_buffer,
+          from_buffer};
 }
 
 bool Scanner::is_space(char c) {
@@ -307,7 +309,7 @@ void Scanner::skip_block_comment() {
     if (this->buffer_peek() == '}') {
       return;
     } else if (this->buffer_peek() == EOF) {
-      throw ScannerException(this->current_line, this->current_column,
+      throw ScannerException(this->last_line, this->last_column,
                              "Unterminated block comment");
     }
   }
