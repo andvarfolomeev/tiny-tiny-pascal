@@ -1,10 +1,10 @@
+#ifndef LEXER_SCANNER_H
+#define LEXER_SCANNER_H
+
 #include <fstream>
 #include <sstream>
 
 #include "token.hpp"
-
-#ifndef LEXER_SCANNER_H
-#define LEXER_SCANNER_H
 
 namespace lexer {
 class Scanner {
