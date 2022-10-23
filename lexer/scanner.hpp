@@ -37,6 +37,25 @@ public:
   Token next_token();
   [[nodiscard]] bool eof() const;
 };
+
+class ScannerException : public std::exception {
+public:
+  [[nodiscard]] const char *what() const noexcept override {
+    return this->message.c_str();
+  }
+
+  [[maybe_unused]] explicit ScannerException(unsigned int current_line,
+                                             unsigned int current_column,
+                                             std::string message) { // NOLINT
+    std::ostringstream string_stream;
+    string_stream << "Line: " << current_line << "; Column: " << current_column
+                  << "; " << message;
+    this->message = string_stream.str();
+  }
+
+protected:
+  std::string message;
+};
 } // namespace lexer
 
 #endif // LEXER_SCANNER_H
