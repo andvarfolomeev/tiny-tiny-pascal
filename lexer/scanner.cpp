@@ -225,6 +225,10 @@ char Scanner::buffer_peek() {
 void Scanner::scan_string_literal() {
   do {
     this->consume();
+    if (this->buffer_peek() == '\n') {
+      throw ScannerException(this->last_line, this->last_column,
+                             "String exceeds line");
+    }
   } while (this->buffer_peek() != '\'');
 }
 
