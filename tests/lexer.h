@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-const std::string test_path = "../lexer/tests/";
+const std::string test_path = "../tests/lexer/";
 
 int run_lexer_tests();
 
