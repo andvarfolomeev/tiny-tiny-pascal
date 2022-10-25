@@ -15,4 +15,5 @@ std::string Token::to_string() const {
   ss << (*this);
   return ss.str();
 }
+TokenType Token::get_type() { return this->type; }
 } // namespace lexer
