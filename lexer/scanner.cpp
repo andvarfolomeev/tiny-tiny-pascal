@@ -176,7 +176,8 @@ Token Scanner::scan_string_literal() {
                              "String exceeds line");
     }
   } while (this->buffer_peek() != '\'');
-  return {this->last_line, this->last_column, TokenType::String, buffer, buffer};
+  return {this->last_line, this->last_column, TokenType::String, buffer,
+          buffer};
 }
 
 bool Scanner::is_digit(char c) { return '0' <= c && c <= '9'; }

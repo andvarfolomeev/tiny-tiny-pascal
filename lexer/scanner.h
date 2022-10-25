@@ -32,8 +32,7 @@ class Scanner {
 public:
   explicit Scanner(std::ifstream &input_stream)
       : input_stream(input_stream), last_line(1), last_column(1),
-        current_line(1), current_column(1),
-        is_eof(false) {}
+        current_line(1), current_column(1), is_eof(false) {}
 
   Token next_token();
   [[nodiscard]] bool eof() const;

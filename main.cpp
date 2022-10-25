@@ -40,7 +40,8 @@ int main(int argc, char *argv[]) {
       }
       return EXIT_SUCCESS;
     } else {
-      std::cout << "Error: file " << filename << " doesnt exist " << "\n";
+      std::cout << "Error: file " << filename << " doesnt exist "
+                << "\n";
       return EXIT_FAILURE;
     }
   }
