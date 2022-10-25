@@ -115,23 +115,6 @@ char Scanner::consume() {
 }
 
 /*
- * move to previous character in stream and delete last character from buffer
- */
-void Scanner::unconsume() {
-  this->input_stream.unget();
-  if (!this->buffer.empty()) {
-    if (this->buffer_peek() != '\n') {
-      --this->current_column;
-    }
-    // TODO: restore current_line after unconsume '\n'
-    this->buffer.pop_back();
-  } else {
-    // TODO: is this block of code reachable?
-    assert(true);
-  }
-}
-
-/*
  * move to the next character in the stream if that character is equal to the
  * character in the argument
  */
