@@ -15,7 +15,6 @@ function(enable_cxx_compiler_flag_if_supported flag)
     endif()
 endfunction()
 
-# example usage
 enable_cxx_compiler_flag_if_supported("-Wall")
 enable_cxx_compiler_flag_if_supported("-Wextra")
 enable_cxx_compiler_flag_if_supported("-pedantic")
@@ -27,7 +26,7 @@ set(SOURCE_EXE
         lexer/token_type.cpp
 
         tests/lexer.cpp
-        )
+        tests/test_report.cpp tests/test_report.h)
 set(CMAKE_CXX_STANDARD 17)
 
 add_executable(main ${SOURCE_EXE})

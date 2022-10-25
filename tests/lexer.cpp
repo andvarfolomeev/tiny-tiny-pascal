@@ -4,6 +4,7 @@
 
 #include "../lexer/scanner.h"
 #include "lexer.h"
+#include "test_report.h"
 
 namespace fs = std::filesystem;
 
@@ -20,51 +21,64 @@ std::set<std::string> get_paths_to_text_files() {
   return result;
 }
 
-int run_lexer_tests() {
-  int status_code = 0;
+TestReport run_lexer_tests() {
+  TestReport report;
   std::set<std::string> tests_file_paths = get_paths_to_text_files();
 
   for (const auto &test_file_path : tests_file_paths) {
-    auto path_of_in_file = test_file_path + ".in";
-    auto path_of_out_file = test_file_path + ".out";
+    auto input_file_path = test_file_path + ".in";
+    auto output_file_path = test_file_path + ".out";
 
-    std::ifstream out_file;
-    out_file.open(path_of_out_file);
-
-    std::ifstream in_file;
-    in_file.open(path_of_in_file);
-    std::cout << path_of_in_file << "\t" << path_of_out_file << "\n";
-    lexer::Scanner scanner(in_file);
-
-    std::string line;
-    while (!scanner.eof() && !out_file.eof()) {
-      getline(out_file, line);
-      auto token = scanner.next_token();
-      if (token.to_string() == line) {
-        std::cout << "OK"
-                  << "\t" << line << std::endl;
-      } else {
-        std::cout << "FAILED" << std::endl;
-        std::cout << "\t"
-                  << "Expected: \t" << line << ";" << std::endl
-                  << "\tTaken:\t\t" << token.to_string() << ";" << std::endl;
-        status_code = 1;
-      }
-    }
-    while (!out_file.eof()) {
-      std::cout << "FAILED: Stream of lexer ended before the stream of out file"
-                << std::endl;
-
-      getline(out_file, line);
-      std::cout << "\t" << line << std::endl;
-    }
-    while (!scanner.eof()) {
-      std::cout << "FAILED: Stream of out file ended before the stream of lexer"
-                << std::endl;
-
-      auto token = scanner.next_token();
-      std::cout << "\t" << token << std::endl;
+    if (run_test(input_file_path, output_file_path)) {
+      report.inc_success();
+    } else {
+      report.inc_failed();
     }
   }
-  return status_code;
+  return report;
+}
+
+bool run_test(const std::string &input_file_path,
+              const std::string &output_file_path) {
+  int success = true;
+  std::ifstream out_file;
+  out_file.open(output_file_path);
+
+  std::ifstream in_file;
+  in_file.open(input_file_path);
+  std::cout << input_file_path << "\t" << output_file_path << "\n";
+  lexer::Scanner scanner(in_file);
+
+  std::string line;
+  while (!scanner.eof() && !out_file.eof()) {
+    getline(out_file, line);
+    auto token = scanner.next_token();
+    if (token.to_string() == line) {
+      std::cout << "OK"
+                << "\t" << line << std::endl;
+    } else {
+      std::cout << "FAILED" << std::endl;
+      std::cout << "\t"
+                << "Expected: \t" << line << ";" << std::endl
+                << "\tTaken:\t\t" << token.to_string() << ";" << std::endl;
+      success = false;
+    }
+  }
+  while (!out_file.eof()) {
+    success = false;
+    std::cout << "FAILED: Stream of lexer ended before the stream of out file"
+              << std::endl;
+
+    getline(out_file, line);
+    std::cout << "\t" << line << std::endl;
+  }
+  while (!scanner.eof()) {
+    success = false;
+    std::cout << "FAILED: Stream of out file ended before the stream of lexer"
+              << std::endl;
+
+    auto token = scanner.next_token();
+    std::cout << "\t" << token << std::endl;
+  }
+  return success;
 }

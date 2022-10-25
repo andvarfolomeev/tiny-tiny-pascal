@@ -1,7 +1,11 @@
+#include <iostream>
+
 #include "tests/lexer.h"
+#include "tests/test_report.h"
 
 int main() {
-  int status_code = 0;
-  status_code |= run_lexer_tests();
-  return status_code;
+  TestReport test_report = run_lexer_tests();
+  std::cout << test_report;
+
+  return 0;
 }
