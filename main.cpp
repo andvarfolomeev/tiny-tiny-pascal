@@ -30,15 +30,20 @@ int main(int argc, char *argv[]) {
   if (filename) {
     std::ifstream file(filename);
     if (file.good()) {
-      lexer::Scanner scanner(file);
-      for (;;) {
-        auto token = scanner.next_token();
-        std::cout << token << "\n";
-        if (token.get_type() == lexer::TokenType::eof) {
-          break;
+      try {
+        lexer::Scanner scanner(file);
+        for (;;) {
+          auto token = scanner.next_token();
+          std::cout << token << "\n";
+          if (token.get_type() == lexer::TokenType::eof) {
+            break;
+          }
         }
+        return EXIT_SUCCESS;
+      } catch (const lexer::ScannerException &ex) {
+        std::cout << ex.what();
+        return EXIT_FAILURE;
       }
-      return EXIT_SUCCESS;
     } else {
       std::cout << "Error: file " << filename << " doesnt exist "
                 << "\n";
