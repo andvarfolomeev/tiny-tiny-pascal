@@ -52,16 +52,29 @@ bool run_test(const std::string &input_file_path,
   std::string line;
   while (!scanner.eof() && !out_file.eof()) {
     getline(out_file, line);
-    auto token = scanner.next_token();
-    if (token.to_string() == line) {
-      std::cout << "OK"
-                << "\t" << line << std::endl;
-    } else {
-      std::cout << "FAILED" << std::endl;
-      std::cout << "\t"
-                << "Expected: \t" << line << ";" << std::endl
-                << "\tTaken:\t\t" << token.to_string() << ";" << std::endl;
-      success = false;
+    try {
+      auto token = scanner.next_token();
+      if (token.to_string() == line) {
+        std::cout << "OK"
+                  << "\t" << line << std::endl;
+      } else {
+        std::cout << "FAILED"
+                  << "\n\tExpected: \t" << line << ";" << std::endl
+                  << "\tTaken:\t\t" << token.to_string() << ";" << std::endl;
+        success = false;
+      }
+    } catch (const lexer::ScannerException &ex) {
+      std::string lexer_message = "Exception: ";
+      lexer_message += ex.what();
+      if (line == lexer_message) {
+        std::cout << "OK"
+                  << "\t" << line << "\n";
+      } else {
+        std::cout << "FAILED"
+                  << "\n\tExpected: \t" << line << ";" << std::endl
+                  << "\tTaken:\t\t" << lexer_message << ";" << std::endl;
+      }
+      return (line == lexer_message);
     }
   }
   while (!out_file.eof()) {
@@ -72,6 +85,7 @@ bool run_test(const std::string &input_file_path,
     getline(out_file, line);
     std::cout << "\t" << line << std::endl;
   }
+
   while (!scanner.eof()) {
     success = false;
     std::cout << "FAILED: Stream of out file ended before the stream of lexer"
