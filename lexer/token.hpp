@@ -22,8 +22,6 @@ public:
 
   friend std::ostream &operator<<(std::ostream &os, const Token &token);
 
-  TokenType get_type();
-
   [[nodiscard]] std::string to_string() const;
 };
 } // namespace lexer

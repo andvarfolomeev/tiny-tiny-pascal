@@ -1,157 +1,103 @@
+#include <algorithm>
 #include <cassert>
-#include <iostream>
 
 #include "scanner.hpp"
 #include "token.hpp"
+#include "token_type.hpp"
 
 namespace lexer {
 
 Token Scanner::next_token() { // NOLINT(misc-no-recursion)
-
   while (lexer::Scanner::is_space(this->peek())) {
     this->consume();
   }
-
   this->last_column = this->current_column;
   this->last_line = this->current_line;
-
-  TokenType token_type = TokenType::INVALID;
 
   this->buffer.clear();
   switch (this->consume()) {
   case EOF:
-    token_type = TokenType::eof;
     this->is_eof = true;
-    break;
+    return {this->last_line, this->last_column, TokenType::eof, "EOF", "EOF"};
   case '+':
-    if (try_consume('=')) {
-      token_type = TokenType::ADDASSIGN;
-    } else {
-      token_type = TokenType::ADD;
-    }
-    break;
   case '-':
-    if (try_consume('=')) {
-      token_type = TokenType::SUBASSIGN;
-    } else {
-      token_type = TokenType::SUB;
-    }
-    break;
   case '*':
     if (try_consume('=')) {
-      token_type = TokenType::MULASSIGN;
+      goto prepare_token;
     } else {
-      token_type = TokenType::MUL;
+      goto prepare_token;
     }
-    break;
   case '/':
-    if (try_consume('=')) {
-      token_type = TokenType::QUOASSIGN;
+    if (try_consume('=')) { // NOLINT
+      goto prepare_token;
     } else if (try_consume('/')) {
       this->skip_line_comment();
-      ++this->current_line;
-      this->current_column = 1;
       return this->next_token();
     } else {
-      token_type = TokenType::QUO;
+      goto prepare_token;
     }
-    break;
-  case '=':
-    token_type = TokenType::EQL;
-    break;
   case '<':
-    if (try_consume('>')) {
-      token_type = TokenType::NEQ;
+    if (try_consume('>')) { // NOLINT
+      goto prepare_token;
     } else if (try_consume('=')) {
-      token_type = TokenType::LEQ;
+      goto prepare_token;
     } else {
-      token_type = TokenType::LES;
+      goto prepare_token;
     }
-    break;
+  case ':':
   case '>':
     if (try_consume('=')) {
-      token_type = TokenType::GEQ;
+      goto prepare_token;
     } else {
-      token_type = TokenType::GTR;
+      goto prepare_token;
     }
-    break;
-  case ':':
-    if (try_consume('=')) {
-      token_type = TokenType::ASSIGN;
-    } else {
-      token_type = TokenType::COLON;
-    }
-    break;
+  case '=':
   case '^':
-    token_type = TokenType::DEREF;
-    break;
   case '(':
-    token_type = TokenType::LPAREN;
-    break;
   case ')':
-    token_type = TokenType::RPAREN;
-    break;
   case '[':
-    token_type = TokenType::LBRACK;
-    break;
   case ']':
-    token_type = TokenType::RBRACK;
-    break;
+  case ',':
+  case ';':
+    goto prepare_token;
   case '{':
     this->skip_block_comment();
     return this->next_token();
-  case ',':
-    token_type = TokenType::COMMA;
-    break;
   case '.':
     if (try_consume('.')) {
-      token_type = TokenType::ELLIPSIS;
+      goto prepare_token;
     } else {
-      token_type = TokenType::PERIOD;
+      goto prepare_token;
     }
-    break;
-  case ';':
-    token_type = TokenType::SEMICOLON;
-    break;
   case '\'':
-    this->scan_string_literal();
-    token_type = TokenType::STRING;
-    break;
+    return this->scan_string_literal();
   case '$':
-    token_type = this->scan_number_literal(16);
-    break;
+    return this->scan_number_literal(16);
   case '&':
-    token_type = this->scan_number_literal(8);
-    break;
+    return this->scan_number_literal(8);
   case '%':
-    token_type = this->scan_number_literal(2);
-    break;
+    return this->scan_number_literal(2);
   default:
     if (is_digit(this->buffer_peek())) {
-      token_type = this->scan_number_literal(10);
+      return this->scan_number_literal(10);
     }
     if (is_start_of_identifier(this->buffer_peek())) {
-      token_type = this->scan_identifier_or_keyword();
+      return this->scan_identifier_or_keyword();
     }
     break;
   }
-
-  std::string from_buffer = this->buffer;
-  this->buffer.clear();
-
-  if (token_type._value == TokenType::eof) {
-    from_buffer = "EOF";
-    return {this->last_line, this->last_column, token_type, from_buffer,
-            from_buffer};
+  if (token_type.find(buffer) == token_type.end() ||
+      token_value.find(buffer) == token_value.end()) {
+    return {this->last_line, this->last_column, TokenType::Invalid, buffer,
+            buffer};
   }
 
-  return {this->last_line, this->last_column, token_type, from_buffer,
-          from_buffer};
+prepare_token:
+  return {this->last_line, this->last_column, token_type.at(buffer),
+          token_value.at(buffer), buffer};
 }
 
-bool Scanner::is_space(char c) {
-  return c == '\t' || c == ' ' || c == '\n';
-}
+bool Scanner::is_space(char c) { return c == '\t' || c == ' ' || c == '\n'; }
 
 /*
  * move to next character in stream and save character to buffer
@@ -222,19 +168,20 @@ char Scanner::buffer_peek() {
   return this->buffer[this->buffer.size() - 1];
 }
 
-void Scanner::scan_string_literal() {
+Token Scanner::scan_string_literal() {
   do {
     this->consume();
-    if (this->buffer_peek() == '\n') {
+    if (this->buffer_peek() == '\n' || this->buffer_peek() == EOF) {
       throw ScannerException(this->last_line, this->last_column,
                              "String exceeds line");
     }
   } while (this->buffer_peek() != '\'');
+  return {this->last_line, this->last_column, TokenType::String, buffer, buffer};
 }
 
 bool Scanner::is_digit(char c) { return '0' <= c && c <= '9'; }
 
-TokenType Scanner::scan_number_literal(int numeral_system) {
+Token Scanner::scan_number_literal(int numeral_system) {
   enum state {
     number = 1,
     number_after_dot,
@@ -248,12 +195,9 @@ TokenType Scanner::scan_number_literal(int numeral_system) {
   state current_state;
   char c;
 
-  auto result = TokenType::INTEGER;
+  auto type = TokenType::Integer;
 
   switch (numeral_system) {
-  case 10:
-    current_state = state::number;
-    break;
   case 16:
     current_state = state::hex_number;
     break;
@@ -263,12 +207,9 @@ TokenType Scanner::scan_number_literal(int numeral_system) {
   case 2:
     current_state = state::bin_number;
     break;
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "UnreachableCode"
   default:
-    current_state = state::finish;
-#pragma clang diagnostic pop
-    assert(true);
+    assert(numeral_system == 10);
+    current_state = state::number;
   }
 
   while (current_state != finish) {
@@ -280,10 +221,10 @@ TokenType Scanner::scan_number_literal(int numeral_system) {
         // consume
       } else if (c == '.' && this->try_consume(is_digit)) { // check next
         current_state = state::number_after_dot;
-        result = TokenType::FLOAT;
+        type = TokenType::Real;
       } else if (c == 'e' && this->try_consume(is_digit)) {
         current_state = state::number_after_e;
-        result = TokenType::FLOAT;
+        type = TokenType::Real;
       } else {
         this->unconsume(); // give back .
         current_state = finish;
@@ -294,42 +235,40 @@ TokenType Scanner::scan_number_literal(int numeral_system) {
         if (c == 'e') {
           current_state = number_after_dot;
         } else {
+          this->unconsume(); // give back
           current_state = finish;
         }
       }
       break;
     case number_after_e:
       if (!is_digit(c)) {
-        unconsume();
+        unconsume(); // give back
         current_state = finish;
       }
       break;
     case hex_number:
       if (!('0' <= c && c <= '9' && 'a' <= tolower(c) && tolower(c) <= 'z')) {
-        unconsume();
+        unconsume(); // give back
         current_state = finish;
       }
       break;
     case octa_number:
       if (!('0' <= c && c <= '7')) {
-        unconsume();
+        unconsume(); // give back
         current_state = finish;
       }
       break;
     case bin_number:
       if (!('0' <= c && c <= '1')) {
-        unconsume();
+        unconsume(); // give back
         current_state = finish;
       }
       break;
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "UnreachableCode"
-    case finish:
+    default:
       break;
-#pragma clang diagnostic pop
     }
   }
-  return result;
+  return {this->last_line, this->last_column, type, buffer, buffer};
 }
 
 void Scanner::skip_block_comment() {
@@ -347,29 +286,36 @@ void Scanner::skip_block_comment() {
 void Scanner::skip_line_comment() {
   for (;;) {
     this->consume();
-    if (this->buffer_peek() == '\n') {
+    if (this->buffer_peek() == '\n' || this->buffer_peek() == EOF) {
       return;
     }
   }
 }
 
 bool Scanner::is_start_of_identifier(char c) {
-  return 'a' <= c && c <= 'z' || c == '_';
+  return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') || c == '_';
 }
 
 bool Scanner::is_remainig_of_identifier(char c) {
   return is_start_of_identifier(c) || is_digit(c);
 }
 
-TokenType Scanner::scan_identifier_or_keyword() {
+Token Scanner::scan_identifier_or_keyword() {
   while (is_remainig_of_identifier(this->peek())) {
     this->consume();
   }
-  auto result = TokenType::ID;
-  if (tokens.find(this->buffer) != tokens.end()) {
-    result = tokens.at(this->buffer);
+  auto type = TokenType::Id;
+
+  std::string buffer_in_lower = this->buffer;
+  std::transform(buffer_in_lower.begin(), buffer_in_lower.end(),
+                 buffer_in_lower.begin(), ::tolower);
+
+  if (std::find(keywords.begin(), keywords.end(), buffer_in_lower) !=
+      keywords.end()) {
+    type = TokenType::Keyword;
   }
-  return result;
+
+  return {this->last_line, this->last_column, type, buffer_in_lower, buffer};
 }
 
 bool Scanner::eof() const { return this->is_eof; }

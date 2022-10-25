@@ -3,132 +3,162 @@
 
 #include <map>
 #include <string>
-
-#include "../libs/enum.h"
+#include <vector>
 
 namespace lexer {
-BETTER_ENUM(   // NOLINT
-    TokenType, // NOLINT
-    char, INVALID = 1, eof, COMMENT,
 
-    ID,
-    INTEGER, FLOAT, CHAR, STRING,
-
-    ADD, ADDASSIGN,
-
-    SUB, SUBASSIGN,
-
-    MUL, MULASSIGN,
-
-    QUO, QUOASSIGN,
-
-    EQL,
-
-    LES, NEQ, LEQ,
-
-    GTR, GEQ,
-
-    ASSIGN,
-
-    DEREF,
-
-    AND, OR,
-
-    NOT,
-
-    XOR, SHL, SHR,
-
-    IDIV, MDIV,
-
-    INCLUDE, EXCLUDE, IN,
-
-    IS, AS,
-
-    LPAREN, RPAREN, LBRACK, RBRACK, COMMA, PERIOD, ELLIPSIS,
-    SEMICOLON, COLON,
-
-    BREAK, CASE, CONST, CONTINUE, ELSE, FOR, FUNCTION, PROCEDURE, GOTO, IF)
-
-[[maybe_unused]] const std::map<std::string, TokenType> tokens = {
-    {"INVALID", TokenType::INVALID},
-    {"eof", TokenType::eof},
-    {"COMMENT", TokenType::COMMENT},
-
-    {"ID", TokenType::ID},
-    // literals
-    {"Integer", TokenType::INTEGER},
-    {"Float", TokenType::FLOAT},
-    {"Char", TokenType::CHAR},
-    {"String", TokenType::STRING},
-
-    // operators
-    {"+", TokenType::ADD},
-    {"+=", TokenType::ADDASSIGN},
-
-    {"-", TokenType::SUB},
-    {"-=", TokenType::SUBASSIGN},
-
-    {"*", TokenType::MUL},
-    {"*=", TokenType::MULASSIGN},
-
-    {"/", TokenType::QUO},
-    {"/=", TokenType::QUOASSIGN},
-
-    {"=", TokenType::EQL},
-
-    {"<", TokenType::LES},
-    {"<>", TokenType::NEQ},
-    {"<=", TokenType::LEQ},
-
-    {">", TokenType::GTR},
-    {">=", TokenType::GEQ},
-
-    {":=", TokenType::ASSIGN},
-
-    {"^", TokenType::DEREF},
-
-    {"and", TokenType::AND},
-    {"or", TokenType::OR},
-
-    {"not", TokenType::NOT},
-
-    {"xor", TokenType::XOR},
-    {"shl", TokenType::SHL},
-    {"shr", TokenType::SHR},
-
-    {"div", TokenType::IDIV},
-    {"mod", TokenType::MDIV},
-
-    {"include", TokenType::INCLUDE},
-    {"exclude", TokenType::EXCLUDE},
-    {"in", TokenType::IN},
-
-    {"is", TokenType::IS},
-    {"as", TokenType::AS},
-
-    // separators
-    {"(", TokenType::LPAREN},
-    {")", TokenType::RPAREN},
-    {"[", TokenType::LBRACK},
-    {"]", TokenType::RBRACK},
-    {",", TokenType::COMMA},
-    {".", TokenType::PERIOD},
-    {"..", TokenType::ELLIPSIS},
-    {";", TokenType::SEMICOLON},
-    {":", TokenType::COLON},
-
-    // keywords
-    {"break", TokenType::BREAK},
-    {"case", TokenType::CASE},
-    {"const", TokenType::CONST},
-    {"continue", TokenType::CONTINUE},
-    {"else", TokenType::ELSE},
-    {"for", TokenType::FOR},
-    {"function", TokenType::FUNCTION},
-    {"procedure", TokenType::PROCEDURE},
-    {"goto", TokenType::GOTO},
-    {"if", TokenType::IF},
+enum TokenType {
+  eof,
+  Invalid,
+  Integer,
+  Real,
+  String,
+  Id,
+  Keyword,
+  Comment,
+  Operation,
+  Seperator,
 };
+
+std::string to_string(TokenType type);
+
+const std::map<std::string, TokenType> token_type = {
+    {"+", Operation}, {"+=", Operation}, {"-", Operation},  {"-=", Operation},
+    {"*", Operation}, {"*=", Operation}, {"/", Operation},  {"/=", Operation},
+    {"=", Operation}, {"<", Operation},  {"<>", Operation}, {"<=", Operation},
+    {">", Operation}, {">=", Operation}, {":=", Operation}, {"^", Operation},
+
+    {"(", Seperator}, {")", Seperator},  {"[", Seperator},  {"]", Seperator},
+    {",", Seperator}, {".", Seperator},  {"..", Seperator}, {";", Seperator},
+    {":", Seperator},
+};
+
+const std::map<std::string, std::string> token_value = {
+    {"+", "ADD"},        {"+=", "ADDASSIGN"}, {"-", "SUB"},
+    {"-=", "SUBASSIGN"}, {"*", "MUL"},        {"*=", "MULASSIGN"},
+    {"/", "QUO"},        {"/=", "QUOASSIGN"}, {"=", "EQL"},
+    {"<", "LES"},        {"<>", "NEQ"},       {"<=", "LEQ"},
+    {">", "GTR"},        {">=", "GEQ"},       {":=", "ASSIGN"},
+    {"^", "DEREF"},
+
+    {"(", "LPAREN"},     {")", "RPAREN"},     {"[", "LBRACK"},
+    {"]", "RBRACK"},     {",", "COMMA"},      {".", "PERIOD"},
+    {"..", "ELLIPSIS"},  {";", "SEMICOLON"},  {":", "COLON"},
+};
+
+const std::vector<std::string> keywords = {"and",
+                                           "array",
+                                           "asm",
+                                           "begin",
+                                           "break",
+                                           "case",
+                                           "const",
+                                           "constructor",
+                                           "continue",
+                                           "destructor",
+                                           "div",
+                                           "do",
+                                           "downto",
+                                           "else",
+                                           "end",
+                                           "false",
+                                           "file",
+                                           "for",
+                                           "function",
+                                           "goto",
+                                           "if",
+                                           "implementation",
+                                           "in",
+                                           "inline",
+                                           "interface",
+                                           "label",
+                                           "mod",
+                                           "nil",
+                                           "not",
+                                           "object",
+                                           "of",
+                                           "on",
+                                           "operator",
+                                           "or",
+                                           "packed",
+                                           "procedure",
+                                           "program",
+                                           "record",
+                                           "repeat",
+                                           "set",
+                                           "shl",
+                                           "shr",
+                                           "string",
+                                           "then",
+                                           "to",
+                                           "true",
+                                           "type",
+                                           "unit",
+                                           "until",
+                                           "uses",
+                                           "var",
+                                           "while",
+                                           "with",
+                                           "xor",
+                                           "as",
+                                           "class",
+                                           "constref",
+                                           "dispose",
+                                           "except",
+                                           "exit",
+                                           "exports",
+                                           "finalization",
+                                           "finally",
+                                           "inherited",
+                                           "initialization",
+                                           "is",
+                                           "library",
+                                           "new",
+                                           "on",
+                                           "out",
+                                           "property",
+                                           "raise",
+                                           "self",
+                                           "threadvar",
+                                           "try",
+                                           "absolute",
+                                           "abstract",
+                                           "alias",
+                                           "assembler",
+                                           "cdecl",
+                                           "Cppdecl",
+                                           "default",
+                                           "export",
+                                           "external",
+                                           "forward",
+                                           "generic",
+                                           "index",
+                                           "local",
+                                           "name",
+                                           "nostackframe",
+                                           "oldfpccall",
+                                           "override",
+                                           "pascal",
+                                           "private",
+                                           "protected",
+                                           "public",
+                                           "published",
+                                           "read",
+                                           "readln",
+                                           "register",
+                                           "reintroduce",
+                                           "safecall",
+                                           "softfloat",
+                                           "specialize",
+                                           "stdcall",
+                                           "virtual",
+                                           "write",
+                                           "writeln",
+
+                                           "string",
+                                           "char",
+                                           "integer",
+                                           "real"};
 } // namespace lexer
 
 #endif // LEXER_TOKEN_TYPE_H
