@@ -1,0 +1,7 @@
+{Hello, world}
+{
+	Tyt chto-to vajnoe
+}
+WriteLn('Tyt ne vajnoe');
+{ // No tyt vajnoe }
+{ 'qwdqwd }

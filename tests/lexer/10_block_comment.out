@@ -1,0 +1,6 @@
+5	1	Keyword	writeln	WriteLn
+5	8	Separator	LPAREN	(
+5	9	String	'Tyt ne vajnoe'	'Tyt ne vajnoe'
+5	24	Separator	RPAREN	)
+5	25	Separator	SEMICOLON	;
+7	12	EOF	EOF	EOF

@@ -1,0 +1,4 @@
+// Hello, world
+x := 10;
+x += 10; // add 10
+// Hello, world // x -= 20;

@@ -1,0 +1,14 @@
+1	1	Id	hello	hello
+1	7	Id	world	world
+1	13	Keyword	case	case
+2	1	Id	hello	hello
+2	7	Keyword	program	program
+2	15	Id	case123	case123
+3	4	Keyword	program	program
+5	2	Id	_qwerty	_qwerty
+6	3	Id	_qwerty_	_qwerty_
+7	2	Integer	123	123
+7	5	Id	qwerty	qwerty
+9	1	Keyword	integer	integer
+10	1	Keyword	case	CaSe
+10	5	EOF	EOF	EOF

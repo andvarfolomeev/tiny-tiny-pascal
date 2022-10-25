@@ -1,0 +1,9 @@
+2	1	Id	x	x
+2	3	Operation	ASSIGN	:=
+2	6	Integer	10	10
+2	8	Separator	SEMICOLON	;
+3	1	Id	x	x
+3	3	Operation	ADDASSIGN	+=
+3	6	Integer	10	10
+3	8	Separator	SEMICOLON	;
+4	29	EOF	EOF	EOF

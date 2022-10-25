@@ -1,0 +1,12 @@
+1	1	Keyword	program	Program
+1	9	Id	hello_world	hello_world
+1	20	Separator	SEMICOLON	;
+3	1	Keyword	begin	Begin
+4	2	Keyword	writeln	WriteLn
+4	9	Separator	LPAREN	(
+4	10	String	'Hello, world'	'Hello, world'
+4	24	Separator	RPAREN	)
+4	25	Separator	SEMICOLON	;
+5	1	Keyword	end	End
+5	4	Separator	SEMICOLON	;
+5	5	EOF	EOF	EOF
