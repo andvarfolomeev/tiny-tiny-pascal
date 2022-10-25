@@ -214,54 +214,61 @@ Token Scanner::scan_number_literal(int numeral_system) {
   }
 
   while (current_state != finish) {
-    c = this->consume();
+    c = this->peek();
 
     switch (current_state) {
     case number:
       if (is_digit(c)) {
+        this->consume();
         // consume
       } else if (c == '.' && this->try_consume(is_digit)) { // check next
         current_state = state::number_after_dot;
         type = TokenType::Real;
+        this->consume();
       } else if (c == 'e' && this->try_consume(is_digit)) {
         current_state = state::number_after_e;
         type = TokenType::Real;
+        this->consume();
       } else {
-        this->unconsume(); // give back .
         current_state = finish;
       }
       break;
     case number_after_dot:
       if (!is_digit(c)) {
         if (c == 'e') {
+          this->consume();
           current_state = number_after_dot;
         } else {
-          this->unconsume(); // give back
           current_state = finish;
         }
       }
       break;
     case number_after_e:
-      if (!is_digit(c)) {
-        unconsume(); // give back
+      if (is_digit(c)) {
+        this->consume();
+      } else {
         current_state = finish;
       }
       break;
     case hex_number:
-      if (!('0' <= c && c <= '9' && 'a' <= tolower(c) && tolower(c) <= 'z')) {
-        unconsume(); // give back
+      if ((('0' <= c && c <= '9') ||
+           ('a' <= tolower(c) && tolower(c) <= 'f'))) {
+        this->consume();
+      } else {
         current_state = finish;
       }
       break;
     case octa_number:
-      if (!('0' <= c && c <= '7')) {
-        unconsume(); // give back
+      if (('0' <= c && c <= '7')) {
+        this->consume();
+      } else {
         current_state = finish;
       }
       break;
     case bin_number:
-      if (!('0' <= c && c <= '1')) {
-        unconsume(); // give back
+      if (('0' <= c && c <= '1')) {
+        this->consume();
+      } else {
         current_state = finish;
       }
       break;
