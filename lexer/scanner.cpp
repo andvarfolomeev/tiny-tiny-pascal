@@ -1,9 +1,9 @@
 #include <algorithm>
 #include <cassert>
 
-#include "scanner.hpp"
-#include "token.hpp"
-#include "token_type.hpp"
+#include "scanner.h"
+#include "token.h"
+#include "token_type.h"
 
 namespace lexer {
 

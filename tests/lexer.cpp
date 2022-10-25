@@ -2,7 +2,7 @@
 #include <iostream>
 #include <set>
 
-#include "../lexer/scanner.hpp"
+#include "../lexer/scanner.h"
 #include "lexer.h"
 
 namespace fs = std::filesystem;

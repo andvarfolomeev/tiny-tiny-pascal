@@ -1,7 +1,7 @@
 #include <iomanip>
 #include <sstream>
 
-#include "token.hpp"
+#include "token.h"
 
 namespace lexer {
 std::ostream &operator<<(std::ostream &os, const lexer::Token &token) {

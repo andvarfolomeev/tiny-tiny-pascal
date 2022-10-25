@@ -4,7 +4,7 @@
 #include <fstream>
 #include <sstream>
 
-#include "token.hpp"
+#include "token.h"
 
 namespace lexer {
 class Scanner {

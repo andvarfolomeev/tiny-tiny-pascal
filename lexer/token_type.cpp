@@ -1,4 +1,4 @@
-#include "token_type.hpp"
+#include "token_type.h"
 
 namespace lexer {
 std::string to_string(TokenType type) {
