@@ -78,7 +78,7 @@
 78	1	Keyword	alias	alias
 79	1	Keyword	assembler	assembler
 80	1	Keyword	cdecl	cdecl
-81	1	Id	cppdecl	Cppdecl
+81	1	Keyword	cppdecl	Cppdecl
 82	1	Keyword	default	default
 83	1	Keyword	export	export
 84	1	Keyword	external	external
