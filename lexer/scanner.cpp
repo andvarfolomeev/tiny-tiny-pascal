@@ -1,6 +1,8 @@
 #include <algorithm>
 #include <cassert>
+#include <cmath>
 
+#include "../types.h"
 #include "scanner.h"
 #include "token.h"
 #include "token_type.h"
@@ -155,6 +157,7 @@ char Scanner::unconsume() {
   } else {
     assert(true);
   }
+  return EOF;
 }
 
 /*
@@ -305,8 +308,6 @@ Token Scanner::scan_number_literal(int numeral_system) {
         current_state = finish;
       }
       break;
-    default:
-      break;
     }
   }
   if (type == Integer) {
@@ -384,7 +385,7 @@ Token Scanner::scan_identifier_or_keyword() {
 
 bool Scanner::eof() const { return this->is_eof; }
 
-std::string Scanner::get_integer_value(std::string raw, int numeral_system) {
+std::string Scanner::get_integer_value(std::string raw, int numeral_system) const {
   long long int result = 0;
 
   for (size_t i = (numeral_system != 10); i < raw.size(); ++i) {
@@ -394,8 +395,23 @@ std::string Scanner::get_integer_value(std::string raw, int numeral_system) {
       result += c - '0';
     if ('a' <= c && c <= 'z')
       result += c - 'a' + 10;
+    if (INTEGER_MAX < result) {
+      throw ScannerException(this->last_line, this->last_column,
+                             "Integer overflow");
+    }
   }
   return std::to_string((int)result);
 }
-std::string Scanner::get_real_value(std::string raw) { return raw; }
+std::string Scanner::get_real_value(const std::string &raw) {
+  std::stringstream ss;
+  ss.setf(std::ios::scientific);
+  ss.precision(12);
+  try {
+    ss << std::stof(raw);
+    return ss.str();
+  } catch (...) {
+    ss << INFINITY;
+    return ss.str();
+  }
+}
 } // namespace lexer

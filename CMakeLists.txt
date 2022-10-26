@@ -26,7 +26,7 @@ set(SOURCE_EXE
         lexer/token_type.cpp
 
         tests/lexer.cpp
-        tests/test_report.cpp tests/test_report.h)
+        tests/test_report.cpp tests/test_report.h types.h)
 set(CMAKE_CXX_STANDARD 17)
 
 add_executable(main ${SOURCE_EXE})

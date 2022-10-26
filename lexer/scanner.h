@@ -30,8 +30,8 @@ class Scanner {
   static bool is_start_of_identifier(char c);
   static bool is_remainig_of_identifier(char c);
   Token scan_identifier_or_keyword();
-  static std::string get_integer_value(std::string raw, int numeral_system);
-  static std::string get_real_value(std::string raw);
+  std::string get_integer_value(std::string raw, int numeral_system) const;
+  static std::string get_real_value(const std::string& raw);
 
 public:
   explicit Scanner(std::ifstream &input_stream)
