@@ -53,12 +53,17 @@ Token Scanner::next_token() { // NOLINT(misc-no-recursion)
     }
   case '=':
   case '^':
-  case '(':
   case ')':
   case '[':
   case ']':
   case ',':
   case ';':
+    goto prepare_token;
+  case '(':
+    if (try_consume('*')) {
+      this->skip_block_comment_1();
+      return this->next_token();
+    }
     goto prepare_token;
   case '{':
     this->skip_block_comment();
@@ -136,7 +141,7 @@ char Scanner::try_consume(char c) {
 /*
  * move to previous character in stream and delete last character from buffer
  */
-void Scanner::unconsume() {
+char Scanner::unconsume() {
   this->input_stream.unget();
   if (!this->buffer.empty()) {
     if (this->buffer_peek() != '\n') {
@@ -312,10 +317,28 @@ Token Scanner::scan_number_literal(int numeral_system) {
           lexer::Scanner::get_real_value(buffer), buffer};
 }
 
+/*
+ * Skip block comment line { }
+ */
 void Scanner::skip_block_comment() {
   for (;;) {
     this->consume();
     if (this->buffer_peek() == '}') {
+      return;
+    } else if (this->buffer_peek() == EOF) {
+      throw ScannerException(this->last_line, this->last_column,
+                             "Unterminated block comment");
+    }
+  }
+}
+
+/*
+ * Skip block comment line (* *)
+ */
+void Scanner::skip_block_comment_1() {
+  for (;;) {
+    this->consume();
+    if (this->buffer_peek() == '*' && this->try_consume(')')) {
       return;
     } else if (this->buffer_peek() == EOF) {
       throw ScannerException(this->last_line, this->last_column,
