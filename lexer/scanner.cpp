@@ -259,7 +259,12 @@ Token Scanner::scan_number_literal(int numeral_system) {
       break;
     }
   }
-  return {this->last_line, this->last_column, type, buffer, buffer};
+  if (type == Integer) {
+    return {this->last_line, this->last_column, type,
+            lexer::Scanner::get_integer_value(buffer, numeral_system), buffer};
+  }
+  return {this->last_line, this->last_column, type,
+          lexer::Scanner::get_real_value(buffer), buffer};
 }
 
 void Scanner::skip_block_comment() {
@@ -310,4 +315,19 @@ Token Scanner::scan_identifier_or_keyword() {
 }
 
 bool Scanner::eof() const { return this->is_eof; }
+
+std::string Scanner::get_integer_value(std::string raw, int numeral_system) {
+  long long int result = 0;
+
+  for (size_t i = (numeral_system != 10); i < raw.size(); ++i) {
+    result *= numeral_system;
+    char c = (char)tolower(raw[i]);
+    if ('0' <= c && c <= '9')
+      result += c - '0';
+    if ('a' <= c && c <= 'z')
+      result += c - 'a' + 10;
+  }
+  return std::to_string((int)result);
+}
+std::string Scanner::get_real_value(std::string raw) { return raw; }
 } // namespace lexer
