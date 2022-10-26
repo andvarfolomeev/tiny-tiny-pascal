@@ -1,0 +1,2 @@
+1	1	Integer	2147483647	$7FFFFFFF
+Exception: Line: 2; Column: 1; Integer overflow
