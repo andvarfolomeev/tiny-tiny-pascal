@@ -9,18 +9,20 @@
 namespace lexer {
 class Scanner {
   std::ifstream &input_stream;
-  unsigned int last_line, last_column, current_line, current_column;
+  unsigned int last_line, last_column, current_line, current_column, column_after_new_line;
   std::string buffer;
   bool is_eof;
 
   static bool is_space(char c);
   char consume();
+  void unconsume();
   char try_consume(char c);
   char try_consume(bool (*func)(char));
+  char try_consume(bool (*func)(char, int), int arg);
   char peek();
   char buffer_peek();
   Token scan_string_literal();
-  static bool is_digit(char c);
+  static bool is_digit(char c, int numeral_system = 10);
   Token scan_number_literal(int numeral_system);
   void skip_block_comment();
   void skip_line_comment();

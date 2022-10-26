@@ -72,11 +72,17 @@ Token Scanner::next_token() { // NOLINT(misc-no-recursion)
   case '\'':
     return this->scan_string_literal();
   case '$':
-    return this->scan_number_literal(16);
+    if (try_consume(is_digit, 16)) {
+      return this->scan_number_literal(16);
+    }
   case '&':
-    return this->scan_number_literal(8);
+    if (try_consume(is_digit, 8)) {
+      return this->scan_number_literal(8);
+    }
   case '%':
-    return this->scan_number_literal(2);
+    if (try_consume(is_digit, 2)) {
+      return this->scan_number_literal(2);
+    }
   default:
     if (is_digit(this->buffer_peek())) {
       return this->scan_number_literal(10);
@@ -106,6 +112,7 @@ char Scanner::consume() {
   char c = (char)this->input_stream.get();
   buffer.push_back(c);
   if (c == '\n') {
+    this->column_after_new_line = this->current_line;
     ++this->current_line;
     this->current_column = 1;
   } else {
@@ -127,11 +134,37 @@ char Scanner::try_consume(char c) {
 }
 
 /*
+ * move to previous character in stream and delete last character from buffer
+ */
+void Scanner::unconsume() {
+  this->input_stream.unget();
+  if (!this->buffer.empty()) {
+    if (this->buffer_peek() != '\n') {
+      --this->current_column;
+    } else {
+      this->current_line--;
+      this->current_column = this->column_after_new_line;
+    }
+    this->buffer.pop_back();
+  } else {
+    assert(true);
+  }
+}
+
+/*
  * move to the next character in the stream if that character is equal to the
  * character in the argument
  */
 char Scanner::try_consume(bool (*func)(char)) {
   if (func((char)this->input_stream.peek())) {
+    this->consume();
+    return true;
+  }
+  return false;
+}
+
+char Scanner::try_consume(bool (*func)(char, int), int arg) {
+  if (func((char)this->input_stream.peek(), arg)) {
     this->consume();
     return true;
   }
@@ -163,7 +196,19 @@ Token Scanner::scan_string_literal() {
           buffer};
 }
 
-bool Scanner::is_digit(char c) { return '0' <= c && c <= '9'; }
+bool Scanner::is_digit(char c, int numeral_system) {
+  c = (char)std::tolower(c);
+  if (numeral_system == 10)
+    return '0' <= c && c <= '9';
+  if (numeral_system == 16)
+    return ('0' <= c && c <= '9') || ('a' <= c && c <= 'f');
+  if (numeral_system == 8)
+    return '0' <= c && c <= '7';
+  if (numeral_system == 2)
+    return '0' <= c && c <= '1';
+  assert(true);
+  return false;
+}
 
 Token Scanner::scan_number_literal(int numeral_system) {
   enum state {
@@ -197,60 +242,53 @@ Token Scanner::scan_number_literal(int numeral_system) {
   }
 
   while (current_state != finish) {
-    c = this->peek();
-
     switch (current_state) {
     case number:
-      if (is_digit(c)) {
-        this->consume();
+      c = this->consume();
+      if (is_digit(c, 10)) {
         // consume
-      } else if (c == '.' && this->try_consume(is_digit)) { // check next
+      } else if (c == '.' && this->try_consume(is_digit, 10)) { // check next
         current_state = state::number_after_dot;
         type = TokenType::Real;
-        this->consume();
-      } else if (c == 'e' && this->try_consume(is_digit)) {
+      } else if (c == 'e' && this->try_consume(is_digit, 10)) {
         current_state = state::number_after_e;
         type = TokenType::Real;
-        this->consume();
       } else {
+        this->unconsume(); // give back . or e
         current_state = finish;
       }
       break;
     case number_after_dot:
-      if (!is_digit(c)) {
-        if (c == 'e') {
-          this->consume();
-          current_state = number_after_dot;
-        } else {
-          current_state = finish;
-        }
+      if (this->try_consume(is_digit, 10)) {
+        current_state = number_after_dot;
+      } else {
+        current_state = finish;
       }
       break;
     case number_after_e:
-      if (is_digit(c)) {
-        this->consume();
+      if (this->try_consume(is_digit, 10)) {
+        current_state = number_after_e;
       } else {
         current_state = finish;
       }
       break;
     case hex_number:
-      if ((('0' <= c && c <= '9') ||
-           ('a' <= tolower(c) && tolower(c) <= 'f'))) {
-        this->consume();
+      if (this->try_consume(is_digit, 16)) {
+        current_state = hex_number;
       } else {
         current_state = finish;
       }
       break;
     case octa_number:
-      if (('0' <= c && c <= '7')) {
-        this->consume();
+      if (this->try_consume(is_digit, 8)) {
+        current_state = octa_number;
       } else {
         current_state = finish;
       }
       break;
     case bin_number:
-      if (('0' <= c && c <= '1')) {
-        this->consume();
+      if (this->try_consume(is_digit, 2)) {
+        current_state = bin_number;
       } else {
         current_state = finish;
       }
