@@ -1,0 +1,12 @@
+1	1	Operation	ADD	+
+1	2	Operation	ADDASSIGN	+=
+1	4	Operation	SUB	-
+1	5	Operation	SUBASSIGN	-=
+1	7	Operation	ADD	+
+1	8	Operation	SUBASSIGN	-=
+1	10	Operation	QUO	/
+1	12	Operation	QUOASSIGN	/=
+1	14	Operation	ASSIGN	:=
+1	16	Separator	COLON	:
+1	17	Operation	GTR	>
+1	18	EOF	EOF	EOF
