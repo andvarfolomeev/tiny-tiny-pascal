@@ -146,6 +146,7 @@ void Scanner::unconsume() {
       this->current_column = this->column_after_new_line;
     }
     this->buffer.pop_back();
+    return this->buffer.back();
   } else {
     assert(true);
   }
@@ -262,7 +263,13 @@ Token Scanner::scan_number_literal(int numeral_system) {
       if (this->try_consume(is_digit, 10)) {
         current_state = number_after_dot;
       } else {
-        current_state = finish;
+        c = this->consume();
+        if (c == 'e' && this->try_consume(is_digit, 10)) {
+          current_state = number_after_e;
+        } else {
+          this->unconsume();
+          current_state = finish;
+        }
       }
       break;
     case number_after_e:

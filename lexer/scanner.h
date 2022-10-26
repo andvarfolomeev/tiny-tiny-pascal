@@ -15,7 +15,7 @@ class Scanner {
 
   static bool is_space(char c);
   char consume();
-  void unconsume();
+  char unconsume();
   char try_consume(char c);
   char try_consume(bool (*func)(char));
   char try_consume(bool (*func)(char, int), int arg);
