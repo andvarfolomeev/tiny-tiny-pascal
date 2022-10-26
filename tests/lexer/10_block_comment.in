@@ -5,3 +5,7 @@
 WriteLn('Tyt ne vajnoe');
 { // No tyt vajnoe }
 { 'qwdqwd }
+(*
+ * Hello, world
+ *)
+WriteLn('Tyt ne vajnoe x2');
