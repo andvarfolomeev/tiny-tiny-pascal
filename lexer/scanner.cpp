@@ -87,14 +87,17 @@ Token Scanner::next_token() {
     if (try_consume([](char c) { return is_digit(c, 16); })) {
       return scan_number_literal(16);
     }
+    break;
   case '&':
     if (try_consume([](char c) { return is_digit(c, 8); })) {
       return scan_number_literal(8);
     }
+    break;
   case '%':
     if (try_consume([](char c) { return is_digit(c, 2); })) {
       return scan_number_literal(2);
     }
+    break;
   default:
     if (is_digit(buffer_peek())) {
       return scan_number_literal(10);
@@ -299,6 +302,8 @@ Token Scanner::scan_number_literal(int numeral_system) {
         current_state = finish;
       }
       break;
+    case finish:
+      break;
     }
   }
   if (type == Integer) {
@@ -409,4 +414,5 @@ Token Scanner::prepare_token(TokenType type, const std::string &value,
                              const std::string &raw_value) const {
   return {last_line, last_column, type, value, raw_value};
 }
+
 } // namespace lexer
