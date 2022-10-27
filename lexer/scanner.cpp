@@ -105,7 +105,8 @@ Token Scanner::next_token() {
     break;
   }
 
-  return prepare_token(TokenType::Invalid, buffer, buffer);
+  // means that the token type is invalid
+  throw ScannerException(last_line, last_column, "Unexpected token");
 }
 
 bool Scanner::is_space(char c) { return c == '\t' || c == ' ' || c == '\n'; }
