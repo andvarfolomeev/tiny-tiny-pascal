@@ -200,10 +200,9 @@ bool Scanner::is_digit(char c, int numeral_system) {
     return ('0' <= c && c <= '9') || ('a' <= c && c <= 'f');
   if (numeral_system == 8)
     return '0' <= c && c <= '7';
-  if (numeral_system == 2)
-    return '0' <= c && c <= '1';
-  assert(true);
-  return false;
+
+  assert(numeral_system == 2);
+  return '0' <= c && c <= '1';
 }
 
 Token Scanner::scan_number_literal(int numeral_system) {
