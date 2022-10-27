@@ -9,7 +9,7 @@
 
 namespace lexer {
 
-Token Scanner::next_token() { // NOLINT(misc-no-recursion)
+Token Scanner::next_token() {
   while (lexer::Scanner::is_space(this->peek())) {
     this->consume();
   }
@@ -20,39 +20,42 @@ Token Scanner::next_token() { // NOLINT(misc-no-recursion)
   switch (this->consume()) {
   case EOF:
     this->is_eof = true;
-    return {this->last_line, this->last_column, TokenType::eof, "EOF", "EOF"};
+    return this->prepare_token(TokenType::eof, "EOF", "EOF");
   case '+':
   case '-':
   case '*':
     if (try_consume('=')) {
-      goto prepare_token;
-    } else {
-      goto prepare_token;
+      return prepare_token(token_type.at(buffer), token_value.at(buffer),
+                           buffer);
     }
+    return prepare_token(token_type.at(buffer), token_value.at(buffer), buffer);
   case '/':
-    if (try_consume('=')) { // NOLINT
-      goto prepare_token;
+    if (try_consume('=')) {
+      return prepare_token(token_type.at(buffer), token_value.at(buffer),
+                           buffer);
     } else if (try_consume('/')) {
       this->skip_line_comment();
       return this->next_token();
     } else {
-      goto prepare_token;
+      return prepare_token(token_type.at(buffer), token_value.at(buffer),
+                           buffer);
     }
   case '<':
-    if (try_consume('>')) { // NOLINT
-      goto prepare_token;
+    if (try_consume('>')) {
+      return prepare_token(token_type.at(buffer), token_value.at(buffer),
+                           buffer);
     } else if (try_consume('=')) {
-      goto prepare_token;
-    } else {
-      goto prepare_token;
+      return prepare_token(token_type.at(buffer), token_value.at(buffer),
+                           buffer);
     }
+    return prepare_token(token_type.at(buffer), token_value.at(buffer), buffer);
   case ':':
   case '>':
     if (try_consume('=')) {
-      goto prepare_token;
-    } else {
-      goto prepare_token;
+      return prepare_token(token_type.at(buffer), token_value.at(buffer),
+                           buffer);
     }
+    return prepare_token(token_type.at(buffer), token_value.at(buffer), buffer);
   case '=':
   case '^':
   case ')':
@@ -60,22 +63,22 @@ Token Scanner::next_token() { // NOLINT(misc-no-recursion)
   case ']':
   case ',':
   case ';':
-    goto prepare_token;
+    return prepare_token(token_type.at(buffer), token_value.at(buffer), buffer);
   case '(':
     if (try_consume('*')) {
       this->skip_block_comment_1();
       return this->next_token();
     }
-    goto prepare_token;
+    return prepare_token(token_type.at(buffer), token_value.at(buffer), buffer);
   case '{':
     this->skip_block_comment();
     return this->next_token();
   case '.':
     if (try_consume('.')) {
-      goto prepare_token;
-    } else {
-      goto prepare_token;
+      return prepare_token(token_type.at(buffer), token_value.at(buffer),
+                           buffer);
     }
+    return prepare_token(token_type.at(buffer), token_value.at(buffer), buffer);
   case '\'':
     return this->scan_string_literal();
   case '$':
@@ -99,15 +102,8 @@ Token Scanner::next_token() { // NOLINT(misc-no-recursion)
     }
     break;
   }
-  if (token_type.find(buffer) == token_type.end() ||
-      token_value.find(buffer) == token_value.end()) {
-    return {this->last_line, this->last_column, TokenType::Invalid, buffer,
-            buffer};
-  }
 
-prepare_token:
-  return {this->last_line, this->last_column, token_type.at(buffer),
-          token_value.at(buffer), buffer};
+  return prepare_token(TokenType::Invalid, buffer, buffer);
 }
 
 bool Scanner::is_space(char c) { return c == '\t' || c == ' ' || c == '\n'; }
@@ -201,8 +197,7 @@ Token Scanner::scan_string_literal() {
                              "String exceeds line");
     }
   } while (this->buffer_peek() != '\'');
-  return {this->last_line, this->last_column, TokenType::String, buffer,
-          buffer};
+  return prepare_token(TokenType::String, buffer, buffer);
 }
 
 bool Scanner::is_digit(char c, int numeral_system) {
@@ -311,11 +306,11 @@ Token Scanner::scan_number_literal(int numeral_system) {
     }
   }
   if (type == Integer) {
-    return {this->last_line, this->last_column, type,
-            lexer::Scanner::get_integer_value(buffer, numeral_system), buffer};
+    return prepare_token(
+        type, lexer::Scanner::get_integer_value(buffer, numeral_system),
+        buffer);
   }
-  return {this->last_line, this->last_column, type,
-          lexer::Scanner::get_real_value(buffer), buffer};
+  return prepare_token(type, lexer::Scanner::get_real_value(buffer), buffer);
 }
 
 /*
@@ -380,12 +375,13 @@ Token Scanner::scan_identifier_or_keyword() {
     type = TokenType::Keyword;
   }
 
-  return {this->last_line, this->last_column, type, buffer_in_lower, buffer};
+  return prepare_token(type, buffer_in_lower, buffer);
 }
 
 bool Scanner::eof() const { return this->is_eof; }
 
-std::string Scanner::get_integer_value(std::string raw, int numeral_system) const {
+std::string Scanner::get_integer_value(std::string raw,
+                                       int numeral_system) const {
   long long int result = 0;
 
   for (size_t i = (numeral_system != 10); i < raw.size(); ++i) {
@@ -402,6 +398,7 @@ std::string Scanner::get_integer_value(std::string raw, int numeral_system) cons
   }
   return std::to_string((int)result);
 }
+
 std::string Scanner::get_real_value(const std::string &raw) {
   std::stringstream ss;
   ss.setf(std::ios::scientific);
@@ -413,5 +410,10 @@ std::string Scanner::get_real_value(const std::string &raw) {
     ss << INFINITY;
     return ss.str();
   }
+}
+
+Token Scanner::prepare_token(TokenType type, const std::string &value,
+                             const std::string &raw_value) const {
+  return {this->last_line, this->last_column, type, value, raw_value};
 }
 } // namespace lexer

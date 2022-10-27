@@ -13,6 +13,7 @@ class Scanner {
   std::string buffer;
   bool is_eof;
 
+  Token prepare_token(TokenType type, const std::string &value, const std::string &raw_value) const;
   static bool is_space(char c);
   char consume();
   char unconsume();
