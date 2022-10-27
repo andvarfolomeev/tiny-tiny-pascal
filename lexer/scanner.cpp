@@ -10,36 +10,46 @@
 namespace lexer {
 
 Token Scanner::next_token() {
-  while (lexer::Scanner::is_space(peek())) {
-    consume();
-  }
-  last_column = current_column;
-  last_line = current_line;
+  char c;
 
+  do {
+    c = consume();
+
+    // save position before call skip_*_comment
+    // for correct position in exception
+    last_column = current_column - 1;
+    last_line = current_line;
+
+    if (c == '/' && try_consume('/')) {
+      skip_line_comment();
+    } else if (c == '{') {
+      skip_block_comment();
+    } else if (c == '(' && try_consume('*')) {
+      skip_block_comment_1();
+    } else if (!is_space(c)) {
+      break;
+    }
+  } while (true);
+
+  // take into account that the consume method was called
+  last_column = current_column - 1;
+  last_line = current_line;
   buffer.clear();
-  switch (consume()) {
+  buffer.push_back(c);
+
+  switch (c) {
   case EOF:
     is_eof = true;
     return prepare_token(TokenType::eof, "EOF", "EOF");
   case '+':
   case '-':
   case '*':
+  case '/':
     if (try_consume('=')) {
       return prepare_token(token_type.at(buffer), token_value.at(buffer),
                            buffer);
     }
     return prepare_token(token_type.at(buffer), token_value.at(buffer), buffer);
-  case '/':
-    if (try_consume('=')) {
-      return prepare_token(token_type.at(buffer), token_value.at(buffer),
-                           buffer);
-    } else if (try_consume('/')) {
-      skip_line_comment();
-      return next_token();
-    } else {
-      return prepare_token(token_type.at(buffer), token_value.at(buffer),
-                           buffer);
-    }
   case '<':
     if (try_consume('>')) {
       return prepare_token(token_type.at(buffer), token_value.at(buffer),
@@ -58,21 +68,13 @@ Token Scanner::next_token() {
     return prepare_token(token_type.at(buffer), token_value.at(buffer), buffer);
   case '=':
   case '^':
+  case '(':
   case ')':
   case '[':
   case ']':
   case ',':
   case ';':
     return prepare_token(token_type.at(buffer), token_value.at(buffer), buffer);
-  case '(':
-    if (try_consume('*')) {
-      skip_block_comment_1();
-      return next_token();
-    }
-    return prepare_token(token_type.at(buffer), token_value.at(buffer), buffer);
-  case '{':
-    skip_block_comment();
-    return next_token();
   case '.':
     if (try_consume('.')) {
       return prepare_token(token_type.at(buffer), token_value.at(buffer),
