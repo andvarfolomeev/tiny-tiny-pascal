@@ -82,15 +82,15 @@ Token Scanner::next_token() {
   case '\'':
     return this->scan_string_literal();
   case '$':
-    if (try_consume(is_digit, 16)) {
+    if (try_consume([](char c) { return is_digit(c, 16); })) {
       return this->scan_number_literal(16);
     }
   case '&':
-    if (try_consume(is_digit, 8)) {
+    if (try_consume([](char c) { return is_digit(c, 8); })) {
       return this->scan_number_literal(8);
     }
   case '%':
-    if (try_consume(is_digit, 2)) {
+    if (try_consume([](char c) { return is_digit(c, 2); })) {
       return this->scan_number_literal(2);
     }
   default:
@@ -137,6 +137,18 @@ char Scanner::try_consume(char c) {
 }
 
 /*
+ * move to the next character in the stream if that character is equal to the
+ * character in the argument
+ */
+char Scanner::try_consume(bool (*func)(char)) {
+  if (func((char)this->input_stream.peek())) {
+    this->consume();
+    return true;
+  }
+  return false;
+}
+
+/*
  * move to previous character in stream and delete last character from buffer
  */
 char Scanner::unconsume() {
@@ -154,26 +166,6 @@ char Scanner::unconsume() {
     assert(true);
   }
   return EOF;
-}
-
-/*
- * move to the next character in the stream if that character is equal to the
- * character in the argument
- */
-char Scanner::try_consume(bool (*func)(char)) {
-  if (func((char)this->input_stream.peek())) {
-    this->consume();
-    return true;
-  }
-  return false;
-}
-
-char Scanner::try_consume(bool (*func)(char, int), int arg) {
-  if (func((char)this->input_stream.peek(), arg)) {
-    this->consume();
-    return true;
-  }
-  return false;
 }
 
 /*
@@ -251,10 +243,13 @@ Token Scanner::scan_number_literal(int numeral_system) {
       c = this->consume();
       if (is_digit(c, 10)) {
         // consume
-      } else if (c == '.' && this->try_consume(is_digit, 10)) { // check next
+      } else if (c == '.' && try_consume([](char c) {
+                   return is_digit(c, 10);
+                 })) { // check next
         current_state = state::number_after_dot;
         type = TokenType::Real;
-      } else if (c == 'e' && this->try_consume(is_digit, 10)) {
+      } else if (c == 'e' &&
+                 try_consume([](char c) { return is_digit(c, 10); })) {
         current_state = state::number_after_e;
         type = TokenType::Real;
       } else {
@@ -263,11 +258,11 @@ Token Scanner::scan_number_literal(int numeral_system) {
       }
       break;
     case number_after_dot:
-      if (this->try_consume(is_digit, 10)) {
+      if (try_consume([](char c) { return is_digit(c, 10); })) {
         current_state = number_after_dot;
       } else {
         c = this->consume();
-        if (c == 'e' && this->try_consume(is_digit, 10)) {
+        if (c == 'e' && try_consume([](char c) { return is_digit(c, 10); })) {
           current_state = number_after_e;
         } else {
           this->unconsume();
@@ -276,28 +271,28 @@ Token Scanner::scan_number_literal(int numeral_system) {
       }
       break;
     case number_after_e:
-      if (this->try_consume(is_digit, 10)) {
+      if (try_consume([](char c) { return is_digit(c, 10); })) {
         current_state = number_after_e;
       } else {
         current_state = finish;
       }
       break;
     case hex_number:
-      if (this->try_consume(is_digit, 16)) {
+      if (try_consume([](char c) { return is_digit(c, 16); })) {
         current_state = hex_number;
       } else {
         current_state = finish;
       }
       break;
     case octa_number:
-      if (this->try_consume(is_digit, 8)) {
+      if (try_consume([](char c) { return is_digit(c, 8); })) {
         current_state = octa_number;
       } else {
         current_state = finish;
       }
       break;
     case bin_number:
-      if (this->try_consume(is_digit, 2)) {
+      if (try_consume([](char c) { return is_digit(c, 2); })) {
         current_state = bin_number;
       } else {
         current_state = finish;
