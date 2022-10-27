@@ -3,6 +3,7 @@
 
 #include <fstream>
 #include <sstream>
+#include <utility>
 
 #include "token.h"
 
@@ -38,7 +39,8 @@ class Scanner {
 public:
   explicit Scanner(std::ifstream &input_stream)
       : input_stream(input_stream), last_line(1), last_column(1),
-        current_line(1), current_column(1), is_eof(false) {}
+        current_line(1), current_column(1), column_after_new_line(1),
+        is_eof(false) {}
 
   Token next_token();
   [[nodiscard]] bool eof() const;
@@ -47,12 +49,12 @@ public:
 class ScannerException : public std::exception {
 public:
   [[nodiscard]] const char *what() const noexcept override {
-    return this->message.c_str();
+    return message.c_str();
   }
 
   [[maybe_unused]] explicit ScannerException(unsigned int current_line,
                                              unsigned int current_column,
-                                             std::string message) { // NOLINT
+                                             const std::string &message) {
     std::ostringstream string_stream;
     string_stream << "Line: " << current_line << "; Column: " << current_column
                   << "; " << message;
@@ -61,6 +63,32 @@ public:
 
 protected:
   std::string message;
+};
+
+class UnexpectedTokenException : ScannerException {
+public:
+  UnexpectedTokenException(unsigned int current_line, unsigned current_column)
+      : ScannerException(current_line, current_column, "Unexpected token") {}
+};
+
+class StringExceedsLineException : ScannerException {
+public:
+  StringExceedsLineException(unsigned int current_line, unsigned current_column)
+      : ScannerException(current_line, current_column, "String exceeds line") {}
+};
+
+class UnterminatedBlockCommentException : ScannerException {
+public:
+  UnterminatedBlockCommentException(unsigned int current_line,
+                                    unsigned current_column)
+      : ScannerException(current_line, current_column,
+                         "Unterminated block comment") {}
+};
+
+class IntegerOverflowException : ScannerException {
+public:
+  IntegerOverflowException(unsigned int current_line, unsigned current_column)
+      : ScannerException(current_line, current_column, "Integer overflow") {}
 };
 } // namespace lexer
 

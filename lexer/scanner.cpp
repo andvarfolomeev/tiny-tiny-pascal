@@ -106,7 +106,7 @@ Token Scanner::next_token() {
   }
 
   // means that the token type is invalid
-  throw ScannerException(last_line, last_column, "Unexpected token");
+  throw UnexpectedTokenException(last_line, last_column);
 }
 
 bool Scanner::is_space(char c) { return c == '\t' || c == ' ' || c == '\n'; }
@@ -188,7 +188,7 @@ Token Scanner::scan_string_literal() {
   do {
     consume();
     if (buffer_peek() == '\n' || buffer_peek() == EOF) {
-      throw ScannerException(last_line, last_column, "String exceeds line");
+      throw StringExceedsLineException(last_line, last_column);
     }
   } while (buffer_peek() != '\'');
   return prepare_token(TokenType::String, buffer, buffer);
@@ -318,8 +318,7 @@ void Scanner::skip_block_comment() {
     if (buffer_peek() == '}') {
       return;
     } else if (buffer_peek() == EOF) {
-      throw ScannerException(last_line, last_column,
-                             "Unterminated block comment");
+      throw UnterminatedBlockCommentException(last_line, last_column);
     }
   }
 }
@@ -333,8 +332,7 @@ void Scanner::skip_block_comment_1() {
     if (buffer_peek() == '*' && try_consume(')')) {
       return;
     } else if (buffer_peek() == EOF) {
-      throw ScannerException(last_line, last_column,
-                             "Unterminated block comment");
+      throw UnterminatedBlockCommentException(last_line, last_column);
     }
   }
 }
@@ -388,7 +386,7 @@ std::string Scanner::get_integer_value(std::string raw,
     if ('a' <= c && c <= 'z')
       result += c - 'a' + 10;
     if (INTEGER_MAX < result) {
-      throw ScannerException(last_line, last_column, "Integer overflow");
+      throw IntegerOverflowException(last_line, last_column);
     }
   }
   return std::to_string((int)result);
