@@ -55,5 +55,5 @@ int main(int argc, char *argv[]) {
             << "\t --tests - run tests\n"
             << "\t --file [file path]";
 
-  return 0;
+  return EXIT_SUCCESS;
 }
