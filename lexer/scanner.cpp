@@ -10,17 +10,17 @@
 namespace lexer {
 
 Token Scanner::next_token() {
-  while (lexer::Scanner::is_space(this->peek())) {
-    this->consume();
+  while (lexer::Scanner::is_space(peek())) {
+    consume();
   }
-  this->last_column = this->current_column;
-  this->last_line = this->current_line;
+  last_column = current_column;
+  last_line = current_line;
 
-  this->buffer.clear();
-  switch (this->consume()) {
+  buffer.clear();
+  switch (consume()) {
   case EOF:
-    this->is_eof = true;
-    return this->prepare_token(TokenType::eof, "EOF", "EOF");
+    is_eof = true;
+    return prepare_token(TokenType::eof, "EOF", "EOF");
   case '+':
   case '-':
   case '*':
@@ -34,8 +34,8 @@ Token Scanner::next_token() {
       return prepare_token(token_type.at(buffer), token_value.at(buffer),
                            buffer);
     } else if (try_consume('/')) {
-      this->skip_line_comment();
-      return this->next_token();
+      skip_line_comment();
+      return next_token();
     } else {
       return prepare_token(token_type.at(buffer), token_value.at(buffer),
                            buffer);
@@ -66,13 +66,13 @@ Token Scanner::next_token() {
     return prepare_token(token_type.at(buffer), token_value.at(buffer), buffer);
   case '(':
     if (try_consume('*')) {
-      this->skip_block_comment_1();
-      return this->next_token();
+      skip_block_comment_1();
+      return next_token();
     }
     return prepare_token(token_type.at(buffer), token_value.at(buffer), buffer);
   case '{':
-    this->skip_block_comment();
-    return this->next_token();
+    skip_block_comment();
+    return next_token();
   case '.':
     if (try_consume('.')) {
       return prepare_token(token_type.at(buffer), token_value.at(buffer),
@@ -80,25 +80,25 @@ Token Scanner::next_token() {
     }
     return prepare_token(token_type.at(buffer), token_value.at(buffer), buffer);
   case '\'':
-    return this->scan_string_literal();
+    return scan_string_literal();
   case '$':
     if (try_consume([](char c) { return is_digit(c, 16); })) {
-      return this->scan_number_literal(16);
+      return scan_number_literal(16);
     }
   case '&':
     if (try_consume([](char c) { return is_digit(c, 8); })) {
-      return this->scan_number_literal(8);
+      return scan_number_literal(8);
     }
   case '%':
     if (try_consume([](char c) { return is_digit(c, 2); })) {
-      return this->scan_number_literal(2);
+      return scan_number_literal(2);
     }
   default:
-    if (is_digit(this->buffer_peek())) {
-      return this->scan_number_literal(10);
+    if (is_digit(buffer_peek())) {
+      return scan_number_literal(10);
     }
-    if (is_start_of_identifier(this->buffer_peek())) {
-      return this->scan_identifier_or_keyword();
+    if (is_start_of_identifier(buffer_peek())) {
+      return scan_identifier_or_keyword();
     }
     break;
   }
@@ -112,14 +112,14 @@ bool Scanner::is_space(char c) { return c == '\t' || c == ' ' || c == '\n'; }
  * move to next character in stream and save character to buffer
  */
 char Scanner::consume() {
-  char c = (char)this->input_stream.get();
+  char c = (char)input_stream.get();
   buffer.push_back(c);
   if (c == '\n') {
-    this->column_after_new_line = this->current_line;
-    ++this->current_line;
-    this->current_column = 1;
+    column_after_new_line = current_line;
+    ++current_line;
+    current_column = 1;
   } else {
-    ++this->current_column;
+    ++current_column;
   }
   return c;
 }
@@ -129,8 +129,8 @@ char Scanner::consume() {
  * character in the argument
  */
 char Scanner::try_consume(char c) {
-  if (this->input_stream.peek() == c) {
-    this->consume();
+  if (input_stream.peek() == c) {
+    consume();
     return true;
   }
   return false;
@@ -141,8 +141,8 @@ char Scanner::try_consume(char c) {
  * character in the argument
  */
 char Scanner::try_consume(bool (*func)(char)) {
-  if (func((char)this->input_stream.peek())) {
-    this->consume();
+  if (func((char)input_stream.peek())) {
+    consume();
     return true;
   }
   return false;
@@ -152,16 +152,16 @@ char Scanner::try_consume(bool (*func)(char)) {
  * move to previous character in stream and delete last character from buffer
  */
 char Scanner::unconsume() {
-  this->input_stream.unget();
-  if (!this->buffer.empty()) {
-    if (this->buffer_peek() != '\n') {
-      --this->current_column;
+  input_stream.unget();
+  if (!buffer.empty()) {
+    if (buffer_peek() != '\n') {
+      --current_column;
     } else {
-      this->current_line--;
-      this->current_column = this->column_after_new_line;
+      current_line--;
+      current_column = column_after_new_line;
     }
-    this->buffer.pop_back();
-    return this->buffer.back();
+    buffer.pop_back();
+    return buffer.back();
   } else {
     assert(true);
   }
@@ -171,24 +171,23 @@ char Scanner::unconsume() {
 /*
  * get the next character from the stream without move to it
  */
-char Scanner::peek() { return (char)this->input_stream.peek(); }
+char Scanner::peek() { return (char)input_stream.peek(); }
 
 /*
  * get the last character from buffer
  */
 char Scanner::buffer_peek() {
-  assert(!this->buffer.empty());
-  return this->buffer[this->buffer.size() - 1];
+  assert(!buffer.empty());
+  return buffer[buffer.size() - 1];
 }
 
 Token Scanner::scan_string_literal() {
   do {
-    this->consume();
-    if (this->buffer_peek() == '\n' || this->buffer_peek() == EOF) {
-      throw ScannerException(this->last_line, this->last_column,
-                             "String exceeds line");
+    consume();
+    if (buffer_peek() == '\n' || buffer_peek() == EOF) {
+      throw ScannerException(last_line, last_column, "String exceeds line");
     }
-  } while (this->buffer_peek() != '\'');
+  } while (buffer_peek() != '\'');
   return prepare_token(TokenType::String, buffer, buffer);
 }
 
@@ -239,7 +238,7 @@ Token Scanner::scan_number_literal(int numeral_system) {
   while (current_state != finish) {
     switch (current_state) {
     case number:
-      c = this->consume();
+      c = consume();
       if (is_digit(c, 10)) {
         // consume
       } else if (c == '.' && try_consume([](char c) {
@@ -252,7 +251,7 @@ Token Scanner::scan_number_literal(int numeral_system) {
         current_state = state::number_after_e;
         type = TokenType::Real;
       } else {
-        this->unconsume(); // give back . or e
+        unconsume(); // give back . or e
         current_state = finish;
       }
       break;
@@ -260,11 +259,11 @@ Token Scanner::scan_number_literal(int numeral_system) {
       if (try_consume([](char c) { return is_digit(c, 10); })) {
         current_state = number_after_dot;
       } else {
-        c = this->consume();
+        c = consume();
         if (c == 'e' && try_consume([](char c) { return is_digit(c, 10); })) {
           current_state = number_after_e;
         } else {
-          this->unconsume();
+          unconsume();
           current_state = finish;
         }
       }
@@ -312,11 +311,11 @@ Token Scanner::scan_number_literal(int numeral_system) {
  */
 void Scanner::skip_block_comment() {
   for (;;) {
-    this->consume();
-    if (this->buffer_peek() == '}') {
+    consume();
+    if (buffer_peek() == '}') {
       return;
-    } else if (this->buffer_peek() == EOF) {
-      throw ScannerException(this->last_line, this->last_column,
+    } else if (buffer_peek() == EOF) {
+      throw ScannerException(last_line, last_column,
                              "Unterminated block comment");
     }
   }
@@ -327,11 +326,11 @@ void Scanner::skip_block_comment() {
  */
 void Scanner::skip_block_comment_1() {
   for (;;) {
-    this->consume();
-    if (this->buffer_peek() == '*' && this->try_consume(')')) {
+    consume();
+    if (buffer_peek() == '*' && try_consume(')')) {
       return;
-    } else if (this->buffer_peek() == EOF) {
-      throw ScannerException(this->last_line, this->last_column,
+    } else if (buffer_peek() == EOF) {
+      throw ScannerException(last_line, last_column,
                              "Unterminated block comment");
     }
   }
@@ -339,8 +338,8 @@ void Scanner::skip_block_comment_1() {
 
 void Scanner::skip_line_comment() {
   for (;;) {
-    this->consume();
-    if (this->buffer_peek() == '\n' || this->buffer_peek() == EOF) {
+    consume();
+    if (buffer_peek() == '\n' || buffer_peek() == EOF) {
       return;
     }
   }
@@ -355,12 +354,12 @@ bool Scanner::is_remainig_of_identifier(char c) {
 }
 
 Token Scanner::scan_identifier_or_keyword() {
-  while (is_remainig_of_identifier(this->peek())) {
-    this->consume();
+  while (is_remainig_of_identifier(peek())) {
+    consume();
   }
   auto type = TokenType::Id;
 
-  std::string buffer_in_lower = this->buffer;
+  std::string buffer_in_lower = buffer;
   std::transform(buffer_in_lower.begin(), buffer_in_lower.end(),
                  buffer_in_lower.begin(), ::tolower);
 
@@ -372,7 +371,7 @@ Token Scanner::scan_identifier_or_keyword() {
   return prepare_token(type, buffer_in_lower, buffer);
 }
 
-bool Scanner::eof() const { return this->is_eof; }
+bool Scanner::eof() const { return is_eof; }
 
 std::string Scanner::get_integer_value(std::string raw,
                                        int numeral_system) const {
@@ -386,8 +385,7 @@ std::string Scanner::get_integer_value(std::string raw,
     if ('a' <= c && c <= 'z')
       result += c - 'a' + 10;
     if (INTEGER_MAX < result) {
-      throw ScannerException(this->last_line, this->last_column,
-                             "Integer overflow");
+      throw ScannerException(last_line, last_column, "Integer overflow");
     }
   }
   return std::to_string((int)result);
@@ -408,6 +406,6 @@ std::string Scanner::get_real_value(const std::string &raw) {
 
 Token Scanner::prepare_token(TokenType type, const std::string &value,
                              const std::string &raw_value) const {
-  return {this->last_line, this->last_column, type, value, raw_value};
+  return {last_line, last_column, type, value, raw_value};
 }
 } // namespace lexer

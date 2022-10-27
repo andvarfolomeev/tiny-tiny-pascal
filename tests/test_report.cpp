@@ -2,17 +2,17 @@
 
 TestReport::TestReport() : success(0), failed(0) {}
 
-void TestReport::inc_success() { ++this->success; }
+void TestReport::inc_success() { ++success; }
 
-void TestReport::inc_failed() { ++this->failed; }
+void TestReport::inc_failed() { ++failed; }
 
-unsigned int TestReport::get_success() { return this->success; }
+unsigned int TestReport::get_success() { return success; }
 
-unsigned int TestReport::get_failed() { return this->failed; }
+unsigned int TestReport::get_failed() { return failed; }
 
 TestReport &TestReport::operator+=(const TestReport &report) {
-  this->success += report.success;
-  this->failed += report.failed;
+  success += report.success;
+  failed += report.failed;
   return *this;
 }
 

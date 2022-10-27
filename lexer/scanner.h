@@ -9,11 +9,13 @@
 namespace lexer {
 class Scanner {
   std::ifstream &input_stream;
-  unsigned int last_line, last_column, current_line, current_column, column_after_new_line;
+  unsigned int last_line, last_column, current_line, current_column,
+      column_after_new_line;
   std::string buffer;
   bool is_eof;
 
-  Token prepare_token(TokenType type, const std::string &value, const std::string &raw_value) const;
+  Token prepare_token(TokenType type, const std::string &value,
+                      const std::string &raw_value) const;
   static bool is_space(char c);
   char consume();
   char unconsume();
@@ -31,7 +33,7 @@ class Scanner {
   static bool is_remainig_of_identifier(char c);
   Token scan_identifier_or_keyword();
   std::string get_integer_value(std::string raw, int numeral_system) const;
-  static std::string get_real_value(const std::string& raw);
+  static std::string get_real_value(const std::string &raw);
 
 public:
   explicit Scanner(std::ifstream &input_stream)
