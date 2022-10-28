@@ -1,31 +1,41 @@
 #ifndef LEXER_SCANNER_H
 #define LEXER_SCANNER_H
 
+#include <any>
 #include <fstream>
 #include <sstream>
 #include <utility>
 
 #include "buffered_istream.h"
 #include "token.h"
+#include "token_value_types.h"
 
 namespace lexer {
 class Scanner : public BufferedIStream {
   unsigned int last_line, last_column;
 
-  Token prepare_token(TokenType type, const std::string &value,
-                      const std::string &raw_value) const;
-  static bool is_space(char c);
+  [[nodiscard]] Token prepare_token(TokenType type, const TokenValue &value,
+                                    const std::string &raw_value) const;
+  //  Token prepare_token(TokenType type, const TokenValue &value,
+  //                      const std::string &raw_value) const;
   Token scan_string_literal();
+  TokenType scan_number_literal(int numeral_system);
+  void scan_identifier();
+
+  static bool is_space(char c);
   static bool is_digit(char c, int numeral_system = 10);
-  Token scan_number_literal(int numeral_system);
+  static bool is_start_of_identifier(char c);
+  static bool is_remainig_of_identifier(char c);
+
+  int digits(int numeral_system);
+
   void skip_block_comment();
   void skip_block_comment_1();
   void skip_line_comment();
-  static bool is_start_of_identifier(char c);
-  static bool is_remainig_of_identifier(char c);
-  Token scan_identifier_or_keyword();
-  std::string get_integer_value(std::string raw, int numeral_system) const;
-  static std::string get_real_value(const std::string &raw);
+
+  [[nodiscard]] Integer get_integer_value(std::string raw,
+                                          int numeral_system) const;
+  static Double get_double_value(const std::string &raw);
 
 public:
   explicit Scanner(std::ifstream &input_stream)
@@ -77,6 +87,14 @@ class IntegerOverflowException : ScannerException {
 public:
   IntegerOverflowException(unsigned int current_line, unsigned current_column)
       : ScannerException(current_line, current_column, "Integer overflow") {}
+};
+
+class InvalidIntegerExpressionException : ScannerException {
+public:
+  InvalidIntegerExpressionException(unsigned int current_line,
+                                    unsigned current_column)
+      : ScannerException(current_line, current_column,
+                         "Invalid integer expression") {}
 };
 } // namespace lexer
 

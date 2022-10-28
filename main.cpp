@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "lexer/scanner.h"
+#include "lexer/token_type.h"
 #include "tests/lexer.h"
 #include "tests/test_report.h"
 

@@ -6,9 +6,9 @@ void TestReport::inc_success() { ++success; }
 
 void TestReport::inc_failed() { ++failed; }
 
-unsigned int TestReport::get_success() { return success; }
+unsigned int TestReport::get_success() const { return success; }
 
-unsigned int TestReport::get_failed() { return failed; }
+unsigned int TestReport::get_failed() const { return failed; }
 
 TestReport &TestReport::operator+=(const TestReport &report) {
   success += report.success;
@@ -17,6 +17,7 @@ TestReport &TestReport::operator+=(const TestReport &report) {
 }
 
 std::ostream &operator<<(std::ostream &os, const TestReport &report) {
-  os << "Success: " << report.success << "; Failed: " << report.failed;
+  os << "Success: " << report.get_success()
+     << "; Failed: " << report.get_failed();
   return os;
 }

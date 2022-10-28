@@ -6,17 +6,18 @@
 #include <utility>
 
 #include "token_type.h"
+#include "token_value_types.h"
 
 namespace lexer {
 class Token {
   unsigned int line, column;
   TokenType type;
-  std::string value;
+  TokenValue value;
   std::string raw_value; // the string being scanned
 
 public:
   Token(unsigned int line, unsigned int column, TokenType type,
-        std::string value, std::string raw_value)
+        TokenValue value, std::string raw_value)
       : line(line), column(column), type(type), value(std::move(value)),
         raw_value(std::move(raw_value)){};
 

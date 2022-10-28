@@ -1,28 +1,10 @@
+#include <magic_enum.hpp>
+
 #include "token_type.h"
 
 namespace lexer {
-std::string to_string(TokenType type) {
-  switch (type) {
-  case eof:
-    return "EOF";
-  case Integer:
-    return "Integer";
-  case Real:
-    return "Real";
-  case String:
-    return "String";
-  case Id:
-    return "Id";
-  case Keyword:
-    return "Keyword";
-  case Comment:
-    return "Comment";
-  case Operation:
-    return "Operation";
-  case Seperator:
-    return "Separator";
-  case Invalid:
-    return "Invalid";
-  }
+std::ostream &operator<<(std::ostream &os, const TokenType &type) {
+  os << magic_enum::enum_name(type);
+  return os;
 }
 } // namespace lexer
