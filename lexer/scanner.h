@@ -5,25 +5,16 @@
 #include <sstream>
 #include <utility>
 
+#include "buffered_istream.h"
 #include "token.h"
 
 namespace lexer {
-class Scanner {
-  std::ifstream &input_stream;
-  unsigned int last_line, last_column, current_line, current_column,
-      column_after_new_line;
-  std::string buffer;
-  bool is_eof;
+class Scanner : public BufferedIStream {
+  unsigned int last_line, last_column;
 
   Token prepare_token(TokenType type, const std::string &value,
                       const std::string &raw_value) const;
   static bool is_space(char c);
-  char consume();
-  char unconsume();
-  char try_consume(char c);
-  char try_consume(bool (*func)(char));
-  char peek();
-  char buffer_peek();
   Token scan_string_literal();
   static bool is_digit(char c, int numeral_system = 10);
   Token scan_number_literal(int numeral_system);
@@ -38,12 +29,9 @@ class Scanner {
 
 public:
   explicit Scanner(std::ifstream &input_stream)
-      : input_stream(input_stream), last_line(1), last_column(1),
-        current_line(1), current_column(1), column_after_new_line(1),
-        is_eof(false) {}
+      : BufferedIStream(input_stream), last_line(1), last_column(1) {}
 
   Token next_token();
-  [[nodiscard]] bool eof() const;
 };
 
 class ScannerException : public std::exception {

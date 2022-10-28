@@ -17,8 +17,8 @@ Token Scanner::next_token() {
 
     // save position before call skip_*_comment
     // for correct position in exception
-    last_column = current_column - 1;
-    last_line = current_line;
+    last_column = get_current_column() - 1;
+    last_line = get_current_line();
 
     if (c == '/' && try_consume('/')) {
       skip_line_comment();
@@ -32,40 +32,43 @@ Token Scanner::next_token() {
   } while (true);
 
   // take into account that the consume method was called
-  last_column = current_column - 1;
-  last_line = current_line;
-  buffer.clear();
-  buffer.push_back(c);
+  last_column = get_current_column() - 1;
+  last_line = get_current_line();
+
+  clear_buffer();
+  add_to_buffer(c);
 
   switch (c) {
   case EOF:
-    is_eof = true;
     return prepare_token(TokenType::eof, "EOF", "EOF");
   case '+':
   case '-':
   case '*':
   case '/':
     if (try_consume('=')) {
-      return prepare_token(token_type.at(buffer), token_value.at(buffer),
-                           buffer);
+      return prepare_token(token_type.at(get_buffer()),
+                           token_value.at(get_buffer()), get_buffer());
     }
-    return prepare_token(token_type.at(buffer), token_value.at(buffer), buffer);
+    return prepare_token(token_type.at(get_buffer()),
+                         token_value.at(get_buffer()), get_buffer());
   case '<':
     if (try_consume('>')) {
-      return prepare_token(token_type.at(buffer), token_value.at(buffer),
-                           buffer);
+      return prepare_token(token_type.at(get_buffer()),
+                           token_value.at(get_buffer()), get_buffer());
     } else if (try_consume('=')) {
-      return prepare_token(token_type.at(buffer), token_value.at(buffer),
-                           buffer);
+      return prepare_token(token_type.at(get_buffer()),
+                           token_value.at(get_buffer()), get_buffer());
     }
-    return prepare_token(token_type.at(buffer), token_value.at(buffer), buffer);
+    return prepare_token(token_type.at(get_buffer()),
+                         token_value.at(get_buffer()), get_buffer());
   case ':':
   case '>':
     if (try_consume('=')) {
-      return prepare_token(token_type.at(buffer), token_value.at(buffer),
-                           buffer);
+      return prepare_token(token_type.at(get_buffer()),
+                           token_value.at(get_buffer()), get_buffer());
     }
-    return prepare_token(token_type.at(buffer), token_value.at(buffer), buffer);
+    return prepare_token(token_type.at(get_buffer()),
+                         token_value.at(get_buffer()), get_buffer());
   case '=':
   case '^':
   case '(':
@@ -74,13 +77,15 @@ Token Scanner::next_token() {
   case ']':
   case ',':
   case ';':
-    return prepare_token(token_type.at(buffer), token_value.at(buffer), buffer);
+    return prepare_token(token_type.at(get_buffer()),
+                         token_value.at(get_buffer()), get_buffer());
   case '.':
     if (try_consume('.')) {
-      return prepare_token(token_type.at(buffer), token_value.at(buffer),
-                           buffer);
+      return prepare_token(token_type.at(get_buffer()),
+                           token_value.at(get_buffer()), get_buffer());
     }
-    return prepare_token(token_type.at(buffer), token_value.at(buffer), buffer);
+    return prepare_token(token_type.at(get_buffer()),
+                         token_value.at(get_buffer()), get_buffer());
   case '\'':
     return scan_string_literal();
   case '$':
@@ -114,79 +119,6 @@ Token Scanner::next_token() {
 
 bool Scanner::is_space(char c) { return c == '\t' || c == ' ' || c == '\n'; }
 
-/*
- * move to next character in stream and save character to buffer
- */
-char Scanner::consume() {
-  char c = (char)input_stream.get();
-  buffer.push_back(c);
-  if (c == '\n') {
-    column_after_new_line = current_line;
-    ++current_line;
-    current_column = 1;
-  } else {
-    ++current_column;
-  }
-  return c;
-}
-
-/*
- * move to the next character in the stream if that character is equal to the
- * character in the argument
- */
-char Scanner::try_consume(char c) {
-  if (input_stream.peek() == c) {
-    consume();
-    return true;
-  }
-  return false;
-}
-
-/*
- * move to the next character in the stream if that character is equal to the
- * character in the argument
- */
-char Scanner::try_consume(bool (*func)(char)) {
-  if (func((char)input_stream.peek())) {
-    consume();
-    return true;
-  }
-  return false;
-}
-
-/*
- * move to previous character in stream and delete last character from buffer
- */
-char Scanner::unconsume() {
-  input_stream.unget();
-  if (!buffer.empty()) {
-    if (buffer_peek() != '\n') {
-      --current_column;
-    } else {
-      current_line--;
-      current_column = column_after_new_line;
-    }
-    buffer.pop_back();
-    return buffer.back();
-  } else {
-    assert(true);
-  }
-  return EOF;
-}
-
-/*
- * get the next character from the stream without move to it
- */
-char Scanner::peek() { return (char)input_stream.peek(); }
-
-/*
- * get the last character from buffer
- */
-char Scanner::buffer_peek() {
-  assert(!buffer.empty());
-  return buffer[buffer.size() - 1];
-}
-
 Token Scanner::scan_string_literal() {
   do {
     consume();
@@ -194,7 +126,7 @@ Token Scanner::scan_string_literal() {
       throw StringExceedsLineException(last_line, last_column);
     }
   } while (buffer_peek() != '\'');
-  return prepare_token(TokenType::String, buffer, buffer);
+  return prepare_token(TokenType::String, get_buffer(), get_buffer());
 }
 
 bool Scanner::is_digit(char c, int numeral_system) {
@@ -308,10 +240,11 @@ Token Scanner::scan_number_literal(int numeral_system) {
   }
   if (type == Integer) {
     return prepare_token(
-        type, lexer::Scanner::get_integer_value(buffer, numeral_system),
-        buffer);
+        type, lexer::Scanner::get_integer_value(get_buffer(), numeral_system),
+        get_buffer());
   }
-  return prepare_token(type, lexer::Scanner::get_real_value(buffer), buffer);
+  return prepare_token(type, lexer::Scanner::get_real_value(get_buffer()),
+                       get_buffer());
 }
 
 /*
@@ -365,7 +298,7 @@ Token Scanner::scan_identifier_or_keyword() {
   }
   auto type = TokenType::Id;
 
-  std::string buffer_in_lower = buffer;
+  std::string buffer_in_lower = get_buffer();
   std::transform(buffer_in_lower.begin(), buffer_in_lower.end(),
                  buffer_in_lower.begin(), ::tolower);
 
@@ -374,10 +307,8 @@ Token Scanner::scan_identifier_or_keyword() {
     type = TokenType::Keyword;
   }
 
-  return prepare_token(type, buffer_in_lower, buffer);
+  return prepare_token(type, buffer_in_lower, get_buffer());
 }
-
-bool Scanner::eof() const { return is_eof; }
 
 std::string Scanner::get_integer_value(std::string raw,
                                        int numeral_system) const {
