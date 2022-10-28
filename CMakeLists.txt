@@ -1,32 +1,49 @@
 cmake_minimum_required(VERSION 2.8)
-
-project(tiny-tiny-pascal)
+project(tiny_tiny_pascal)
 
 include(CheckCXXCompilerFlag)
 
-function(enable_cxx_compiler_flag_if_supported flag)
-    string(FIND "${CMAKE_CXX_FLAGS}" "${flag}" flag_already_set)
-    if (flag_already_set EQUAL -1)
-        check_cxx_compiler_flag("${flag}" flag_supported)
-        if (flag_supported)
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${flag}" PARENT_SCOPE)
-        endif ()
-        unset(flag_supported CACHE)
-    endif ()
-endfunction()
+#function(enable_cxx_compiler_flag_if_supported flag)
+#    string(FIND "${CMAKE_CXX_FLAGS}" "${flag}" flag_already_set)
+#    if (flag_already_set EQUAL -1)
+#        check_cxx_compiler_flag("${flag}" flag_supported)
+#        if (flag_supported)
+#            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${flag}" PARENT_SCOPE)
+#        endif ()
+#        unset(flag_supported CACHE)
+#    endif ()
+#endfunction()
+#
+#enable_cxx_compiler_flag_if_supported("-Wall")
+#enable_cxx_compiler_flag_if_supported("-Wextra")
+#enable_cxx_compiler_flag_if_supported("-pedantic")
 
-enable_cxx_compiler_flag_if_supported("-Wall")
-enable_cxx_compiler_flag_if_supported("-Wextra")
-enable_cxx_compiler_flag_if_supported("-pedantic")
+set(CMAKE_CXX_STANDARD 20)
+
+# deps
+include(cmake/CPM.cmake)
+CPMAddPackage(
+        NAME magic_enum
+        GITHUB_REPOSITORY Neargye/magic_enum
+        GIT_TAG v0.8.1
+)
 
 set(SOURCE_EXE
         main.cpp
+
         lexer/scanner.cpp
         lexer/token.cpp
         lexer/token_type.cpp
+        lexer/buffered_istream.cpp
+        lexer/buffered_istream.h
+        lexer/token_value_types.cpp
+        lexer/token_value_types.h
+
+        types.h
 
         tests/lexer.cpp
-        tests/test_report.cpp tests/test_report.h types.h lexer/buffered_istream.cpp lexer/buffered_istream.h)
-set(CMAKE_CXX_STANDARD 17)
+        tests/test_report.cpp
+        tests/test_report.h)
 
-add_executable(main ${SOURCE_EXE})
+add_executable(tiny_tiny_pascal ${SOURCE_EXE})
+target_link_libraries(tiny_tiny_pascal PRIVATE magic_enum)
