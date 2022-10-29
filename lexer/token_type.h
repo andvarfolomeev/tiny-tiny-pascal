@@ -5,19 +5,21 @@
 #include <string>
 #include <vector>
 
-namespace lexer {
+namespace lexer
+{
 
-enum TokenType {
-  eof,
-  INVALID,
-  LITERAL_INTEGER,
-  LITEREAL_DOUBLE,
-  LITERAL_STRING,
-  ID,
-  KEYWORD,
-  COMMENT,
-  OPER,
-  SEPERATOR,
+enum TokenType
+{
+    eof,
+    INVALID,
+    LITERAL_INTEGER,
+    LITEREAL_DOUBLE,
+    LITERAL_STRING,
+    ID,
+    KEYWORD,
+    COMMENT,
+    OPER,
+    SEPERATOR,
 };
 std::ostream &operator<<(std::ostream &os, const TokenType &type);
 } // namespace lexer

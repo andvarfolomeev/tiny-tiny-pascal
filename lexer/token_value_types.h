@@ -4,156 +4,159 @@
 #include <string>
 #include <variant>
 
-namespace lexer {
+namespace lexer
+{
 using Integer = int;
 using Double = double;
 using String = std::string;
 
-enum Operators {
-  ADD,       // +
-  ADDASSIGN, // +=
-  SUB,       // -
-  SUBASSIGN, // -=
-  MUL,       // *
-  MULASSIGN, // *=
-  QUO,       // /
-  QUOASSIGN, // /=
-  EQL,       // =
-  LES,       // <
-  NEQ,       // <>
-  LEQ,       // <=
-  GTR,       // >
-  GEQ,       // >=
-  ASSIGN,    // :=
-  DEREF      // ^
+enum Operators
+{
+    ADD,       // +
+    ADDASSIGN, // +=
+    SUB,       // -
+    SUBASSIGN, // -=
+    MUL,       // *
+    MULASSIGN, // *=
+    QUO,       // /
+    QUOASSIGN, // /=
+    EQL,       // =
+    LES,       // <
+    NEQ,       // <>
+    LEQ,       // <=
+    GTR,       // >
+    GEQ,       // >=
+    ASSIGN,    // :=
+    DEREF      // ^
 };
 
-enum Separators {
-  LPAREN,    // (
-  RPAREN,    // )
-  LBRACK,    // [
-  RBRACK,    // ]
-  COMMA,     // ,
-  PERIOD,    // .
-  ELLIPSIS,  // ..
-  SEMICOLON, // ;
-  COLON      // :
+enum Separators
+{
+    LPAREN,    // (
+    RPAREN,    // )
+    LBRACK,    // [
+    RBRACK,    // ]
+    COMMA,     // ,
+    PERIOD,    // .
+    ELLIPSIS,  // ..
+    SEMICOLON, // ;
+    COLON      // :
 };
 
-enum Keywords {
-  ABSOLUTE,
-  ABSTRACT,
-  ALIAS,
-  AND,
-  ARRAY,
-  AS,
-  ASM,
-  ASSEMBLER,
-  BEGIN,
-  BREAK,
-  CASE,
-  CDECL,
-  CLASS,
-  CONST,
-  CONSTREF,
-  CONSTRUCTOR,
-  CONTINUE,
-  CPPDECL,
-  DEFAULT,
-  DESTRUCTOR,
-  DISPOSE,
-  DIV,
-  DO,
-  DOWNTO,
-  ELSE,
-  END,
-  EXCEPT,
-  EXIT,
-  EXPORT,
-  EXPORTS,
-  EXTERNAL,
-  FALSE,
-  FILE,
-  FINALIZATION,
-  FINALLY,
-  FOR,
-  FORWARD,
-  FUNCTION,
-  GENERIC,
-  GOTO,
-  IF,
-  IMPLEMENTATION,
-  IN,
-  INDEX,
-  INHERITED,
-  INITIALIZATION,
-  INLINE,
-  INTERFACE,
-  IS,
-  LABEL,
-  LIBRARY,
-  LOCAL,
-  MOD,
-  NAME,
-  NEW,
-  NIL,
-  NOSTACKFRAME,
-  NOT,
-  OBJECT,
-  OF,
-  OLDFPCCALL,
-  ON,
-  OPERATOR,
-  OR,
-  OUT,
-  OVERRIDE,
-  PACKED,
-  PASCAL,
-  PRIVATE,
-  PROCEDURE,
-  PROGRAM,
-  PROPERTY,
-  PROTECTED,
-  PUBLIC,
-  PUBLISHED,
-  RAISE,
-  READ,
-  RECORD,
-  REGISTER,
-  REINTRODUCE,
-  REPEAT,
-  SAFECALL,
-  SELF,
-  SET,
-  SHL,
-  SHR,
-  SOFTFLOAT,
-  SPECIALIZE,
-  STDCALL,
-  STRING,
-  THEN,
-  THREADVAR,
-  TO,
-  TRUE,
-  TRY,
-  TYPE,
-  UNIT,
-  UNTIL,
-  USES,
-  VAR,
-  VIRTUAL,
-  WHILE,
-  WITH,
-  WRITE,
-  XOR,
+enum Keywords
+{
+    ABSOLUTE,
+    ABSTRACT,
+    ALIAS,
+    AND,
+    ARRAY,
+    AS,
+    ASM,
+    ASSEMBLER,
+    BEGIN,
+    BREAK,
+    CASE,
+    CDECL,
+    CLASS,
+    CONST,
+    CONSTREF,
+    CONSTRUCTOR,
+    CONTINUE,
+    CPPDECL,
+    DEFAULT,
+    DESTRUCTOR,
+    DISPOSE,
+    DIV,
+    DO,
+    DOWNTO,
+    ELSE,
+    END,
+    EXCEPT,
+    EXIT,
+    EXPORT,
+    EXPORTS,
+    EXTERNAL,
+    FALSE,
+    FILE,
+    FINALIZATION,
+    FINALLY,
+    FOR,
+    FORWARD,
+    FUNCTION,
+    GENERIC,
+    GOTO,
+    IF,
+    IMPLEMENTATION,
+    IN,
+    INDEX,
+    INHERITED,
+    INITIALIZATION,
+    INLINE,
+    INTERFACE,
+    IS,
+    LABEL,
+    LIBRARY,
+    LOCAL,
+    MOD,
+    NAME,
+    NEW,
+    NIL,
+    NOSTACKFRAME,
+    NOT,
+    OBJECT,
+    OF,
+    OLDFPCCALL,
+    ON,
+    OPERATOR,
+    OR,
+    OUT,
+    OVERRIDE,
+    PACKED,
+    PASCAL,
+    PRIVATE,
+    PROCEDURE,
+    PROGRAM,
+    PROPERTY,
+    PROTECTED,
+    PUBLIC,
+    PUBLISHED,
+    RAISE,
+    READ,
+    RECORD,
+    REGISTER,
+    REINTRODUCE,
+    REPEAT,
+    SAFECALL,
+    SELF,
+    SET,
+    SHL,
+    SHR,
+    SOFTFLOAT,
+    SPECIALIZE,
+    STDCALL,
+    STRING,
+    THEN,
+    THREADVAR,
+    TO,
+    TRUE,
+    TRY,
+    TYPE,
+    UNIT,
+    UNTIL,
+    USES,
+    VAR,
+    VIRTUAL,
+    WHILE,
+    WITH,
+    WRITE,
+    XOR,
 };
 
 std::ostream &operator<<(std::ostream &os, const Operators &op);
 std::ostream &operator<<(std::ostream &os, const Separators &sep);
 std::ostream &operator<<(std::ostream &os, const Keywords &keyword);
 
-using TokenValue =
-    std::variant<Integer, Double, String, Operators, Separators, Keywords>;
+using TokenValue = std::variant<Integer, Double, String, Operators, Separators, Keywords>;
 } // namespace lexer
 
 #endif // TOKEN_VALUE_TYPES_H
