@@ -23,13 +23,6 @@ int main(int argc, char* argv[]) {
         .default_value(false)
         .implicit_value(true);
 
-    //    program.add_argument("-h", "--help")
-    //        .action([=](const std::string& s) { std::cout << help(); })
-    //        .default_value(false)
-    //        .help("shows help message")
-    //        .implicit_value(true)
-    //        .nargs(0);
-
     try {
         program.parse_args(argc, argv);
     } catch (const std::runtime_error& err) {
