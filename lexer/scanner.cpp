@@ -109,7 +109,7 @@ Token Scanner::next_token() {
     return prepare_token(TokenType::SEPERATOR, Separators::PERIOD,
                          get_buffer());
   case '\'':
-    return scan_string_literal();
+    return scan_string_literal(false);
   case '$':
     if (try_consume([](char c) { return is_digit(c, 16); })) {
       scan_number_literal(16);
@@ -131,6 +131,8 @@ Token Scanner::next_token() {
                            get_integer_value(get_buffer(), 2), get_buffer());
     }
     break;
+  case '#':
+    return scan_string_literal(true);
   default:
     if (is_digit(buffer_peek())) {
       auto type = scan_number_literal(10);
@@ -173,24 +175,97 @@ Token Scanner::next_token() {
 
 bool Scanner::is_space(char c) { return c == '\t' || c == ' ' || c == '\n'; }
 
-Token Scanner::scan_string_literal() {
-  do {
-    consume();
-    if (buffer_peek() == '\n' || buffer_peek() == EOF) {
-      throw StringExceedsLineException(last_line, last_column);
+Token Scanner::scan_string_literal(bool start_with_hash) {
+  enum state {
+    begin,
+    string,
+    pre_spec_char,
+    pre_read_number,
+    read_number,
+    post_read_number,
+    finish
+  };
+
+  state current_state = begin;
+  std::string value_buffer;
+
+  int number_of_special_symbol = 0;
+
+  while (current_state != finish) {
+    switch (current_state) {
+    case begin:
+      if (start_with_hash) {
+        current_state = pre_read_number;
+      } else {
+        current_state = string;
+      }
+      break;
+    case string:
+      if (try_consume('\'')) {
+        current_state = pre_spec_char;
+      } else if (buffer_peek() == '\n' || buffer_peek() == EOF) {
+        throw StringExceedsLineException(last_line, last_column);
+      } else {
+        value_buffer.push_back(peek());
+        consume();
+      }
+      break;
+    case pre_spec_char:
+      if (try_consume('#')) {
+        current_state = pre_read_number;
+      } else {
+        current_state = finish;
+      }
+      break;
+    case pre_read_number:
+      number_of_special_symbol = 0;
+      if (try_consume([](char c) { return is_digit(c, 10); })) {
+        number_of_special_symbol =
+            number_of_special_symbol * 10 + buffer_peek() - '0';
+        current_state = read_number;
+      } else {
+        throw IllegalCharacterException(get_current_line(),
+                                        get_current_column(), peek());
+      }
+      break;
+    case read_number:
+      if (try_consume([](char c) { return is_digit(c, 10); })) {
+        number_of_special_symbol =
+            number_of_special_symbol * 10 + buffer_peek() - '0';
+        current_state = read_number;
+      } else {
+        current_state = post_read_number;
+      }
+      break;
+    case post_read_number:
+      value_buffer.push_back((char)number_of_special_symbol);
+      if (try_consume('#')) {
+        current_state = pre_read_number;
+      } else if (try_consume('\'')) {
+        current_state = string;
+      } else {
+        current_state = finish;
+      }
+      break;
+    case finish:
+      break;
     }
-  } while (buffer_peek() != '\'');
-  return prepare_token(TokenType::LITERAL_STRING, get_buffer(), get_buffer());
+  }
+
+  return prepare_token(TokenType::LITERAL_STRING, value_buffer, get_buffer());
 }
 
 bool Scanner::is_digit(char c, int numeral_system) {
   c = (char)std::tolower(c);
-  if (numeral_system == 10)
+  if (numeral_system == 10) {
     return '0' <= c && c <= '9';
-  if (numeral_system == 16)
+  }
+  if (numeral_system == 16) {
     return ('0' <= c && c <= '9') || ('a' <= c && c <= 'f');
-  if (numeral_system == 8)
+  }
+  if (numeral_system == 8) {
     return '0' <= c && c <= '7';
+  }
 
   assert(numeral_system == 2);
   return '0' <= c && c <= '1';
@@ -361,10 +436,12 @@ Integer Scanner::get_integer_value(std::string raw, int numeral_system) const {
   for (size_t i = (numeral_system != 10); i < raw.size(); ++i) {
     result *= numeral_system;
     char c = (char)tolower(raw[i]);
-    if ('0' <= c && c <= '9')
+    if ('0' <= c && c <= '9') {
       result += c - '0';
-    if ('a' <= c && c <= 'z')
+    }
+    if ('a' <= c && c <= 'z') {
       result += c - 'a' + 10;
+    }
     if (INTEGER_MAX < result) {
       throw IntegerOverflowException(last_line, last_column);
     }

@@ -16,9 +16,7 @@ class Scanner : public BufferedIStream {
 
   [[nodiscard]] Token prepare_token(TokenType type, const TokenValue &value,
                                     const std::string &raw_value) const;
-  //  Token prepare_token(TokenType type, const TokenValue &value,
-  //                      const std::string &raw_value) const;
-  Token scan_string_literal();
+  Token scan_string_literal(bool start_with_hash);
   TokenType scan_number_literal(int numeral_system);
   void scan_identifier();
 
@@ -63,19 +61,28 @@ protected:
   std::string message;
 };
 
-class UnexpectedTokenException : ScannerException {
+class UnexpectedTokenException : public ScannerException {
 public:
   UnexpectedTokenException(unsigned int current_line, unsigned current_column)
       : ScannerException(current_line, current_column, "Unexpected token") {}
 };
 
-class StringExceedsLineException : ScannerException {
+class IllegalCharacterException : public ScannerException {
+public:
+  IllegalCharacterException(unsigned int current_line, unsigned current_column,
+                            char c)
+      : ScannerException(current_line, current_column, "Illegal character: ") {
+    message.push_back(c);
+  }
+};
+
+class StringExceedsLineException : public ScannerException {
 public:
   StringExceedsLineException(unsigned int current_line, unsigned current_column)
       : ScannerException(current_line, current_column, "String exceeds line") {}
 };
 
-class UnterminatedBlockCommentException : ScannerException {
+class UnterminatedBlockCommentException : public ScannerException {
 public:
   UnterminatedBlockCommentException(unsigned int current_line,
                                     unsigned current_column)
@@ -83,13 +90,13 @@ public:
                          "Unterminated block comment") {}
 };
 
-class IntegerOverflowException : ScannerException {
+class IntegerOverflowException : public ScannerException {
 public:
   IntegerOverflowException(unsigned int current_line, unsigned current_column)
       : ScannerException(current_line, current_column, "Integer overflow") {}
 };
 
-class InvalidIntegerExpressionException : ScannerException {
+class InvalidIntegerExpressionException : public ScannerException {
 public:
   InvalidIntegerExpressionException(unsigned int current_line,
                                     unsigned current_column)
