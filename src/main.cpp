@@ -1,80 +1,68 @@
-#include <algorithm>
+#include <argparse/argparse.hpp>
 #include <iostream>
 
-#include "../tests/lexer.h"
-#include "../tests/test_report.h"
 #include "lexer/scanner.h"
 #include "lexer/token_type.h"
 
 /**
- * Get value of parameter. Check exist of parameter before use get_param
- * @param begin begin of array
- * @param end enf of array
- * @return value of parameter
- */
-std::string get_param(char **begin, char **end, const std::string &option) {
-    char **itr = std::find(begin, end, option);
-    if (itr == end || ++itr == end) {
-        throw std::runtime_error("Parameter doesnt exist");
-    }
-    std::string result(*itr);
-    return result;
-}
-
-/**
- *
- * @param begin begin of array
- * @param end enf of array
- * @param option name of parameter
- * @return is parameter exist in array
- */
-bool check_param(char **begin, char **end, const std::string &option) {
-    return std::find(begin, end, option) != end;
-}
-
-/**
  * Print how use program
  */
-void print_usage() {
-    std::cout << "Usage: tiny_tiny_compiler.exe [options]\n"
-              << "Options:\n"
-              << "\t --tests - run tests\n"
-              << "\t --file [file path]";
+std::string help() {
+    return "Usage: tiny_tiny_compiler.exe [options]\n"
+           "Options:\n"
+           "\t --tests - run tests\n"
+           "\t --file [file path]";
 }
 
-int main(int argc, char *argv[]) {
-    // Only one parameter - path to execute file
-    if (argc == 1) {
-        print_usage();
+int main(int argc, char* argv[]) {
+    argparse::ArgumentParser program("tiny_tiny_pascal");
+
+    program.add_argument("file").help("path to source file");
+    program.add_argument("--lexer")
+        .help("run lexer")
+        .default_value(false)
+        .implicit_value(true);
+
+    //    program.add_argument("-h", "--help")
+    //        .action([=](const std::string& s) { std::cout << help(); })
+    //        .default_value(false)
+    //        .help("shows help message")
+    //        .implicit_value(true)
+    //        .nargs(0);
+
+    try {
+        program.parse_args(argc, argv);
+    } catch (const std::runtime_error& err) {
+        std::cerr << err.what() << std::endl;
+        std::cerr << program;
+        return EXIT_FAILURE;
     }
 
-    if (check_param(argv, argv + argc, "--tests")) {
-        TestReport test_report = run_lexer_tests();
-        std::cout << test_report;
-        return test_report.get_failed() != 0;
-    } else if (check_param(argv, argv + argc, "--file")) {
-        auto filename = get_param(argv, argv + argc, "--file");
-        std::ifstream file(filename);
+    auto path_to_source = program.get<std::string>("file");
+    std::ifstream file(path_to_source);
 
-        if (!file.good()) {
-            std::cout << "Error: file " << filename << " doesnt exist "
-                      << "\n";
-            return EXIT_FAILURE;
-        } else {
-            try {
-                lexer::Scanner scanner(file);
-                for (;;) {
-                    auto token = scanner.next_token();
-                    std::cout << token << "\n";
-                    if (token.get_type() == lexer::TokenType::eof) {
-                        break;
-                    }
+    if (!file.good()) {
+        std::cout << "file " << path_to_source << " doesnt exist "
+                  << "\n";
+    }
+
+    std::cout << path_to_source << std::endl;
+
+    auto run_lexer = program.get<bool>("--lexer");
+    if (run_lexer) {
+        try {
+            lexer::Scanner scanner(file);
+            for (;;) {
+                auto token = scanner.next_token();
+                std::cout << token << "\n";
+                if (token.get_type() == lexer::TokenType::eof) {
+                    break;
                 }
-                return EXIT_SUCCESS;
-            } catch (const lexer::ScannerException &ex) {
-                std::cout << ex.what();
-                return EXIT_FAILURE;
             }
+            return EXIT_SUCCESS;
+        } catch (const lexer::ScannerException& ex) {
+            std::cout << ex.what();
+            return EXIT_FAILURE;
         }
     }
 

@@ -27,6 +27,11 @@ CPMAddPackage(
         GITHUB_REPOSITORY Neargye/magic_enum
         GIT_TAG v0.8.1
 )
+CPMAddPackage(
+        NAME argparse
+        GITHUB_REPOSITORY p-ranav/argparse
+        GIT_TAG v2.9
+)
 
 set(SOURCE_EXE
         src/main.cpp
@@ -47,3 +52,4 @@ set(SOURCE_EXE
 
 add_executable(tiny_tiny_pascal ${SOURCE_EXE})
 target_link_libraries(tiny_tiny_pascal PRIVATE magic_enum)
+target_link_libraries(tiny_tiny_pascal PRIVATE argparse)
