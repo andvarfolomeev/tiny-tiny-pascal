@@ -1,6 +1,6 @@
 #include "token_type.h"
 
-#include <magic_enum.hpp>
+#include "magic_enum.hpp"
 
 namespace lexer {
 std::ostream &operator<<(std::ostream &os, const TokenType &type) {

@@ -3,9 +3,9 @@
 #include <algorithm>
 #include <cassert>
 #include <cmath>
-#include <magic_enum.hpp>
 
-#include "../types.h"
+#include "../pascal_types.h"
+#include "magic_enum.hpp"
 #include "token.h"
 #include "token_type.h"
 #include "token_value_types.h"

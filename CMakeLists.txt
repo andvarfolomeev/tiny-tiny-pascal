@@ -29,17 +29,17 @@ CPMAddPackage(
 )
 
 set(SOURCE_EXE
-        main.cpp
+        src/main.cpp
 
-        lexer/scanner.cpp
-        lexer/token.cpp
-        lexer/token_type.cpp
-        lexer/buffered_istream.cpp
-        lexer/buffered_istream.h
-        lexer/token_value_types.cpp
-        lexer/token_value_types.h
+        src/lexer/scanner.cpp
+        src/lexer/token.cpp
+        src/lexer/token_type.cpp
+        src/lexer/buffered_istream.cpp
+        src/lexer/buffered_istream.h
+        src/lexer/token_value_types.cpp
+        src/lexer/token_value_types.h
 
-        types.h
+        src/pascal_types.h
 
         tests/lexer.cpp
         tests/test_report.cpp

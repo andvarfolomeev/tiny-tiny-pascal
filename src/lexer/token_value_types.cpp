@@ -1,6 +1,6 @@
 #include "token_value_types.h"
 
-#include <magic_enum.hpp>
+#include "magic_enum.hpp"
 
 namespace lexer {
 std::ostream &operator<<(std::ostream &os, const Operators &op) {

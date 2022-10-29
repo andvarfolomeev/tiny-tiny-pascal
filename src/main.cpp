@@ -1,10 +1,10 @@
 #include <algorithm>
 #include <iostream>
 
+#include "../tests/lexer.h"
+#include "../tests/test_report.h"
 #include "lexer/scanner.h"
 #include "lexer/token_type.h"
-#include "tests/lexer.h"
-#include "tests/test_report.h"
 
 /**
  * Get value of parameter. Check exist of parameter before use get_param

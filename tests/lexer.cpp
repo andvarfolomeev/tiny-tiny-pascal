@@ -4,7 +4,7 @@
 #include <iostream>
 #include <set>
 
-#include "../lexer/scanner.h"
+#include "../src/lexer/scanner.h"
 #include "test_report.h"
 
 namespace fs = std::filesystem;
