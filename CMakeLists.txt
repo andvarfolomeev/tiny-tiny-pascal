@@ -34,8 +34,6 @@ CPMAddPackage(
 )
 
 set(SOURCE_EXE
-        src/main.cpp
-
         src/lexer/scanner.cpp
         src/lexer/token.cpp
         src/lexer/token_type.cpp
@@ -50,6 +48,10 @@ set(SOURCE_EXE
         tests/test_report.cpp
         tests/test_report.h)
 
-add_executable(tiny_tiny_pascal ${SOURCE_EXE})
+add_executable(tiny_tiny_pascal src/main.cpp ${SOURCE_EXE})
+add_executable(tiny_tiny_pascal_tests tests/lexer.cpp ${SOURCE_EXE} tests/tests.cpp tests/tests.cpp)
+
 target_link_libraries(tiny_tiny_pascal PRIVATE magic_enum)
 target_link_libraries(tiny_tiny_pascal PRIVATE argparse)
+target_link_libraries(tiny_tiny_pascal_tests PRIVATE magic_enum)
+target_link_libraries(tiny_tiny_pascal_tests PRIVATE argparse)
