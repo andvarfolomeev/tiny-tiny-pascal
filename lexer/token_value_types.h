@@ -5,9 +5,9 @@
 #include <variant>
 
 namespace lexer {
-typedef int Integer;
-typedef double Double;
-typedef std::string String;
+using Integer = int;
+using Double = double;
+using String = std::string;
 
 enum Operators {
   ADD,       // +
@@ -152,8 +152,8 @@ std::ostream &operator<<(std::ostream &os, const Operators &op);
 std::ostream &operator<<(std::ostream &os, const Separators &sep);
 std::ostream &operator<<(std::ostream &os, const Keywords &keyword);
 
-typedef std::variant<Integer, Double, String, Operators, Separators, Keywords>
-    TokenValue;
+using TokenValue =
+    std::variant<Integer, Double, String, Operators, Separators, Keywords>;
 } // namespace lexer
 
 #endif // TOKEN_VALUE_TYPES_H
