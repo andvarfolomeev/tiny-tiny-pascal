@@ -4,47 +4,43 @@
 #include <string>
 #include <variant>
 
-namespace lexer
-{
+namespace lexer {
 using Integer = int;
 using Double = double;
 using String = std::string;
 
-enum Operators
-{
-    ADD,       // +
-    ADDASSIGN, // +=
-    SUB,       // -
-    SUBASSIGN, // -=
-    MUL,       // *
-    MULASSIGN, // *=
-    QUO,       // /
-    QUOASSIGN, // /=
-    EQL,       // =
-    LES,       // <
-    NEQ,       // <>
-    LEQ,       // <=
-    GTR,       // >
-    GEQ,       // >=
-    ASSIGN,    // :=
-    DEREF      // ^
+enum Operators {
+    ADD,        // +
+    ADDASSIGN,  // +=
+    SUB,        // -
+    SUBASSIGN,  // -=
+    MUL,        // *
+    MULASSIGN,  // *=
+    QUO,        // /
+    QUOASSIGN,  // /=
+    EQL,        // =
+    LES,        // <
+    NEQ,        // <>
+    LEQ,        // <=
+    GTR,        // >
+    GEQ,        // >=
+    ASSIGN,     // :=
+    DEREF       // ^
 };
 
-enum Separators
-{
-    LPAREN,    // (
-    RPAREN,    // )
-    LBRACK,    // [
-    RBRACK,    // ]
-    COMMA,     // ,
-    PERIOD,    // .
-    ELLIPSIS,  // ..
-    SEMICOLON, // ;
-    COLON      // :
+enum Separators {
+    LPAREN,     // (
+    RPAREN,     // )
+    LBRACK,     // [
+    RBRACK,     // ]
+    COMMA,      // ,
+    PERIOD,     // .
+    ELLIPSIS,   // ..
+    SEMICOLON,  // ;
+    COLON       // :
 };
 
-enum Keywords
-{
+enum Keywords {
     ABSOLUTE,
     ABSTRACT,
     ALIAS,
@@ -156,7 +152,8 @@ std::ostream &operator<<(std::ostream &os, const Operators &op);
 std::ostream &operator<<(std::ostream &os, const Separators &sep);
 std::ostream &operator<<(std::ostream &os, const Keywords &keyword);
 
-using TokenValue = std::variant<Integer, Double, String, Operators, Separators, Keywords>;
-} // namespace lexer
+using TokenValue =
+    std::variant<Integer, Double, String, Operators, Separators, Keywords>;
+}  // namespace lexer
 
-#endif // TOKEN_VALUE_TYPES_H
+#endif  // TOKEN_VALUE_TYPES_H

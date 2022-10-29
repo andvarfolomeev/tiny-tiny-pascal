@@ -5,11 +5,9 @@
 #include <string>
 #include <vector>
 
-namespace lexer
-{
+namespace lexer {
 
-enum TokenType
-{
+enum TokenType {
     eof,
     INVALID,
     LITERAL_INTEGER,
@@ -22,6 +20,6 @@ enum TokenType
     SEPERATOR,
 };
 std::ostream &operator<<(std::ostream &os, const TokenType &type);
-} // namespace lexer
+}  // namespace lexer
 
-#endif // LEXER_TOKEN_TYPE_H
+#endif  // LEXER_TOKEN_TYPE_H

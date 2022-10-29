@@ -3,21 +3,20 @@
 
 #include <sstream>
 
-class TestReport
-{
+class TestReport {
     unsigned int success, failed;
 
-  public:
+   public:
     TestReport();
 
     void inc_success();
     void inc_failed();
 
-    unsigned int get_success() const;
-    unsigned int get_failed() const;
+    [[nodiscard]] unsigned int get_success() const;
+    [[nodiscard]] unsigned int get_failed() const;
 
     TestReport &operator+=(const TestReport &report);
     friend std::ostream &operator<<(std::ostream &os, const TestReport &report);
 };
 
-#endif // TESTS_TEST_REPORT_H_
+#endif  // TESTS_TEST_REPORT_H_

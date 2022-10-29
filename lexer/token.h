@@ -8,18 +8,21 @@
 #include "token_type.h"
 #include "token_value_types.h"
 
-namespace lexer
-{
-class Token
-{
+namespace lexer {
+class Token {
     unsigned int line, column;
     TokenType type;
     TokenValue value;
-    std::string raw_value; // the string being scanned
+    std::string raw_value;  // the string being scanned
 
-  public:
-    Token(unsigned int line, unsigned int column, TokenType type, TokenValue value, std::string raw_value)
-        : line(line), column(column), type(type), value(std::move(value)), raw_value(std::move(raw_value)){};
+   public:
+    Token(unsigned int line, unsigned int column, TokenType type,
+          TokenValue value, std::string raw_value)
+        : line(line),
+          column(column),
+          type(type),
+          value(std::move(value)),
+          raw_value(std::move(raw_value)){};
 
     friend std::ostream &operator<<(std::ostream &os, const Token &token);
 
@@ -27,6 +30,6 @@ class Token
 
     TokenType get_type();
 };
-} // namespace lexer
+}  // namespace lexer
 
-#endif // LEXER_TOKEN_H
+#endif  // LEXER_TOKEN_H
