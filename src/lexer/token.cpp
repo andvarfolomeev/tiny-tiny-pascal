@@ -13,10 +13,8 @@ std::ostream &operator<<(std::ostream &os, const lexer::Token &token) {
         case LITEREAL_DOUBLE:
             os << std::get<Double>(token.value);
             break;
-        case LITERAL_STRING:
-            os << std::get<String>(token.value);
-            break;
         case ID:
+        case LITERAL_STRING:
             os << std::get<String>(token.value);
             break;
         case KEYWORD:
