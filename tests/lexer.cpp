@@ -32,6 +32,7 @@ TestReport run_lexer_tests() {
         auto output_file_path = test_file_path + ".out";
 
         if (run_test(input_file_path, output_file_path)) {
+            std::cout << "OK\n";
             report.inc_success();
         } else {
             report.inc_failed();
@@ -48,18 +49,37 @@ bool run_test(const std::string &input_file_path,
 
     std::ifstream in_file;
     in_file.open(input_file_path);
-    std::cout << input_file_path << "\t" << output_file_path << "\n";
+    std::cout << input_file_path << std::endl;
     lexer::Scanner scanner(in_file);
+
+    if (!out_file) {
+        std::ofstream out_file_new;
+        out_file_new.open(output_file_path);
+        std::cout << "Out file doesnt exist" << std::endl;
+        while (!scanner.eof()) {
+            try {
+                auto token = scanner.next_token();
+                std::cout << token << std::endl;
+                out_file_new << token;
+                if (token.get_type() != lexer::TokenType::eof) {
+                    out_file_new << std::endl;
+                }
+            } catch (const lexer::ScannerException &ex) {
+                std::string lexer_message = "Exception: ";
+                lexer_message += ex.what();
+                out_file_new << lexer_message;
+                return EXIT_SUCCESS;
+            }
+        }
+        return EXIT_SUCCESS;
+    }
 
     std::string line;
     while (!scanner.eof() && !out_file.eof()) {
         getline(out_file, line);
         try {
             auto token = scanner.next_token();
-            if (token.to_string() == line) {
-                std::cout << "OK"
-                          << "\t" << line << std::endl;
-            } else {
+            if (token.to_string() != line) {
                 std::cout << "FAILED"
                           << "\n\tExpected: \t" << line << ";" << std::endl
                           << "\tTaken:\t\t" << token.to_string() << ";"
@@ -69,10 +89,7 @@ bool run_test(const std::string &input_file_path,
         } catch (const lexer::ScannerException &ex) {
             std::string lexer_message = "Exception: ";
             lexer_message += ex.what();
-            if (line == lexer_message) {
-                std::cout << "OK"
-                          << "\t" << line << "\n";
-            } else {
+            if (line != lexer_message) {
                 std::cout << "FAILED"
                           << "\n\tExpected: \t" << line << ";" << std::endl
                           << "\tTaken:\t\t" << lexer_message << ";"

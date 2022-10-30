@@ -123,29 +123,11 @@ Token Scanner::next_token() {
         case '\'':
             return scan_string_literal(false);
         case '$':
-            if (try_consume([](char c) { return is_digit(c, 16); })) {
-                return scan_number_literal(16);
-                return prepare_token(TokenType::LITERAL_INTEGER,
-                                     get_integer_value(get_buffer(), 16),
-                                     get_buffer());
-            }
-            break;
+            return scan_number_literal(16);
         case '&':
-            if (try_consume([](char c) { return is_digit(c, 8); })) {
-                return scan_number_literal(8);
-                return prepare_token(TokenType::LITERAL_INTEGER,
-                                     get_integer_value(get_buffer(), 8),
-                                     get_buffer());
-            }
-            break;
+            return scan_number_literal(8);
         case '%':
-            if (try_consume([](char c) { return is_digit(c, 2); })) {
-                return scan_number_literal(2);
-                return prepare_token(TokenType::LITERAL_INTEGER,
-                                     get_integer_value(get_buffer(), 2),
-                                     get_buffer());
-            }
-            break;
+            return scan_number_literal(2);
         case '#':
             return scan_string_literal(true);
         default:
@@ -257,7 +239,7 @@ Token Scanner::scan_string_literal(bool start_with_hash) {
         }
     }
 
-    return prepare_token(TokenType::LITERAL_STRING, get_buffer(), get_buffer());
+    return prepare_token(TokenType::LITERAL_STRING, value_buffer, get_buffer());
 }
 
 bool Scanner::is_digit(char c, int numeral_system) {
@@ -407,7 +389,7 @@ Token Scanner::scan_number_literal(int numeral_system) {
         return prepare_token(type,
                              get_integer_value(get_buffer(), numeral_system),
                              get_buffer());
-    } else if (numeral_system == 10 && type == LITEREAL_DOUBLE) {
+    } else if (numeral_system == 10) {
         std::string value_buffer;
         value_buffer += integer_part;
         if (fraction_part.size() > 1) {
