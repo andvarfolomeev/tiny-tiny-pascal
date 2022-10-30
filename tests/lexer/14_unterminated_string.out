@@ -1,2 +1,2 @@
-1	1	String	'123'	'123'
+1	1	LITERAL_STRING	123	'123'
 Exception: Line: 2; Column: 1; String exceeds line

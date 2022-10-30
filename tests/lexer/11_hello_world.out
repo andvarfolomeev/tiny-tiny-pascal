@@ -1,12 +1,12 @@
-1	1	Keyword	program	Program
-1	9	Id	hello_world	hello_world
-1	20	Separator	SEMICOLON	;
-3	1	Keyword	begin	Begin
-4	2	Keyword	writeln	WriteLn
-4	9	Separator	LPAREN	(
-4	10	String	'Hello, world'	'Hello, world'
-4	24	Separator	RPAREN	)
-4	25	Separator	SEMICOLON	;
-5	1	Keyword	end	End
-5	4	Separator	SEMICOLON	;
-5	5	EOF	EOF	EOF
+1	1	KEYWORD	PROGRAM	Program
+1	9	ID	hello_world	hello_world
+1	20	SEPERATOR	SEMICOLON	;
+3	1	KEYWORD	BEGIN	Begin
+4	2	ID	WriteLn	WriteLn
+4	9	SEPERATOR	LPAREN	(
+4	10	LITERAL_STRING	Hello, world	'Hello, world'
+4	24	SEPERATOR	RPAREN	)
+4	25	SEPERATOR	SEMICOLON	;
+5	1	KEYWORD	END	End
+5	4	SEPERATOR	SEMICOLON	;
+5	5	eof	EOF	EOF
