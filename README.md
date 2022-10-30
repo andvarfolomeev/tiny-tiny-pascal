@@ -12,3 +12,12 @@ Options:
          --tests - run tests
          --file [file path]
 ```
+
+# Запуск
+
+```bash
+mkdir build
+cd build
+cmake ..
+cmake --build .
+```
