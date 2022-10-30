@@ -124,7 +124,7 @@ Token Scanner::next_token() {
             return scan_string_literal(false);
         case '$':
             if (try_consume([](char c) { return is_digit(c, 16); })) {
-                scan_number_literal(16);
+                return scan_number_literal(16);
                 return prepare_token(TokenType::LITERAL_INTEGER,
                                      get_integer_value(get_buffer(), 16),
                                      get_buffer());
@@ -132,7 +132,7 @@ Token Scanner::next_token() {
             break;
         case '&':
             if (try_consume([](char c) { return is_digit(c, 8); })) {
-                scan_number_literal(8);
+                return scan_number_literal(8);
                 return prepare_token(TokenType::LITERAL_INTEGER,
                                      get_integer_value(get_buffer(), 8),
                                      get_buffer());
@@ -140,7 +140,7 @@ Token Scanner::next_token() {
             break;
         case '%':
             if (try_consume([](char c) { return is_digit(c, 2); })) {
-                scan_number_literal(2);
+                return scan_number_literal(2);
                 return prepare_token(TokenType::LITERAL_INTEGER,
                                      get_integer_value(get_buffer(), 2),
                                      get_buffer());
@@ -150,19 +150,7 @@ Token Scanner::next_token() {
             return scan_string_literal(true);
         default:
             if (is_digit(buffer_peek())) {
-                auto type = scan_number_literal(10);
-
-                assert(type == TokenType::LITERAL_INTEGER ||
-                       type == TokenType::LITEREAL_DOUBLE);
-
-                if (type == TokenType::LITERAL_INTEGER) {
-                    return prepare_token(type,
-                                         get_integer_value(get_buffer(), 10),
-                                         get_buffer());
-                } else {
-                    return prepare_token(type, get_double_value(get_buffer()),
-                                         get_buffer());
-                }
+                return scan_number_literal(10);
             }
             if (is_start_of_identifier(buffer_peek())) {
                 scan_identifier();
@@ -269,7 +257,7 @@ Token Scanner::scan_string_literal(bool start_with_hash) {
         }
     }
 
-    return prepare_token(TokenType::LITERAL_STRING, value_buffer, get_buffer());
+    return prepare_token(TokenType::LITERAL_STRING, get_buffer(), get_buffer());
 }
 
 bool Scanner::is_digit(char c, int numeral_system) {
@@ -296,96 +284,116 @@ int Scanner::digits(int numeral_system) {
     return count_of_digits;
 }
 
-TokenType Scanner::scan_number_literal(int numeral_system) {
+Token Scanner::scan_number_literal(int numeral_system) {
+    assert(numeral_system == 10 || numeral_system == 16 ||
+           numeral_system == 8 || numeral_system == 2);
     enum state {
-        number = 1,
-        number_after_dot,
-        number_after_e,
-        hex_number,
-        octa_number,
-        bin_number,
+        begin,
+
+        dec,
+        scale,
+        pre_exp,
+        exp_dec,
+        exp_sign,
+
+        pre_not_dec,
+        not_dec,
+
         finish
     };
 
-    state current_state;
-    char c;
+    std::string integer_part;
+    std::string fraction_part;
+    std::string exponent_part;
 
-    auto type = TokenType::LITERAL_INTEGER;
+    TokenType type = TokenType::LITERAL_INTEGER;
 
-    switch (numeral_system) {
-        case 16:
-            current_state = state::hex_number;
-            break;
-        case 8:
-            current_state = state::octa_number;
-            break;
-        case 2:
-            current_state = state::bin_number;
-            break;
-        default:
-            assert(numeral_system == 10);
-            current_state = state::number;
-    }
-
+    state current_state = begin;
     while (current_state != finish) {
         switch (current_state) {
-            case number:
-                c = consume();
-                if (is_digit(c, 10)) {
-                    // consume
-                } else if (c == '.' && try_consume([](char c) {
-                               return is_digit(c, 10);
-                           })) {  // check next
-                    current_state = state::number_after_dot;
-                    type = TokenType::LITEREAL_DOUBLE;
-                } else if (c == 'e' && try_consume([](char c) {
-                               return is_digit(c, 10);
-                           })) {
-                    current_state = state::number_after_e;
-                    type = TokenType::LITEREAL_DOUBLE;
+            case begin:
+                if (numeral_system == 10) {
+                    integer_part.push_back(buffer_peek());
+                    current_state = dec;
                 } else {
-                    unconsume();  // give back . or e
-                    current_state = finish;
+                    current_state = pre_not_dec;
                 }
                 break;
-            case number_after_dot:
-                if (try_consume([](char c) { return is_digit(c, 10); })) {
-                    current_state = number_after_dot;
-                } else {
-                    c = consume();
-                    if (c == 'e' &&
-                        try_consume([](char c) { return is_digit(c, 10); })) {
-                        current_state = number_after_e;
-                    } else {
-                        unconsume();
-                        current_state = finish;
-                    }
-                }
-                break;
-            case number_after_e:
-                if (try_consume([](char c) { return is_digit(c, 10); })) {
-                    current_state = number_after_e;
+            case dec:
+                if (try_consume([](char c) { return is_digit(c); })) {
+                    current_state = dec;
+                    integer_part.push_back(buffer_peek());
+                } else if (try_consume('.')) {
+                    type = LITEREAL_DOUBLE;
+                    fraction_part.push_back(buffer_peek());
+                    current_state = scale;
+                } else if (try_consume('e') || try_consume('E')) {
+                    type = LITEREAL_DOUBLE;
+                    exponent_part.push_back(buffer_peek());
+                    current_state = pre_exp;
                 } else {
                     current_state = finish;
                 }
                 break;
-            case hex_number:
-                if (try_consume([](char c) { return is_digit(c, 16); })) {
-                    current_state = hex_number;
+            case scale:
+                type = TokenType::LITEREAL_DOUBLE;
+                if (try_consume([](char c) { return is_digit(c); })) {
+                    fraction_part.push_back(buffer_peek());
+                    current_state = scale;
+                } else if (try_consume('e') || try_consume('E')) {
+                    exponent_part.push_back(buffer_peek());
+                    current_state = pre_exp;
                 } else {
                     current_state = finish;
                 }
                 break;
-            case octa_number:
-                if (try_consume([](char c) { return is_digit(c, 8); })) {
-                    current_state = octa_number;
+            case pre_exp:
+                type = TokenType::LITEREAL_DOUBLE;
+                if (try_consume([](char c) { return is_digit(c); })) {
+                    exponent_part.push_back(buffer_peek());
+                    current_state = exp_dec;
+                } else if (try_consume('+') || try_consume('-')) {
+                    exponent_part.push_back(buffer_peek());
+                    current_state = exp_sign;
+                } else {
+                    throw IllegalCharacterException(
+                        get_current_line(), get_current_column(), peek());
+                }
+                break;
+            case exp_dec:
+                if (try_consume([](char c) { return is_digit(c); })) {
+                    current_state = exp_dec;
+                    exponent_part.push_back(buffer_peek());
                 } else {
                     current_state = finish;
                 }
                 break;
-            case bin_number:
-                if (try_consume([](char c) { return is_digit(c, 2); })) {
-                    current_state = bin_number;
+            case exp_sign:
+                if (try_consume([](char c) { return is_digit(c); })) {
+                    current_state = exp_dec;
+                } else {
+                    throw IllegalCharacterException(
+                        get_current_line(), get_current_column(), peek());
+                }
+                break;
+            case pre_not_dec:
+                if (try_consume(
+                        [=](char c) { return is_digit(c, numeral_system); })) {
+                    current_state = not_dec;
+                    integer_part.push_back(buffer_peek());
+                } else {
+                    throw InvalidIntegerExpressionException(
+                        get_current_line(), get_current_column());
+                }
+                break;
+            case not_dec:
+                if (try_consume(
+                        [=](char c) { return is_digit(c, numeral_system); })) {
+                    integer_part.push_back(buffer_peek());
+                    current_state = not_dec;
+                } else if (try_consume('.')) {
+                    type = LITEREAL_DOUBLE;
+                    current_state = finish;
                 } else {
                     current_state = finish;
                 }
@@ -395,7 +403,30 @@ TokenType Scanner::scan_number_literal(int numeral_system) {
         }
     }
 
-    return type;
+    if (numeral_system == 10 && type == LITERAL_INTEGER) {
+        return prepare_token(type,
+                             get_integer_value(get_buffer(), numeral_system),
+                             get_buffer());
+    } else if (numeral_system == 10 && type == LITEREAL_DOUBLE) {
+        std::string value_buffer;
+        value_buffer += integer_part;
+        if (fraction_part.size() > 1) {
+            value_buffer += fraction_part;
+        }
+        value_buffer += exponent_part;
+        return prepare_token(type, get_double_value(value_buffer),
+                             get_buffer());
+    }
+
+    // not dec
+    if (type == LITERAL_INTEGER) {
+        return prepare_token(type,
+                             get_integer_value(get_buffer(), numeral_system),
+                             get_buffer());
+    }
+    return prepare_token(
+        type, (Double)get_integer_value(get_buffer(), numeral_system),
+        get_buffer());
 }
 
 /*
@@ -469,11 +500,8 @@ Integer Scanner::get_integer_value(std::string raw, int numeral_system) const {
 }
 
 Double Scanner::get_double_value(const std::string& raw) {
-    std::stringstream ss;
-    ss.setf(std::ios::scientific);
-    ss.precision(12);
     try {
-        return std::stof(raw);
+        return std::stod(raw);
     } catch (...) {
         return INFINITY;
     }

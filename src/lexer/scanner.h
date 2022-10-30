@@ -17,7 +17,7 @@ class Scanner : public BufferedIStream {
     [[nodiscard]] Token prepare_token(TokenType type, const TokenValue &value,
                                       const std::string &raw_value) const;
     Token scan_string_literal(bool start_with_hash);
-    TokenType scan_number_literal(int numeral_system);
+    Token scan_number_literal(int numeral_system);
     void scan_identifier();
 
     static bool is_space(char c);
