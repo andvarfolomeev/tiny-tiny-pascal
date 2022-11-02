@@ -1,0 +1,4 @@
+-xc++
+-std=c++20
+-Icmake-build-debug/_deps/magic_enum-src/include
+-Icmake-build-debug/_deps/argparse-src/include
