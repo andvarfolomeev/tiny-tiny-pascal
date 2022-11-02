@@ -39,23 +39,6 @@ char BufferedIStream::try_consume(const std::function<bool(char)> &func) {
     return false;
 }
 
-char BufferedIStream::unconsume() {
-    input_stream.unget();
-    if (!buffer.empty()) {
-        if (buffer_peek() != '\n') {
-            --current_column;
-        } else {
-            current_line--;
-            current_column = column_after_new_line;
-        }
-        buffer.pop_back();
-        return buffer.back();
-    } else {
-        assert(true);
-    }
-    return EOF;
-}
-
 char BufferedIStream::peek() { return (char)input_stream.peek(); }
 
 [[maybe_unused]] std::string BufferedIStream::get_buffer() { return buffer; }

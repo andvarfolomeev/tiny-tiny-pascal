@@ -11,7 +11,7 @@ enum TokenType {
     eof,
     INVALID,
     LITERAL_INTEGER,
-    LITEREAL_DOUBLE,
+    LITERAL_DOUBLE,
     LITERAL_STRING,
     ID,
     KEYWORD,

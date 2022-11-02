@@ -16,8 +16,21 @@ class Scanner : public BufferedIStream {
 
     [[nodiscard]] Token prepare_token(TokenType type, const TokenValue &value,
                                       const std::string &raw_value) const;
+
+    /**
+     *
+     * @param start_with_hash - if first char is # then true
+     * @return
+     */
     Token scan_string_literal(bool start_with_hash);
+
+    /**
+     *
+     * @param numeral_system
+     * @return
+     */
     Token scan_number_literal(int numeral_system);
+
     void scan_identifier();
 
     static bool is_space(char c);
@@ -25,10 +38,19 @@ class Scanner : public BufferedIStream {
     static bool is_start_of_identifier(char c);
     static bool is_remainig_of_identifier(char c);
 
-    int digits(int numeral_system);
-
+    /**
+     * skip { } comment
+     */
     void skip_block_comment();
+
+    /**
+     * skip (* *) comment
+     */
     void skip_block_comment_1();
+
+    /**
+     * skip // comment
+     */
     void skip_line_comment();
 
     [[nodiscard]] Integer get_integer_value(std::string raw,

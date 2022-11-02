@@ -258,14 +258,6 @@ bool Scanner::is_digit(char c, int numeral_system) {
     return '0' <= c && c <= '1';
 }
 
-int Scanner::digits(int numeral_system) {
-    int count_of_digits = 0;
-    while (try_consume([=](char c) { return is_digit(c, numeral_system); })) {
-        ++count_of_digits;
-    }
-    return count_of_digits;
-}
-
 Token Scanner::scan_number_literal(int numeral_system) {
     assert(numeral_system == 10 || numeral_system == 16 ||
            numeral_system == 8 || numeral_system == 2);
@@ -306,11 +298,11 @@ Token Scanner::scan_number_literal(int numeral_system) {
                     current_state = dec;
                     integer_part.push_back(buffer_peek());
                 } else if (try_consume('.')) {
-                    type = LITEREAL_DOUBLE;
+                    type = LITERAL_DOUBLE;
                     fraction_part.push_back(buffer_peek());
                     current_state = scale;
                 } else if (try_consume('e') || try_consume('E')) {
-                    type = LITEREAL_DOUBLE;
+                    type = LITERAL_DOUBLE;
                     exponent_part.push_back(buffer_peek());
                     current_state = pre_exp;
                 } else {
@@ -318,7 +310,7 @@ Token Scanner::scan_number_literal(int numeral_system) {
                 }
                 break;
             case scale:
-                type = TokenType::LITEREAL_DOUBLE;
+                type = TokenType::LITERAL_DOUBLE;
                 if (try_consume([](char c) { return is_digit(c); })) {
                     fraction_part.push_back(buffer_peek());
                     current_state = scale;
@@ -330,7 +322,7 @@ Token Scanner::scan_number_literal(int numeral_system) {
                 }
                 break;
             case pre_exp:
-                type = TokenType::LITEREAL_DOUBLE;
+                type = TokenType::LITERAL_DOUBLE;
                 if (try_consume([](char c) { return is_digit(c); })) {
                     exponent_part.push_back(buffer_peek());
                     current_state = exp_dec;
@@ -374,7 +366,7 @@ Token Scanner::scan_number_literal(int numeral_system) {
                     integer_part.push_back(buffer_peek());
                     current_state = not_dec;
                 } else if (try_consume('.')) {
-                    type = LITEREAL_DOUBLE;
+                    type = LITERAL_DOUBLE;
                     current_state = finish;
                 } else {
                     current_state = finish;
