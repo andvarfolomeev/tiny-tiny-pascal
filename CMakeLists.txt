@@ -47,10 +47,10 @@ add_executable(tiny_tiny_pascal
         ${SOURCE_EXE})
 add_executable(tiny_tiny_pascal_tests
         src/simple_parser/simple_parser.cpp
-        tests/tests.cpp
-        tests/lexer.cpp
-        tests/simple_parser.cpp
-        tests/test_report.cpp
+        testers/tests.cpp
+        testers/lexer.cpp
+        testers/simple_parser.cpp
+        testers/test_report.cpp
         ${SOURCE_EXE})
 
 target_link_libraries(tiny_tiny_pascal PRIVATE magic_enum)
