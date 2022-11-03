@@ -1023,6 +1023,7 @@ _deps
 *.x86_64
 *.hex
 !tests/scanner/*.out
+!tests/simple_parser/*.out
 
 # Debug files
 *.dSYM/
