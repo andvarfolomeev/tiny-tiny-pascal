@@ -34,22 +34,24 @@ CPMAddPackage(
 )
 
 set(SOURCE_EXE
+        src/lexer/buffered_istream.cpp
         src/lexer/scanner.cpp
         src/lexer/token.cpp
         src/lexer/token_type.cpp
-        src/lexer/buffered_istream.cpp
-        src/lexer/buffered_istream.h
         src/lexer/token_value_types.cpp
-        src/lexer/token_value_types.h
-
         src/pascal_types.h
+        )
 
+add_executable(tiny_tiny_pascal
+        src/main.cpp
+        ${SOURCE_EXE})
+add_executable(tiny_tiny_pascal_tests
+        src/simple_parser/simple_parser.cpp
+        tests/tests.cpp
         tests/lexer.cpp
+        tests/simple_parser.cpp
         tests/test_report.cpp
-        tests/test_report.h)
-
-add_executable(tiny_tiny_pascal src/main.cpp ${SOURCE_EXE})
-add_executable(tiny_tiny_pascal_tests tests/lexer.cpp ${SOURCE_EXE} tests/tests.cpp tests/tests.cpp)
+        ${SOURCE_EXE})
 
 target_link_libraries(tiny_tiny_pascal PRIVATE magic_enum)
 target_link_libraries(tiny_tiny_pascal PRIVATE argparse)
