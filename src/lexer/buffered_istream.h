@@ -33,6 +33,8 @@ class BufferedIStream {
      */
     char try_consume(const std::function<bool(char)> &func);
 
+    char unconsume();
+
     /**
      * get next char without move to them
      * @return
@@ -62,9 +64,6 @@ class BufferedIStream {
      */
     char buffer_peek();
 
-    [[nodiscard]] unsigned int get_current_line() const;
-    [[nodiscard]] unsigned int get_current_column() const;
-
    public:
     explicit BufferedIStream(std::ifstream &input_stream)
         : input_stream(input_stream),
@@ -74,6 +73,9 @@ class BufferedIStream {
           is_eof(false) {}
 
     [[nodiscard]] bool eof() const;
+
+    [[nodiscard]] unsigned int get_current_line() const;
+    [[nodiscard]] unsigned int get_current_column() const;
 };
 
 }  // namespace lexer
