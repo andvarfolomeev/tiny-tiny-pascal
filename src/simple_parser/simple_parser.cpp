@@ -4,23 +4,23 @@ namespace simpleparser {
 SimpleParser::SimpleParser(Scanner scanner)
     : scanner(scanner), current_token(scanner.next_token()) {}
 
-double Node::calc() {
+Double Node::calc() {
     if (token.get_type() == TokenType::OPER &&
-        std::get<Operators>(token.get_value()) == Operators::ADD) {
+        token.get_value<Operators>() == Operators::ADD) {
         return left->calc() + right->calc();
     } else if (token.get_type() == TokenType::OPER &&
-               std::get<Operators>(token.get_value()) == Operators::SUB) {
+               token.get_value<Operators>() == Operators::SUB) {
         return left->calc() - right->calc();
     } else if (token.get_type() == TokenType::OPER &&
-               std::get<Operators>(token.get_value()) == Operators::MUL) {
+               token.get_value<Operators>() == Operators::MUL) {
         return left->calc() * right->calc();
     } else if (token.get_type() == TokenType::OPER &&
-               std::get<Operators>(token.get_value()) == Operators::QUO) {
+               token.get_value<Operators>() == Operators::QUO) {
         return left->calc() / right->calc();
     } else if (token.get_type() == TokenType::LITERAL_DOUBLE) {
-        return std::get<double>(token.get_value());
+        return token.get_value<Double>();
     } else if (token.get_type() == TokenType::LITERAL_INTEGER) {
-        return std::get<int>(token.get_value());
+        return token.get_value<Integer>();
     }
     return 0;
 }
@@ -29,8 +29,8 @@ Node *SimpleParser::parse_expression() {
     auto left = parse_term();
     auto token = current_token;
     while (token.get_type() == TokenType::OPER &&
-           (std::get<Operators>(token.get_value()) == Operators::ADD ||
-            std::get<Operators>(token.get_value()) == Operators::SUB)) {
+           (token.get_value<Operators>() == Operators::ADD ||
+            token.get_value<Operators>() == Operators::SUB)) {
         current_token = scanner.next_token();
         left = new Node(token, left, parse_term());
         token = current_token;
@@ -41,8 +41,8 @@ Node *SimpleParser::parse_term() {
     auto left = parse_factor();
     auto token = current_token;
     while (token.get_type() == TokenType::OPER &&
-           (std::get<Operators>(token.get_value()) == Operators::MUL ||
-            std::get<Operators>(token.get_value()) == Operators::QUO)) {
+           (token.get_value<Operators>() == Operators::MUL ||
+            token.get_value<Operators>() == Operators::QUO)) {
         current_token = scanner.next_token();
         left = new Node(token, left, parse_term());
         token = current_token;
@@ -58,14 +58,13 @@ Node *SimpleParser::parse_factor() {
         return new Node(token, nullptr, nullptr);
     }
     if (token.get_type() == TokenType::SEPERATOR &&
-        std::get<Separators>(token.get_value()) == Separators::LPAREN) {
+        token.get_value<Separators>() == Separators::LPAREN) {
         current_token = scanner.next_token();
         auto expression = parse_expression();
 
         if (current_token.get_type() != TokenType::SEPERATOR ||
             !(current_token.get_type() == TokenType::SEPERATOR &&
-              std::get<Separators>(current_token.get_value()) ==
-                  Separators::RPAREN)) {
+              current_token.get_value<Separators>() == Separators::RPAREN)) {
             throw SyntaxException(scanner.get_current_line(),
                                   scanner.get_current_column(), "Expected )");
         }

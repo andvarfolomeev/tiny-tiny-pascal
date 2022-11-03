@@ -19,7 +19,7 @@ class Node {
     explicit Node(Token token, Node *left, Node *right)
         : token(std::move(token)), left(left), right(right) {}
 
-    double calc();
+    Double calc();
 };
 
 /**

@@ -28,7 +28,8 @@ class Token {
 
     [[nodiscard]] std::string to_string() const;
 
-    [[nodiscard]] TokenValue get_value() const;
+    template <typename T>
+    T get_value() const;
 
     TokenType get_type();
 };

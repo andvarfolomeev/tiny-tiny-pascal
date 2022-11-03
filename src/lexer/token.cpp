@@ -8,25 +8,25 @@ std::ostream &operator<<(std::ostream &os, const lexer::Token &token) {
     os << token.line << "\t" << token.column << "\t" << token.type << "\t";
     switch (token.type) {
         case LITERAL_INTEGER:
-            os << std::get<Integer>(token.value);
+            os << token.get_value<Integer>();
             break;
         case LITERAL_DOUBLE:
-            os << std::get<Double>(token.value);
+            os << token.get_value<Double>();
             break;
         case ID:
         case LITERAL_STRING:
-            os << std::get<String>(token.value);
+            os << token.get_value<String>();
             break;
         case KEYWORD:
-            os << std::get<Keywords>(token.value);
+            os << token.get_value<Keywords>();
             break;
         case COMMENT:
             break;
         case OPER:
-            os << std::get<Operators>(token.value);
+            os << token.get_value<Operators>();
             break;
         case SEPERATOR:
-            os << std::get<Separators>(token.value);
+            os << token.get_value<Separators>();
             break;
         case eof:
             os << "EOF";
@@ -45,6 +45,9 @@ std::string Token::to_string() const {
 
 TokenType Token::get_type() { return type; }
 
-TokenValue Token::get_value() const { return value; }
+template <typename T>
+T Token::get_value() const {
+    return std::get<T>(value);
+}
 
 }  // namespace lexer
