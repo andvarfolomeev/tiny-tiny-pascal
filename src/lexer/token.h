@@ -28,6 +28,8 @@ class Token {
 
     [[nodiscard]] std::string to_string() const;
 
+    [[nodiscard]] TokenValue get_value() const;
+
     TokenType get_type();
 };
 }  // namespace lexer

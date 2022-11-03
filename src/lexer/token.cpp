@@ -44,4 +44,7 @@ std::string Token::to_string() const {
 }
 
 TokenType Token::get_type() { return type; }
+
+TokenValue Token::get_value() const { return value; }
+
 }  // namespace lexer
