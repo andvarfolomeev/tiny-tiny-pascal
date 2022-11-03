@@ -19,6 +19,8 @@ class BasicTester {
     std::set<std::string> get_paths_to_test_files();
     virtual bool run_test(const std::string &input_file_path,
                           const std::string &output_file_path);
+
+    static std::string read_file(std::string_view path);
 };
 }  // namespace testers
 
