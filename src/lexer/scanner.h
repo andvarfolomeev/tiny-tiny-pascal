@@ -12,7 +12,7 @@
 
 namespace lexer {
 class Scanner : public BufferedIStream {
-    unsigned int last_line, last_column;
+    unsigned int first_line, first_column;
 
     [[nodiscard]] Token prepare_token(TokenType type, const TokenValue &value,
                                       const std::string &raw_value) const;
@@ -59,7 +59,7 @@ class Scanner : public BufferedIStream {
 
    public:
     explicit Scanner(std::ifstream &input_stream)
-        : BufferedIStream(input_stream), last_line(1), last_column(1) {}
+        : BufferedIStream(input_stream), first_line(1), first_column(1) {}
 
     Token next_token();
 };

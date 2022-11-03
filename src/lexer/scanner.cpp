@@ -18,10 +18,9 @@ Token Scanner::next_token() {
     do {
         c = consume();
 
-        // save position before call skip_*_comment
-        // for correct position in exception
-        last_column = get_current_column() - 1;
-        last_line = get_current_line();
+        // save position in case of unclosed comment
+        first_column = get_current_column() - 1;
+        first_line = get_current_line();
 
         if (c == '/' && try_consume('/')) {
             skip_line_comment();
@@ -35,8 +34,8 @@ Token Scanner::next_token() {
     } while (true);
 
     // take into account that the consume method was called
-    last_column = get_current_column() - 1;
-    last_line = get_current_line();
+    first_column = get_current_column() - 1;
+    first_line = get_current_line();
 
     clear_buffer();
     add_to_buffer(c);
@@ -157,7 +156,7 @@ Token Scanner::next_token() {
     }
 
     // means that the token type is invalid
-    throw UnexpectedTokenException(last_line, last_column);
+    throw UnexpectedTokenException(first_line, first_column);
 }
 
 bool Scanner::is_space(char c) { return c == '\t' || c == ' ' || c == '\n'; }
@@ -191,7 +190,7 @@ Token Scanner::scan_string_literal(bool start_with_hash) {
                 if (try_consume('\'')) {
                     current_state = pre_spec_char;
                 } else if (buffer_peek() == '\n' || buffer_peek() == EOF) {
-                    throw StringExceedsLineException(last_line, last_column);
+                    throw StringExceedsLineException(first_line, first_column);
                 } else {
                     value_buffer.push_back(peek());
                     consume();
@@ -415,7 +414,7 @@ void Scanner::skip_block_comment() {
         if (buffer_peek() == '}') {
             return;
         } else if (buffer_peek() == EOF) {
-            throw UnterminatedBlockCommentException(last_line, last_column);
+            throw UnterminatedBlockCommentException(first_line, first_column);
         }
     }
 }
@@ -429,7 +428,7 @@ void Scanner::skip_block_comment_1() {
         if (buffer_peek() == '*' && try_consume(')')) {
             return;
         } else if (buffer_peek() == EOF) {
-            throw UnterminatedBlockCommentException(last_line, last_column);
+            throw UnterminatedBlockCommentException(first_line, first_column);
         }
     }
 }
@@ -470,7 +469,7 @@ Integer Scanner::get_integer_value(std::string raw, int numeral_system) const {
             result += c - 'a' + 10;
         }
         if (INTEGER_MAX < result) {
-            throw IntegerOverflowException(last_line, last_column);
+            throw IntegerOverflowException(first_line, first_column);
         }
     }
     return (Integer)result;
@@ -486,7 +485,7 @@ Double Scanner::get_double_value(const std::string& raw) {
 
 Token Scanner::prepare_token(TokenType type, const TokenValue& value,
                              const std::string& raw_value) const {
-    return {last_line, last_column, type, value, raw_value};
+    return {first_line, first_column, type, value, raw_value};
 }
 
 }  // namespace lexer
