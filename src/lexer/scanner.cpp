@@ -314,6 +314,9 @@ Token Scanner::scan_number_literal(int numeral_system) {
                 if (try_consume([](char c) { return is_digit(c); })) {
                     fraction_part.push_back(buffer_peek());
                     current_state = scale;
+                } else if (buffer_peek() == '.' && peek() == '.') {
+                    unconsume();
+                    current_state = finish;
                 } else if (try_consume('e') || try_consume('E')) {
                     exponent_part.push_back(buffer_peek());
                     current_state = pre_exp;

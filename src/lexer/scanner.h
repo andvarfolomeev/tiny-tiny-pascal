@@ -66,7 +66,9 @@ class Scanner : public BufferedIStream {
 
 class ScannerException : public std::exception {
    public:
-    const char *what() const noexcept override { return message.c_str(); }
+    [[nodiscard]] const char *what() const noexcept override {
+        return message.c_str();
+    }
 
     [[maybe_unused]] explicit ScannerException(unsigned int current_line,
                                                unsigned int current_column,
