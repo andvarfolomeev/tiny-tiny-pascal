@@ -3,8 +3,8 @@
 #include <iomanip>
 #include <sstream>
 
-namespace lexer {
-std::ostream &operator<<(std::ostream &os, const lexer::Token &token) {
+namespace scanner {
+std::ostream &operator<<(std::ostream &os, const scanner::Token &token) {
     os << token.line << "\t" << token.column << "\t" << token.type << "\t";
     switch (token.type) {
         case LITERAL_INTEGER:
@@ -50,4 +50,4 @@ T Token::get_value() const {
     return std::get<T>(value);
 }
 
-}  // namespace lexer
+}  // namespace scanner

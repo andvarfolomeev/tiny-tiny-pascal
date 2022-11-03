@@ -34,11 +34,11 @@ CPMAddPackage(
 )
 
 set(SOURCE_EXE
-        src/lexer/buffered_istream.cpp
-        src/lexer/scanner.cpp
-        src/lexer/token.cpp
-        src/lexer/token_type.cpp
-        src/lexer/token_value_types.cpp
+        src/scanner/buffered_istream.cpp
+        src/scanner/scanner.cpp
+        src/scanner/token.cpp
+        src/scanner/token_type.cpp
+        src/scanner/token_value_types.cpp
         src/pascal_types.h
         )
 

@@ -1022,7 +1022,7 @@ _deps
 *.i*86
 *.x86_64
 *.hex
-!tests/lexer/*.out
+!tests/scanner/*.out
 
 # Debug files
 *.dSYM/

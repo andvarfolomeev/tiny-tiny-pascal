@@ -5,7 +5,7 @@
 
 #include "test_report.h"
 
-const std::string test_path = "../tests/lexer/";
+const std::string test_path = "../tests/scanner/";
 
 TestReport run_lexer_tests();
 

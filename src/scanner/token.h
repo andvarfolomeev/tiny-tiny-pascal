@@ -8,7 +8,7 @@
 #include "token_type.h"
 #include "token_value_types.h"
 
-namespace lexer {
+namespace scanner {
 class Token {
     unsigned int line, column;
     TokenType type;
@@ -33,6 +33,6 @@ class Token {
 
     TokenType get_type();
 };
-}  // namespace lexer
+}  // namespace scanner
 
 #endif  // LEXER_TOKEN_H

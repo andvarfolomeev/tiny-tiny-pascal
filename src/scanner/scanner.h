@@ -10,7 +10,7 @@
 #include "token.h"
 #include "token_value_types.h"
 
-namespace lexer {
+namespace scanner {
 class Scanner : public BufferedIStream {
     unsigned int first_line, first_column;
 
@@ -128,6 +128,6 @@ class InvalidIntegerExpressionException : public ScannerException {
         : ScannerException(current_line, current_column,
                            "Invalid integer expression") {}
 };
-}  // namespace lexer
+}  // namespace scanner
 
 #endif  // LEXER_SCANNER_H

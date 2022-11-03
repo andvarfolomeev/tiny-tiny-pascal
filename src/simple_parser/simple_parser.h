@@ -3,10 +3,10 @@
 
 #include <utility>
 
-#include "../lexer/scanner.h"
-#include "../lexer/token.h"
+#include "../scanner/scanner.h"
+#include "../scanner/token.h"
 
-using namespace lexer;
+using namespace scanner;
 
 namespace simpleparser {
 class Node {

@@ -2,7 +2,7 @@
 
 void run_test_parser() {
     std::ifstream stream("../tests/simple_parser/2.in");
-    lexer::Scanner scanner(stream);
+    scanner::Scanner scanner(stream);
     simpleparser::SimpleParser simple_parser(scanner);
     auto expression = simple_parser.parse_expression();
 

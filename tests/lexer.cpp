@@ -4,7 +4,7 @@
 #include <iostream>
 #include <set>
 
-#include "../src/lexer/scanner.h"
+#include "../src/scanner/scanner.h"
 #include "test_report.h"
 
 namespace fs = std::filesystem;
@@ -50,7 +50,7 @@ bool run_test(const std::string &input_file_path,
     std::ifstream in_file;
     in_file.open(input_file_path);
     std::cout << input_file_path << std::endl;
-    lexer::Scanner scanner(in_file);
+    scanner::Scanner scanner(in_file);
 
     if (!out_file) {
         std::ofstream out_file_new;
@@ -61,10 +61,10 @@ bool run_test(const std::string &input_file_path,
                 auto token = scanner.next_token();
                 std::cout << token << std::endl;
                 out_file_new << token;
-                if (token.get_type() != lexer::TokenType::eof) {
+                if (token.get_type() != scanner::TokenType::eof) {
                     out_file_new << std::endl;
                 }
-            } catch (const lexer::ScannerException &ex) {
+            } catch (const scanner::ScannerException &ex) {
                 std::string lexer_message = "Exception: ";
                 lexer_message += ex.what();
                 out_file_new << lexer_message;
@@ -86,7 +86,7 @@ bool run_test(const std::string &input_file_path,
                           << std::endl;
                 success = false;
             }
-        } catch (const lexer::ScannerException &ex) {
+        } catch (const scanner::ScannerException &ex) {
             std::string lexer_message = "Exception: ";
             lexer_message += ex.what();
             if (line != lexer_message) {
@@ -101,7 +101,7 @@ bool run_test(const std::string &input_file_path,
     while (!out_file.eof()) {
         success = false;
         std::cout
-            << "FAILED: Stream of lexer ended before the stream of out file"
+            << "FAILED: Stream of scanner ended before the stream of out file"
             << std::endl;
 
         getline(out_file, line);
@@ -111,7 +111,7 @@ bool run_test(const std::string &input_file_path,
     while (!scanner.eof()) {
         success = false;
         std::cout
-            << "FAILED: Stream of out file ended before the stream of lexer"
+            << "FAILED: Stream of out file ended before the stream of scanner"
             << std::endl;
 
         auto token = scanner.next_token();

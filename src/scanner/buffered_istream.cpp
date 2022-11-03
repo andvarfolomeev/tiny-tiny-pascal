@@ -6,7 +6,7 @@
 
 #include <cassert>
 
-namespace lexer {
+namespace scanner {
 char BufferedIStream::consume() {
     char c = (char)input_stream.get();
     buffer.push_back(c);
@@ -77,4 +77,4 @@ unsigned int BufferedIStream::get_current_column() const {
 
 [[nodiscard]] bool BufferedIStream::eof() const { return is_eof; }
 
-}  // namespace lexer
+}  // namespace scanner

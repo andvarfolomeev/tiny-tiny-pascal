@@ -4,7 +4,7 @@
 #include <string>
 #include <variant>
 
-namespace lexer {
+namespace scanner {
 using Integer = int;
 using Double = double;
 using String = std::string;
@@ -154,6 +154,6 @@ std::ostream &operator<<(std::ostream &os, const Keywords &keyword);
 
 using TokenValue =
     std::variant<Integer, Double, String, Operators, Separators, Keywords>;
-}  // namespace lexer
+}  // namespace scanner
 
 #endif  // TOKEN_VALUE_TYPES_H

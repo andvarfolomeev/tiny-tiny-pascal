@@ -5,7 +5,7 @@
 #include <functional>
 #include <sstream>
 
-namespace lexer {
+namespace scanner {
 class BufferedIStream {
     std::ifstream &input_stream;
     unsigned int current_line, current_column, column_after_new_line;
@@ -78,5 +78,5 @@ class BufferedIStream {
     [[nodiscard]] unsigned int get_current_column() const;
 };
 
-}  // namespace lexer
+}  // namespace scanner
 #endif  // LEXER_BUFFERED_ISTREAM_H

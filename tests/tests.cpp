@@ -1,4 +1,5 @@
 #include "lexer.h"
+#include "simple_parser.h"
 #include "test_report.h"
 
 int main() {
@@ -10,5 +11,6 @@ int main() {
         return EXIT_FAILURE;
     }
 
+    // run_test_parser();
     return EXIT_SUCCESS;
 }

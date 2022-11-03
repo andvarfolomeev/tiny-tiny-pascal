@@ -1,8 +1,8 @@
 #include <argparse/argparse.hpp>
 #include <iostream>
 
-#include "lexer/scanner.h"
-#include "lexer/token_type.h"
+#include "scanner/scanner.h"
+#include "scanner/token_type.h"
 
 /**
  * Print how use program
@@ -18,8 +18,8 @@ int main(int argc, char* argv[]) {
     argparse::ArgumentParser program("tiny_tiny_pascal");
 
     program.add_argument("file").help("path to source file");
-    program.add_argument("--lexer")
-        .help("run lexer")
+    program.add_argument("--scanner")
+        .help("run scanner")
         .default_value(false)
         .implicit_value(true);
 
@@ -41,19 +41,19 @@ int main(int argc, char* argv[]) {
 
     std::cout << path_to_source << std::endl;
 
-    auto run_lexer = program.get<bool>("--lexer");
+    auto run_lexer = program.get<bool>("--scanner");
     if (run_lexer) {
         try {
-            lexer::Scanner scanner(file);
+            scanner::Scanner scanner(file);
             for (;;) {
                 auto token = scanner.next_token();
                 std::cout << token << "\n";
-                if (token.get_type() == lexer::TokenType::eof) {
+                if (token.get_type() == scanner::TokenType::eof) {
                     break;
                 }
             }
             return EXIT_SUCCESS;
-        } catch (const lexer::ScannerException& ex) {
+        } catch (const scanner::ScannerException& ex) {
             std::cout << ex.what();
             return EXIT_FAILURE;
         }

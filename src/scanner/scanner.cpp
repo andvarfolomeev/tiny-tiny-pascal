@@ -10,7 +10,7 @@
 #include "token_type.h"
 #include "token_value_types.h"
 
-namespace lexer {
+namespace scanner {
 
 Token Scanner::next_token() {
     char c;
@@ -488,4 +488,4 @@ Token Scanner::prepare_token(TokenType type, const TokenValue& value,
     return {first_line, first_column, type, value, raw_value};
 }
 
-}  // namespace lexer
+}  // namespace scanner
