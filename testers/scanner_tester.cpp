@@ -1,49 +1,14 @@
-#include "lexer.h"
+#include "scanner_tester.h"
 
-#include <filesystem>
 #include <iostream>
-#include <set>
 
 #include "../src/scanner/scanner.h"
-#include "test_report.h"
 
-namespace fs = std::filesystem;
+namespace testers {
 
-std::set<std::string> get_paths_to_text_files() {
-    std::set<std::string> result;
-
-    for (const auto &file_path : fs::recursive_directory_iterator(test_path)) {
-        std::string file_name = file_path.path().filename().string();
-        size_t index_of_separator = file_name.find_last_of('.');
-        std::string file_name_without_ext =
-            file_name.substr(0, index_of_separator);
-        result.insert(test_path + file_name_without_ext);
-    }
-
-    return result;
-}
-
-TestReport run_lexer_tests() {
-    TestReport report;
-    std::set<std::string> tests_file_paths = get_paths_to_text_files();
-
-    for (const auto &test_file_path : tests_file_paths) {
-        auto input_file_path = test_file_path + ".in";
-        auto output_file_path = test_file_path + ".out";
-
-        if (run_test(input_file_path, output_file_path)) {
-            std::cout << "OK\n";
-            report.inc_success();
-        } else {
-            report.inc_failed();
-        }
-    }
-    return report;
-}
-
-bool run_test(const std::string &input_file_path,
-              const std::string &output_file_path) {
-    int success = true;
+bool ScannerTester::run_test(const std::string& input_file_path,
+                             const std::string& output_file_path) {
+    bool success = true;
     std::ifstream out_file;
     out_file.open(output_file_path);
 
@@ -64,14 +29,14 @@ bool run_test(const std::string &input_file_path,
                 if (token.get_type() != scanner::TokenType::eof) {
                     out_file_new << std::endl;
                 }
-            } catch (const scanner::ScannerException &ex) {
+            } catch (const scanner::ScannerException& ex) {
                 std::string lexer_message = "Exception: ";
                 lexer_message += ex.what();
                 out_file_new << lexer_message;
-                return EXIT_SUCCESS;
+                return success;
             }
         }
-        return EXIT_SUCCESS;
+        return success;
     }
 
     std::string line;
@@ -86,7 +51,7 @@ bool run_test(const std::string &input_file_path,
                           << std::endl;
                 success = false;
             }
-        } catch (const scanner::ScannerException &ex) {
+        } catch (const scanner::ScannerException& ex) {
             std::string lexer_message = "Exception: ";
             lexer_message += ex.what();
             if (line != lexer_message) {
@@ -119,3 +84,4 @@ bool run_test(const std::string &input_file_path,
     }
     return success;
 }
+}  // namespace testers

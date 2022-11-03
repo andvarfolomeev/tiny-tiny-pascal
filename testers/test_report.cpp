@@ -1,5 +1,6 @@
 #include "test_report.h"
 
+namespace testers {
 TestReport::TestReport() : success(0), failed(0) {}
 
 void TestReport::inc_success() { ++success; }
@@ -21,3 +22,4 @@ std::ostream &operator<<(std::ostream &os, const TestReport &report) {
        << "; Failed: " << report.get_failed();
     return os;
 }
+}  // namespace testers
