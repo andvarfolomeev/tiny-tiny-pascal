@@ -33,10 +33,10 @@ class Scanner : public BufferedIStream {
 
     void scan_identifier();
 
-    static bool is_space(char c);
-    static bool is_digit(char c, int numeral_system = 10);
-    static bool is_start_of_identifier(char c);
-    static bool is_remainig_of_identifier(char c);
+    static inline bool is_space(char c);
+    static inline bool is_digit(char c, int numeral_system = 10);
+    static inline bool is_start_of_identifier(char c);
+    static inline bool is_remainig_of_identifier(char c);
 
     /**
      * skip { } comment
