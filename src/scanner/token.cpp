@@ -45,6 +45,8 @@ std::string Token::to_string() const {
 
 TokenType Token::get_type() { return type; }
 
+std::string Token::get_raw_value() { return raw_value; }
+
 template <typename T>
 T Token::get_value() const {
     return std::get<T>(value);

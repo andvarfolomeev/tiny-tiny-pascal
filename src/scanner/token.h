@@ -30,6 +30,7 @@ class Token {
 
     template <typename T>
     T get_value() const;
+    std::string get_raw_value();
 
     TokenType get_type();
 };
