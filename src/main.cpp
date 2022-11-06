@@ -3,16 +3,7 @@
 
 #include "scanner/scanner.h"
 #include "scanner/token_type.h"
-
-/**
- * Print how use program
- */
-std::string help() {
-    return "Usage: tiny_tiny_compiler.exe [options]\n"
-           "Options:\n"
-           "\t --tests - run tests\n"
-           "\t --file [file path]";
-}
+#include "simple_parser/simple_parser.h"
 
 int main(int argc, char* argv[]) {
     argparse::ArgumentParser program("tiny_tiny_pascal");
@@ -20,6 +11,10 @@ int main(int argc, char* argv[]) {
     program.add_argument("file").help("path to source file");
     program.add_argument("--scanner")
         .help("run scanner")
+        .default_value(false)
+        .implicit_value(true);
+    program.add_argument("--simple-parser")
+        .help("run simple parser")
         .default_value(false)
         .implicit_value(true);
 
@@ -52,7 +47,22 @@ int main(int argc, char* argv[]) {
                     break;
                 }
             }
-            return EXIT_SUCCESS;
+        } catch (const scanner::ScannerException& ex) {
+            std::cout << ex.what();
+            return EXIT_FAILURE;
+        }
+
+        // reopen file
+        file.close();
+        file.open(path_to_source);
+    }
+
+    auto run_simple_parser = program.get<bool>("--simple-parser");
+    if (run_simple_parser) {
+        try {
+            scanner::Scanner scanner(file);
+            simpleparser::SimpleParser simple_parser(scanner);
+            simple_parser.parse_expression()->draw_tree(std::cout);
         } catch (const scanner::ScannerException& ex) {
             std::cout << ex.what();
             return EXIT_FAILURE;
