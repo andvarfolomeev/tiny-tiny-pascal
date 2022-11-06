@@ -21,7 +21,7 @@ bool testers::SimpleParserTester::run_test(
     std::ostringstream simple_parser_answer;
 
     try {
-        simple_parser_answer << simple_parser.parse_expression()->calc();
+        simple_parser.parse_expression()->draw_tree(simple_parser_answer);
     } catch (const simpleparser::SyntaxException& ex) {
         simple_parser_answer << "Exception: " << ex.what();
     }
