@@ -35,7 +35,7 @@ testers::TestReport testers::BasicTester::run_tests() {
             std::cout << "OK\n";
             report.inc_success();
         } else {
-            std::cout << "OK\n";
+            std::cout << "FAILED\n";
             report.inc_failed();
         }
     }

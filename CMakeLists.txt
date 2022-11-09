@@ -37,8 +37,6 @@ set(SOURCE_EXE
         src/scanner/buffered_istream.cpp
         src/scanner/scanner.cpp
         src/scanner/token.cpp
-        src/scanner/token_type.cpp
-        src/scanner/token_value_types.cpp
         src/pascal_types.h
 
         src/simple_parser/simple_parser.cpp

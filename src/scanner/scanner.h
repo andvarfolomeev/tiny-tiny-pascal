@@ -8,7 +8,6 @@
 
 #include "buffered_istream.h"
 #include "token.h"
-#include "token_value_types.h"
 
 namespace scanner {
 class Scanner : public BufferedIStream {

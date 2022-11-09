@@ -3,37 +3,60 @@
 #include <iomanip>
 #include <sstream>
 
+#include "magic_enum.hpp"
+
 namespace scanner {
+std::ostream &operator<<(std::ostream &os, const Operators &op) {
+    os << magic_enum::enum_name(op);
+    return os;
+}
+
+std::ostream &operator<<(std::ostream &os, const Separators &sep) {
+    os << magic_enum::enum_name(sep);
+    return os;
+}
+
+std::ostream &operator<<(std::ostream &os, const Keywords &keyword) {
+    os << magic_enum::enum_name(keyword);
+    return os;
+}
+
+std::ostream &operator<<(std::ostream &os, const TokenType &type) {
+    os << magic_enum::enum_name(type);
+    return os;
+}
+
 std::ostream &operator<<(std::ostream &os, const scanner::Token &token) {
-    os << token.line << "\t" << token.column << "\t" << token.type << "\t";
+    os << std::setw(10) << std::left << token.line << std::setw(10) << std::left
+       << token.column << std::setw(20) << std::left << token.type << "\t";
     switch (token.type) {
         case LITERAL_INTEGER:
-            os << token.get_value<Integer>();
+            os << std::setw(30) << std::left << token.get_value<Integer>();
             break;
         case LITERAL_DOUBLE:
-            os << token.get_value<Double>();
+            os << std::setw(30) << std::left << token.get_value<Double>();
             break;
         case ID:
         case LITERAL_STRING:
-            os << token.get_value<String>();
+            os << std::setw(30) << std::left << token.get_value<String>();
             break;
         case KEYWORD:
-            os << token.get_value<Keywords>();
+            os << std::setw(30) << std::left << token.get_value<Keywords>();
             break;
         case COMMENT:
             break;
         case OPER:
-            os << token.get_value<Operators>();
+            os << std::setw(30) << std::left << token.get_value<Operators>();
             break;
         case SEPERATOR:
-            os << token.get_value<Separators>();
+            os << std::setw(30) << std::left << token.get_value<Separators>();
             break;
         case eof:
-            os << "EOF";
+            os << std::setw(30) << std::left << "EOF";
         case INVALID:
             break;
     }
-    os << "\t" << token.raw_value;
+    os << std::setw(30) << std::left << token.raw_value;
     return os;
 }
 

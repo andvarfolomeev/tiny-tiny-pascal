@@ -15,13 +15,13 @@ class Node {
     Node *left;
     Node *right;
 
-    void _draw_tree(std::ostream &os, int depth, int right_count);
+    void _draw_tree(std::ostream &os, int depth);
 
    public:
     explicit Node(Token token, Node *left, Node *right)
         : token(std::move(token)), left(left), right(right) {}
 
-    Token get_token();
+    ~Node();
 
     Double calc();
 

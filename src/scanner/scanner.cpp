@@ -7,8 +7,6 @@
 #include "../pascal_types.h"
 #include "magic_enum.hpp"
 #include "token.h"
-#include "token_type.h"
-#include "token_value_types.h"
 
 namespace scanner {
 

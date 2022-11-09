@@ -2,7 +2,6 @@
 #include <iostream>
 
 #include "scanner/scanner.h"
-#include "scanner/token_type.h"
 #include "simple_parser/simple_parser.h"
 
 int main(int argc, char* argv[]) {
@@ -62,7 +61,9 @@ int main(int argc, char* argv[]) {
         try {
             scanner::Scanner scanner(file);
             simpleparser::SimpleParser simple_parser(scanner);
-            simple_parser.parse_expression()->draw_tree(std::cout);
+            auto node = simple_parser.parse_expression();
+            node->draw_tree(std::cout);
+            delete node;
         } catch (const scanner::ScannerException& ex) {
             std::cout << ex.what();
             return EXIT_FAILURE;

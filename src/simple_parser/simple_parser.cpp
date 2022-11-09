@@ -27,29 +27,21 @@ Double Node::calc() {
     return 0;
 }
 
-void draw_path(std::ostream &os, int depth, bool is_right, int right_count,
-               bool end_of_branch) {
+void Node::_draw_tree(std::ostream &os, int depth) {
     auto padding = 3;
-    for (int i = 0; i < depth * padding; ++i) {
-        os << " ";
-    }
-    if (is_right)
-        os << "└──";
-    else
-        os << "└──";
-}
 
-void Node::_draw_tree(std::ostream &os, int depth, int right_count) {
     os << to_string() << std::endl;
     if (left == nullptr || right == nullptr) return;
 
-    auto right_ended = right->right == nullptr || right->left == nullptr;
-    draw_path(os, depth + 1, true, right_count, right_ended);
-    right->_draw_tree(os, depth + 1, right_count + 1);
+    for (int i = 0; i < (depth + 1) * padding; ++i) {
+        os << " ";
+    }
+    left->_draw_tree(os, depth + 1);
 
-    auto left_ended = left->right == nullptr || left->left == nullptr;
-    draw_path(os, depth + 1, false, right_count, left_ended);
-    left->_draw_tree(os, depth + 1, right_count);
+    for (int i = 0; i < (depth + 1) * padding; ++i) {
+        os << " ";
+    }
+    right->_draw_tree(os, depth + 1);
 }
 
 std::string Node::to_string() {
@@ -57,12 +49,21 @@ std::string Node::to_string() {
         return "(" + token.get_raw_value() + ")";
     }
     if (token.get_type() == TokenType::LITERAL_DOUBLE) {
-        return std::to_string(token.get_value<Double>());
+        return "(" + std::to_string(token.get_value<Double>()) + ")";
+    } else if (token.get_type() == TokenType::LITERAL_INTEGER) {
+        return "(" + std::to_string(token.get_value<Integer>()) + ")";
     }
-    return std::to_string(token.get_value<Integer>());
+
+    // id
+    return "(" + token.get_value<String>() + ")";
 }
 
-void Node::draw_tree(std::ostream &os) { _draw_tree(os, 0, 0); }
+void Node::draw_tree(std::ostream &os) { _draw_tree(os, 0); }
+
+Node::~Node() {
+    delete this->left;
+    delete this->right;
+}
 
 Node *SimpleParser::parse_expression() {
     auto left = parse_term();
