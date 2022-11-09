@@ -1,11 +1,11 @@
-5	1	ID	WriteLn	WriteLn
-5	8	SEPERATOR	LPAREN	(
-5	9	LITERAL_STRING	Tyt ne vajnoe	'Tyt ne vajnoe'
-5	24	SEPERATOR	RPAREN	)
-5	25	SEPERATOR	SEMICOLON	;
-11	1	ID	WriteLn	WriteLn
-11	8	SEPERATOR	LPAREN	(
-11	9	LITERAL_STRING	Tyt ne vajnoe x2	'Tyt ne vajnoe x2'
-11	27	SEPERATOR	RPAREN	)
-11	28	SEPERATOR	SEMICOLON	;
-11	29	eof	EOF	EOF
+5         1         ID                  	WriteLn                       WriteLn                       
+5         8         SEPERATOR           	LPAREN                        (                             
+5         9         LITERAL_STRING      	Tyt ne vajnoe                 'Tyt ne vajnoe'               
+5         24        SEPERATOR           	RPAREN                        )                             
+5         25        SEPERATOR           	SEMICOLON                     ;                             
+11        1         ID                  	WriteLn                       WriteLn                       
+11        8         SEPERATOR           	LPAREN                        (                             
+11        9         LITERAL_STRING      	Tyt ne vajnoe x2              'Tyt ne vajnoe x2'            
+11        27        SEPERATOR           	RPAREN                        )                             
+11        28        SEPERATOR           	SEMICOLON                     ;                             
+11        29        eof                 	EOF                           EOF                           

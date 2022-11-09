@@ -1,2 +1,2 @@
-1	1	LITERAL_STRING	     	'     '
-1	8	eof	EOF	EOF
+1         1         LITERAL_STRING      	                              '     '                       
+1         8         eof                 	EOF                           EOF                           
