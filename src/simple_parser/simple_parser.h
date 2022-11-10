@@ -23,8 +23,6 @@ class Node {
 
     ~Node();
 
-    Double calc();
-
     std::string to_string();
 
     void draw_tree(std::ostream &os);

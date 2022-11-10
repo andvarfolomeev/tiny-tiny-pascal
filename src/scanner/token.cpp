@@ -60,6 +60,19 @@ std::ostream &operator<<(std::ostream &os, const scanner::Token &token) {
     return os;
 }
 
+bool operator==(const Token &token, const TokenType &type) {
+    return token.type == type;
+}
+
+bool Token::check_type(std::vector<TokenType> types) {
+    return std::find(types.begin(), types.end(), type) != types.end();
+}
+
+template <typename T>
+bool Token::check_value(std::vector<T> values) {
+    return std::find(values.begin(), values.end(), value) != values.end();
+}
+
 std::string Token::to_string() const {
     std::ostringstream ss;
     ss << (*this);

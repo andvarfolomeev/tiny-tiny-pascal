@@ -5,6 +5,7 @@
 #include <string>
 #include <utility>
 #include <variant>
+#include <vector>
 
 namespace scanner {
 using Integer = int;
@@ -187,6 +188,12 @@ class Token {
           raw_value(std::move(raw_value)){};
 
     friend std::ostream &operator<<(std::ostream &os, const Token &token);
+
+    friend bool operator==(const Token &token, const TokenType &type);
+    bool check_type(std::vector<TokenType> types);
+
+    template <typename T>
+    bool check_value(std::vector<T> values);
 
     [[nodiscard]] std::string to_string() const;
 
