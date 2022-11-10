@@ -193,7 +193,10 @@ class Token {
     bool check_type(std::vector<TokenType> types);
 
     template <typename T>
-    bool check_value(std::vector<T> values);
+    bool check_value(std::vector<T> values) const {
+        return std::find(values.begin(), values.end(), std::get<T>(value)) !=
+               values.end();
+    }
 
     [[nodiscard]] std::string to_string() const;
 

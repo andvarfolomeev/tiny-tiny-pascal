@@ -33,22 +33,45 @@ CPMAddPackage(
         GIT_TAG v2.9
 )
 
-set(SOURCE_EXE
+set(
+        SOURCE
+
         src/scanner/buffered_istream.cpp
+        src/scanner/buffered_istream.h
+
         src/scanner/scanner.cpp
+        src/scanner/scanner.h
+
         src/scanner/token.cpp
-        src/pascal_types.h
+        src/scanner/token.h
 
         src/simple_parser/simple_parser.cpp
-        )
+        src/simple_parser/simple_parser.h
 
-add_executable(tiny_tiny_pascal
+        src/pascal_types.h
+)
+
+set(
+        SOURCE_MAIN_EXE
+        ${SOURCE}
         src/main.cpp
-        ${SOURCE_EXE})
-add_executable(tiny_tiny_pascal_tests
-        testers/tests.cpp
+)
+
+set(
+        SOURCE_TEST_EXE
+        ${SOURCE}
         testers/test_report.cpp
-        ${SOURCE_EXE} testers/basic_tester.cpp testers/basic_tester.h testers/scanner_tester.cpp testers/scanner_tester.h testers/simple_parser_tester.cpp testers/simple_parser_tester.h)
+        testers/basic_tester.cpp
+        testers/basic_tester.h
+        testers/scanner_tester.cpp
+        testers/scanner_tester.h
+        testers/simple_parser_tester.cpp
+        testers/simple_parser_tester.h
+        testers/tests.cpp
+)
+
+add_executable(tiny_tiny_pascal ${SOURCE_MAIN_EXE})
+add_executable(tiny_tiny_pascal_tests ${SOURCE_TEST_EXE})
 
 target_link_libraries(tiny_tiny_pascal PRIVATE magic_enum)
 target_link_libraries(tiny_tiny_pascal PRIVATE argparse)
