@@ -25,16 +25,16 @@ void Node::_draw_tree(std::ostream &os, int depth) {
 
 std::string Node::to_string() {
     if (token == TokenType::OPER) {
-        return "(" + token.get_raw_value() + ")";
+        return token.get_raw_value();
     }
     if (token == TokenType::LITERAL_DOUBLE) {
-        return "(" + std::to_string(token.get_value<Double>()) + ")";
+        return std::to_string(token.get_value<Double>());
     } else if (token == TokenType::LITERAL_INTEGER) {
-        return "(" + std::to_string(token.get_value<Integer>()) + ")";
+        return std::to_string(token.get_value<Integer>());
     }
 
     // id
-    return "(" + token.get_value<String>() + ")";
+    return token.get_value<String>();
 }
 
 void Node::draw_tree(std::ostream &os) { _draw_tree(os, 0); }
