@@ -42,7 +42,7 @@ int main(int argc, char* argv[]) {
             for (;;) {
                 auto token = scanner.next_token();
                 std::cout << token << "\n";
-                if (token.get_type() == scanner::TokenType::eof) {
+                if (token == scanner::TokenType::eof) {
                     break;
                 }
             }
@@ -61,9 +61,10 @@ int main(int argc, char* argv[]) {
         try {
             scanner::Scanner scanner(file);
             simpleparser::SimpleParser simple_parser(scanner);
-            auto node = simple_parser.parse_expression();
-            node->draw_tree(std::cout);
-            delete node;
+            simple_parser.parse_expression()->draw(std::cout, 0);
+        } catch (const simpleparser::SyntaxException& ex) {
+            std::cout << ex.what();
+            return EXIT_FAILURE;
         } catch (const scanner::ScannerException& ex) {
             std::cout << ex.what();
             return EXIT_FAILURE;
