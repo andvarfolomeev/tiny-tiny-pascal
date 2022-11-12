@@ -45,6 +45,8 @@ set(
         src/scanner/token.cpp
         src/scanner/token.h
 
+        src/simple_parser/node.cpp
+        src/simple_parser/node.h
         src/simple_parser/simple_parser.cpp
         src/simple_parser/simple_parser.h
 
