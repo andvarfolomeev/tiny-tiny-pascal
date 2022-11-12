@@ -5,29 +5,11 @@
 
 #include "../scanner/scanner.h"
 #include "../scanner/token.h"
+#include "node.h"
 
 using namespace scanner;
 
 namespace simpleparser {
-class Node {
-   protected:
-    Token token;
-    Node *left;
-    Node *right;
-
-    void _draw_tree(std::ostream &os, int depth);
-
-   public:
-    explicit Node(Token token, Node *left, Node *right)
-        : token(std::move(token)), left(left), right(right) {}
-
-    ~Node();
-
-    std::string to_string();
-
-    void draw_tree(std::ostream &os);
-};
-
 /**
  * expression ::= term { '+' term | term '-' term }
  * term ::= factor { '*' factor | '/' factor }
@@ -40,9 +22,9 @@ class SimpleParser {
    public:
     explicit SimpleParser(Scanner scanner);
 
-    Node *parse_expression();
-    Node *parse_term();
-    Node *parse_factor();
+    SyntaxNodePointer parse_expression();
+    SyntaxNodePointer parse_term();
+    SyntaxNodePointer parse_factor();
 };
 
 class SyntaxException : public std::exception {
