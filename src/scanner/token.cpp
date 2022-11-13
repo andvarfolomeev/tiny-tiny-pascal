@@ -83,4 +83,12 @@ T Token::get_value() const {
     return std::get<T>(value);
 }
 
+bool operator==(const Token &token, const Operators &op) {
+    return token.get_value<Operators>() == op;
+}
+
+bool operator==(const Token &token, const Separators &sep) {
+    return token.get_value<Separators>() == sep;
+}
+
 }  // namespace scanner

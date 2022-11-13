@@ -190,6 +190,8 @@ class Token {
     friend std::ostream &operator<<(std::ostream &os, const Token &token);
 
     friend bool operator==(const Token &token, const TokenType &type);
+    friend bool operator==(const Token &token, const Operators &op);
+    friend bool operator==(const Token &token, const Separators &sep);
     bool check_type(std::vector<TokenType> types);
 
     template <typename T>
