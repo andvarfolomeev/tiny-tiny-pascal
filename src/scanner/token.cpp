@@ -64,8 +64,20 @@ bool operator==(const Token &token, const TokenType &type) {
     return token.type == type;
 }
 
-bool Token::check_type(std::vector<TokenType> types) {
+bool Token::is(std::vector<TokenType> types) {
     return std::find(types.begin(), types.end(), type) != types.end();
+}
+
+bool Token::is(std::vector<Operators> values) {
+    if (type != TokenType::OPER) return false;
+    return std::find(values.begin(), values.end(), get_value<Operators>()) !=
+           values.end();
+}
+
+bool Token::is(std::vector<Separators> values) {
+    if (type != TokenType::SEPERATOR) return false;
+    return std::find(values.begin(), values.end(), get_value<Separators>()) !=
+           values.end();
 }
 
 std::string Token::to_string() const {
@@ -84,10 +96,12 @@ T Token::get_value() const {
 }
 
 bool operator==(const Token &token, const Operators &op) {
+    if (token.type != TokenType::OPER) return false;
     return token.get_value<Operators>() == op;
 }
 
 bool operator==(const Token &token, const Separators &sep) {
+    if (token.type != TokenType::SEPERATOR) return false;
     return token.get_value<Separators>() == sep;
 }
 

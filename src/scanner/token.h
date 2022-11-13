@@ -192,13 +192,10 @@ class Token {
     friend bool operator==(const Token &token, const TokenType &type);
     friend bool operator==(const Token &token, const Operators &op);
     friend bool operator==(const Token &token, const Separators &sep);
-    bool check_type(std::vector<TokenType> types);
 
-    template <typename T>
-    bool check_value(std::vector<T> values) const {
-        return std::find(values.begin(), values.end(), std::get<T>(value)) !=
-               values.end();
-    }
+    bool is(std::vector<TokenType> types);
+    bool is(std::vector<Operators> values);
+    bool is(std::vector<Separators> values);
 
     [[nodiscard]] std::string to_string() const;
 
