@@ -12,7 +12,7 @@ using Integer = int;
 using Double = double;
 using String = std::string;
 
-enum Operators {
+enum class Operators {
     ADD,        // +
     ADDASSIGN,  // +=
     SUB,        // -
@@ -31,7 +31,7 @@ enum Operators {
     DEREF       // ^
 };
 
-enum Separators {
+enum class Separators {
     LPAREN,     // (
     RPAREN,     // )
     LBRACK,     // [
@@ -43,7 +43,7 @@ enum Separators {
     COLON       // :
 };
 
-enum Keywords {
+enum class Keywords {
     ABSOLUTE,
     ABSTRACT,
     ALIAS,
@@ -158,7 +158,7 @@ std::ostream &operator<<(std::ostream &os, const Keywords &keyword);
 using TokenValue =
     std::variant<Integer, Double, String, Operators, Separators, Keywords>;
 
-enum TokenType {
+enum class TokenType {
     eof,
     INVALID,
     LITERAL_INTEGER,
@@ -193,9 +193,9 @@ class Token {
     friend bool operator==(const Token &token, const Operators &op);
     friend bool operator==(const Token &token, const Separators &sep);
 
-    bool is(std::vector<TokenType> types);
-    bool is(std::vector<Operators> values);
-    bool is(std::vector<Separators> values);
+    bool is(const std::vector<TokenType> &types);
+    bool is(const std::vector<Operators> &values);
+    bool is(const std::vector<Separators> &values);
 
     [[nodiscard]] std::string to_string() const;
 

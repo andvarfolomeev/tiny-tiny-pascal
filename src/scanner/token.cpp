@@ -30,30 +30,30 @@ std::ostream &operator<<(std::ostream &os, const scanner::Token &token) {
     os << std::setw(10) << std::left << token.line << std::setw(10) << std::left
        << token.column << std::setw(20) << std::left << token.type << "\t";
     switch (token.type) {
-        case LITERAL_INTEGER:
+        case TokenType::LITERAL_INTEGER:
             os << std::setw(30) << std::left << token.get_value<Integer>();
             break;
-        case LITERAL_DOUBLE:
+        case TokenType::LITERAL_DOUBLE:
             os << std::setw(30) << std::left << token.get_value<Double>();
             break;
-        case ID:
-        case LITERAL_STRING:
+        case TokenType::ID:
+        case TokenType::LITERAL_STRING:
             os << std::setw(30) << std::left << token.get_value<String>();
             break;
-        case KEYWORD:
+        case TokenType::KEYWORD:
             os << std::setw(30) << std::left << token.get_value<Keywords>();
             break;
-        case COMMENT:
+        case TokenType::COMMENT:
             break;
-        case OPER:
+        case TokenType::OPER:
             os << std::setw(30) << std::left << token.get_value<Operators>();
             break;
-        case SEPERATOR:
+        case TokenType::SEPERATOR:
             os << std::setw(30) << std::left << token.get_value<Separators>();
             break;
-        case eof:
+        case TokenType::eof:
             os << std::setw(30) << std::left << "EOF";
-        case INVALID:
+        case TokenType::INVALID:
             break;
     }
     os << std::setw(30) << std::left << token.raw_value;
@@ -64,17 +64,17 @@ bool operator==(const Token &token, const TokenType &type) {
     return token.type == type;
 }
 
-bool Token::is(std::vector<TokenType> types) {
+bool Token::is(const std::vector<TokenType> &types) {
     return std::find(types.begin(), types.end(), type) != types.end();
 }
 
-bool Token::is(std::vector<Operators> values) {
+bool Token::is(const std::vector<Operators> &values) {
     if (type != TokenType::OPER) return false;
     return std::find(values.begin(), values.end(), get_value<Operators>()) !=
            values.end();
 }
 
-bool Token::is(std::vector<Separators> values) {
+bool Token::is(const std::vector<Separators> &values) {
     if (type != TokenType::SEPERATOR) return false;
     return std::find(values.begin(), values.end(), get_value<Separators>()) !=
            values.end();

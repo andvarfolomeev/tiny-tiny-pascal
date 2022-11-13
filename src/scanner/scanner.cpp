@@ -295,11 +295,11 @@ Token Scanner::scan_number_literal(int numeral_system) {
                     current_state = dec;
                     integer_part.push_back(buffer_peek());
                 } else if (try_consume('.')) {
-                    type = LITERAL_DOUBLE;
+                    type = TokenType::LITERAL_INTEGER;
                     fraction_part.push_back(buffer_peek());
                     current_state = scale;
                 } else if (try_consume('e') || try_consume('E')) {
-                    type = LITERAL_DOUBLE;
+                    type = TokenType::LITERAL_DOUBLE;
                     exponent_part.push_back(buffer_peek());
                     current_state = pre_exp;
                 } else {
@@ -366,7 +366,7 @@ Token Scanner::scan_number_literal(int numeral_system) {
                     integer_part.push_back(buffer_peek());
                     current_state = not_dec;
                 } else if (try_consume('.')) {
-                    type = LITERAL_DOUBLE;
+                    type = TokenType::LITERAL_DOUBLE;
                     current_state = finish;
                 } else {
                     current_state = finish;
@@ -377,7 +377,7 @@ Token Scanner::scan_number_literal(int numeral_system) {
         }
     }
 
-    if (numeral_system == 10 && type == LITERAL_INTEGER) {
+    if (numeral_system == 10 && type == TokenType::LITERAL_INTEGER) {
         return prepare_token(type,
                              get_integer_value(get_buffer(), numeral_system),
                              get_buffer());
@@ -393,7 +393,7 @@ Token Scanner::scan_number_literal(int numeral_system) {
     }
 
     // not dec
-    if (type == LITERAL_INTEGER) {
+    if (type == TokenType::LITERAL_INTEGER) {
         return prepare_token(type,
                              get_integer_value(get_buffer(), numeral_system),
                              get_buffer());
