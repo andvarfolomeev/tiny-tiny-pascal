@@ -24,7 +24,7 @@ SyntaxNodePointer SimpleParser::parse_term() {
     while (token == TokenType::OPER &&
            token.check_value<Operators>({Operators::MUL, Operators::QUO})) {
         current_token = scanner.next_token();
-        left = std::make_shared<BinOpNode>(token, left, parse_term());
+        left = std::make_shared<BinOpNode>(token, left, parse_factor());
         token = current_token;
     }
     return left;
@@ -46,13 +46,13 @@ SyntaxNodePointer SimpleParser::parse_factor() {
         current_token = scanner.next_token();
         return std::make_shared<IdNode>(token);
     }
-    if (token == TokenType::SEPERATOR &&
-        token.check_value<Separators>({Separators::LPAREN})) {
+
+    if (token == TokenType::SEPERATOR && token == Separators::LPAREN) {
         current_token = scanner.next_token();
         auto expression = parse_expression();
         if (current_token != TokenType::SEPERATOR ||
             !(current_token == TokenType::SEPERATOR &&
-              current_token.check_value<Separators>({Separators::RPAREN}))) {
+              current_token == Separators::RPAREN)) {
             throw SyntaxException(scanner.get_current_line(),
                                   scanner.get_current_column(), "Expected )");
         }
