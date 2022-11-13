@@ -39,10 +39,10 @@ bool testers::SimpleParserTester::run_test(
     auto output_file_content = read_file(output_file_path);
     if (simple_parser_answer.str() != output_file_content) {
         std::cout << "FAILED"
-                  << "\n\tExpected: \t" << output_file_content << ";"
-                  << std::endl
-                  << "\tTaken:\t\t" << simple_parser_answer.str() << ";"
-                  << std::endl;
+                  << "\n\tExpected: \n"
+                  << output_file_content << ";" << std::endl
+                  << "\tTaken:\n"
+                  << simple_parser_answer.str() << ";" << std::endl;
         success = false;
     }
     return success;
