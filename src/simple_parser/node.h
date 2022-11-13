@@ -14,6 +14,7 @@ class SyntaxNode {
     virtual ~SyntaxNode() = default;
     virtual void draw(std::ostream &os, int depth) = 0;
     virtual std::string to_string() = 0;
+    virtual double calc();
 };
 
 typedef std::shared_ptr<SyntaxNode> SyntaxNodePointer;
@@ -33,6 +34,7 @@ class BinOpNode : public SyntaxNode {
           right(std::move(right)) {}
     void draw(std::ostream &os, int depth) override;
     std::string to_string() override;
+    double calc() override;
 };
 
 class NumberNode : public SyntaxNode {
@@ -44,6 +46,7 @@ class NumberNode : public SyntaxNode {
     explicit NumberNode(Token token) : SyntaxNode(), token(std::move(token)) {}
     void draw(std::ostream &os, [[maybe_unused]] int depth) override;
     std::string to_string() override;
+    double calc() override;
 };
 
 class IdNode : public SyntaxNode {
@@ -55,6 +58,7 @@ class IdNode : public SyntaxNode {
     explicit IdNode(Token token) : SyntaxNode(), token(std::move(token)) {}
     void draw(std::ostream &os, [[maybe_unused]] int depth) override;
     std::string to_string() override;
+    double calc() override;
 };
 }  // namespace simpleparser
 
