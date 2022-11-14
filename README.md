@@ -13,7 +13,7 @@ Options:
          --file [file path]
 ```
 
-# Запуск
+# Сборка
 
 ```bash
 mkdir build
@@ -21,3 +21,10 @@ cd build
 cmake ..
 cmake --build .
 ```
+
+# Запуск
+
+Проект содержит два таргета:
+
+- tiny_tiny_pascal
+- tiny_tiny_pascal_tests
