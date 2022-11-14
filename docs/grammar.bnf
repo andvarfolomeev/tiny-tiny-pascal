@@ -1,0 +1,68 @@
+// bnf rules:
+//
+// A, B  - concat
+// A | B - A or B
+// [A]   - zero or one entire
+// {A}   - zero or more entries
+// (A B) - group
+
+
+// program
+<program> ::= ["program" <id> ";"] {<declarations>} <main>
+
+
+// declarations
+<declarations> ::= <const_declaration> | <var_declaration> | <type_declaration> | <function_declaration> |
+										  <procedure_declaration>
+<const_declaration> ::= "const" <one_const_declaration> {<one_const_declaration>}
+<one_const_declaration> ::= <id> [":" <type>] "=" <exp> ";"
+
+<var_declaration> ::= "var" <one_var_declaration> {<one_var_declaration>}
+<one_var_declaration> ::= <id> {"," <id>} ":" <type> ";" | <id> ":" <type> "=" <exp> ";"
+
+<type_declaration> ::= "type" <one_type_declaration> {<one_type_declaration>}
+<one_type_declaration> ::= <id> "=" <type> ";"
+
+<function_declaration> ::= <function_header> {<const_declaration> | <var_declaration> | <type_declaration>} <stmts>
+<function_header> ::= "function" <id> "(" <parameters> ")" ":" <type> ";"
+
+<procedure_declaration> ::= <procedure_header> {<const_declaration> | <var_declaration> | <type_declaration>} <stmts>
+<procedure_header> ::= "procedure" <id> "(" <parameters> ")" ";"
+
+<parameters> ::= <parameter> {"," <parameter>}
+<parameter> ::= ["var" | "const"] <id_list> ":" <type>
+
+<main> ::= begin <statement> end "."
+
+// statements
+<statement> ::= <simple_statement> | <structured_statement>
+<statement_sequence> ::= <statement> {";" <statement>}
+
+<simple_statement> ::= <assignment_statement> | <procedure_statement>
+<procedure_statement> ::= <id> | ["(" <id_list> ")"]
+<structured_statement> ::= <compound_statement> | <repetitive_statement> | <condition_statement>
+
+<compound_statement> ::= "begin" <statement_sequence> "end"
+<assignment_statement> ::= <id> <assignment_operators> <expression>
+<repetitive_statement> ::= <for_statement> | <while_statement>
+<while_statement> ::= "while" <expression> "do" <statement>
+<for_statement> ::= "for" <id> ":=" <expression> ("to" | "downto") <expression> "do" <statement>
+<condition_statement> ::= <if_statement> | <case_statement>
+<if_statement> ::= "if" <expression> "then" <statement> ["else" <statement>]
+<case_statement> ::= "case" <expression> "of" <case_labels> {";" <case_labels> } ["else" <statement>]
+<case_labels> ::= <case_label_list> ":" <statement>
+<case_label_list> ::= <literal> | {"," <literal>}
+
+// expressions
+<expression> ::=
+
+// types
+<type> ::=  <primitive_type> | <array_type>
+<primitive_type> ::= "integer" | "double" | "string" | "char"
+<array_type> ::= "array" <ranges> "of" <primitive_type>
+<ranges> ::= <range> {"," <range>}
+<range> ::= <int> ".." <int>
+
+//
+<id_list> ::= <id> {"," <id>}
+<assignment_operators> ::= "+=" | "-=" | "*=" | "/="
