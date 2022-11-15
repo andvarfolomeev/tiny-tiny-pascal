@@ -1,2 +1,1 @@
-1         1         LITERAL_INTEGER     	2147483647                    %01111111111111111111111111111111
-Exception: Line: 2; Column: 1; Integer overflow
+Line: 2; Column: 1; Integer overflow

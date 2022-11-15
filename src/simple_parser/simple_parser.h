@@ -27,7 +27,7 @@ class SimpleParser {
     SyntaxNodePointer parse_factor();
 };
 
-class SyntaxException : public std::exception {
+class SyntaxException : public TinyPascalException {
    protected:
     std::string message;
 

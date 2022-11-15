@@ -3,7 +3,7 @@
 
 #include <sstream>
 
-namespace testers {
+namespace tester {
 class TestReport {
     unsigned int success, failed;
 
@@ -16,6 +16,6 @@ class TestReport {
     TestReport &operator+=(const TestReport &report);
     friend std::ostream &operator<<(std::ostream &os, const TestReport &report);
 };
-}  // namespace testers
+}  // namespace tester
 
 #endif  // TESTS_TEST_REPORT_H_

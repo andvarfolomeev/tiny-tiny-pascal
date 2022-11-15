@@ -36,6 +36,9 @@ CPMAddPackage(
 set(
         SOURCE
 
+        src/core/exception.cpp
+        src/core/exception.h
+
         src/scanner/buffered_istream.cpp
         src/scanner/buffered_istream.h
 
@@ -62,14 +65,12 @@ set(
 set(
         SOURCE_TEST_EXE
         ${SOURCE}
-        testers/test_report.cpp
-        testers/basic_tester.cpp
-        testers/basic_tester.h
-        testers/scanner_tester.cpp
-        testers/scanner_tester.h
-        testers/simple_parser_tester.cpp
-        testers/simple_parser_tester.h
-        testers/tests.cpp
+
+        tests/tester.cpp
+        tests/tester.h
+        tests/test_report.cpp
+        tests/test_report.h
+        tests/main.cpp
 )
 
 add_executable(tiny_tiny_pascal ${SOURCE_MAIN_EXE})

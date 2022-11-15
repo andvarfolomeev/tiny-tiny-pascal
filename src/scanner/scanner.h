@@ -6,6 +6,7 @@
 #include <sstream>
 #include <utility>
 
+#include "../core/exception.h"
 #include "buffered_istream.h"
 #include "token.h"
 
@@ -63,7 +64,7 @@ class Scanner : public BufferedIStream {
     Token next_token();
 };
 
-class ScannerException : public std::exception {
+class ScannerException : public TinyPascalException {
    public:
     [[nodiscard]] const char *what() const noexcept override {
         return message.c_str();

@@ -10,7 +10,6 @@
 // program
 <program> ::= ["program" <id> ";"] {<declarations>} <main>
 
-
 // declarations
 <declarations> ::= <const_declaration> | <var_declaration> | <type_declaration> | <function_declaration> |
 										  <procedure_declaration>
