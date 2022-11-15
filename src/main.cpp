@@ -46,7 +46,7 @@ int main(int argc, char* argv[]) {
                     break;
                 }
             }
-        } catch (const scanner::ScannerException& ex) {
+        } catch (const TinyPascalException& ex) {
             std::cout << ex.what();
             return EXIT_FAILURE;
         }
@@ -65,7 +65,7 @@ int main(int argc, char* argv[]) {
         } catch (const simpleparser::SyntaxException& ex) {
             std::cout << ex.what();
             return EXIT_FAILURE;
-        } catch (const scanner::ScannerException& ex) {
+        } catch (const TinyPascalException& ex) {
             std::cout << ex.what();
             return EXIT_FAILURE;
         }
