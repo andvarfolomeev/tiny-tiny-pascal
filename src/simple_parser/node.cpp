@@ -3,15 +3,11 @@
 namespace simpleparser {
 void BinOpNode::draw(std::ostream& os, int depth) {
     auto padding = 3;
-
     os << to_string() << std::endl;
-    if (left == nullptr || right == nullptr) return;
-
     for (int i = 0; i < (depth + 1) * padding; ++i) {
         os << " ";
     }
     left->draw(os, depth + 1);
-
     for (int i = 0; i < (depth + 1) * padding; ++i) {
         os << " ";
     }
