@@ -1,8 +1,10 @@
 #include <argparse/argparse.hpp>
 #include <iostream>
 
+#include "parser/parser.h"
 #include "scanner/scanner.h"
 #include "simple_parser/simple_parser.h"
+
 
 int main(int argc, char* argv[]) {
     argparse::ArgumentParser program("tiny_tiny_pascal");
@@ -14,6 +16,10 @@ int main(int argc, char* argv[]) {
         .implicit_value(true);
     program.add_argument("--simple-parser")
         .help("run simple parser")
+        .default_value(false)
+        .implicit_value(true);
+    program.add_argument("--parser")
+        .help("run parser")
         .default_value(false)
         .implicit_value(true);
 
@@ -62,6 +68,23 @@ int main(int argc, char* argv[]) {
             scanner::Scanner scanner(file);
             simpleparser::SimpleParser simple_parser(scanner);
             simple_parser.parse_expression()->draw(std::cout, 0);
+        } catch (const simpleparser::SyntaxException& ex) {
+            std::cout << ex.what();
+            return EXIT_FAILURE;
+        } catch (const TinyPascalException& ex) {
+            std::cout << ex.what();
+            return EXIT_FAILURE;
+        }
+    }
+
+    auto run_parser = program.get<bool>("--parser");
+    if (run_parser) {
+        try {
+            scanner::Scanner scanner(file);
+            parser::Parser p(scanner);
+            auto head = p.program();
+            head->draw(std::cout, 0);
+            std::cout << "\n";
         } catch (const simpleparser::SyntaxException& ex) {
             std::cout << ex.what();
             return EXIT_FAILURE;
