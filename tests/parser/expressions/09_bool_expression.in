@@ -1,0 +1,18 @@
+var a: Real = 10;
+    b: Real = 11;
+    c: Real = 12;
+    d: Real = 13;
+
+begin
+    writeln(2 <> 3);
+    writeln(2 < 3);
+    writeln(2 <= 3);
+    writeln(2 >= 3);
+    writeln(2 > 3);
+    writeln(2 = 3);
+
+    writeln(2 or 3);
+    writeln(2 or 3 or 4 or 5 or 6);
+    writeln(2 and 3 or 4 and 5);
+    writeln(not 2 and not 3 or not 4 and not 5);
+end.

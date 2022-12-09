@@ -1,0 +1,18 @@
+procedure a(var b: Integer; const c: Real; d: String);
+begin
+    writeln(b, c, d);
+end;
+
+procedure hello();
+begin
+    writeln('Hello, world');
+end;
+
+procedure procedure_with_other_decls();
+var b: Integer; c: Integer = 1 + 3 * 4;
+const message = 'Hello, world'; d: Integer = 10;
+begin
+    writeln(message);
+end;
+
+begin end.

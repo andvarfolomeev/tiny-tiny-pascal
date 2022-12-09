@@ -1,0 +1,5 @@
+var point: record 
+    x, y: Real;
+    size: Real;
+end;
+begin end.

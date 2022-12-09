@@ -1,0 +1,69 @@
+main
+   program name:
+      without name
+   decls:
+      procedure decl
+         a 
+            param
+               var 
+               b 
+               type:
+                  Integer 
+            param
+               const 
+               c 
+               type:
+                  Real 
+            param
+               without modifier
+               d 
+               type:
+                  String 
+         decls:
+         block:
+            compounds statements
+               writeln 
+                  b 
+                  c 
+                  d 
+      procedure decl
+         hello 
+         decls:
+         block:
+            compounds statements
+               writeln 
+                  'Hello, world'
+      procedure decl
+         procedure_with_other_decls 
+         decls:
+            vars:
+               var
+                  b 
+                  type:
+                     Integer 
+                  without exp
+               var
+                  c 
+                  type:
+                     Integer 
+                  +
+                     1
+                     *
+                        3
+                        4
+            consts:
+               const
+                  message 
+                  without type
+                  'Hello, world'
+               const
+                  d 
+                  type:
+                     Integer 
+                  10
+         block:
+            compounds statements
+               writeln 
+                  message 
+   block:
+      compounds statements

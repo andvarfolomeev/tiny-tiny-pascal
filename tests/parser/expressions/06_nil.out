@@ -1,0 +1,8 @@
+main
+   program name:
+      without name
+   decls:
+   block:
+      compounds statements
+         writeln 
+            nil

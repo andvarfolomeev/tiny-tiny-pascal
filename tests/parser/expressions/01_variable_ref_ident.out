@@ -1,0 +1,14 @@
+main
+   program name:
+      without name
+   decls:
+      vars:
+         var
+            a 
+            type:
+               Integer 
+            10
+   block:
+      compounds statements
+         writeln 
+            a 

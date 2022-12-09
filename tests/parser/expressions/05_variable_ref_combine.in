@@ -1,0 +1,34 @@
+const MAX_VECTOR_SIZE = 100000;
+
+type vector = record
+    data: array[0..MAX_VECTOR_SIZE] of integer;
+    size: Integer;
+end;
+
+function create_vector(n: integer): vector;
+var res: vector;
+begin
+    res.size := n;
+    create_vector := res;
+end;
+
+type point = record
+    x, y: real;
+end;
+
+type point_vector = record
+    data: array[0..MAX_VECTOR_SIZE] of point;
+    size: integer;
+end;
+
+function create_point_vector(n: integer): point_vector;
+var res: point_vector;
+begin
+    res.size := n;
+    create_point_vector := res;
+end;
+
+begin
+    writeln(create_vector(10).data[9]);
+    writeln(create_point_vector(10).data[0].x);
+end.

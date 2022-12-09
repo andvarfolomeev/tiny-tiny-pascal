@@ -1,0 +1,113 @@
+main
+   program name:
+      without name
+   decls:
+      consts:
+         const
+            MAX_VECTOR_SIZE 
+            without type
+            100000
+      def types:
+         type def
+            vector 
+            record
+               fields
+                  array type
+                     type:
+                        integer                      
+                     range:
+                        0
+                        MAX_VECTOR_SIZE 
+                  data 
+               fields
+                  type:
+                     Integer 
+                  size 
+      function decl
+         create_vector 
+            param
+               without modifier
+               n 
+               type:
+                  integer 
+            type:
+               vector 
+         decls:
+            vars:
+               var
+                  res 
+                  type:
+                     vector 
+                  without exp
+         block:
+            compounds statements
+               :=
+                  res 
+                     size 
+                  n 
+               :=
+                  create_vector 
+                  res 
+      def types:
+         type def
+            point 
+            record
+               fields
+                  type:
+                     real 
+                  x 
+                  y 
+      def types:
+         type def
+            point_vector 
+            record
+               fields
+                  array type
+                     type:
+                        point                      
+                     range:
+                        0
+                        MAX_VECTOR_SIZE 
+                  data 
+               fields
+                  type:
+                     integer 
+                  size 
+      function decl
+         create_point_vector 
+            param
+               without modifier
+               n 
+               type:
+                  integer 
+            type:
+               point_vector 
+         decls:
+            vars:
+               var
+                  res 
+                  type:
+                     point_vector 
+                  without exp
+         block:
+            compounds statements
+               :=
+                  res 
+                     size 
+                  n 
+               :=
+                  create_point_vector 
+                  res 
+   block:
+      compounds statements
+         writeln 
+            create_vector 
+               10
+               data 
+                  9
+         writeln 
+            create_point_vector 
+               10
+               data 
+                  0
+               x 

@@ -1,0 +1,4 @@
+var a: Integer;
+    b: Real;
+    s: String;
+begin end.

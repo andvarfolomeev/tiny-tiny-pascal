@@ -1,0 +1,29 @@
+main
+   program name:
+      without name
+   decls:
+      vars:
+         var
+            p 
+            record
+               fields
+                  type:
+                     Real 
+                  x 
+                  y 
+            without exp
+   block:
+      compounds statements
+         :=
+            p 
+               x 
+            20
+         :=
+            p 
+               y 
+            10
+         writeln 
+            p 
+               x 
+            p 
+               y 

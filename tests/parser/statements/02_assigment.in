@@ -1,0 +1,18 @@
+var a, b: Integer;
+
+function max(num1, num2: integer): integer;
+var result: integer;
+begin
+   if (num1 > num2) then result := num1
+   else result := num2;
+   max := result;
+end;
+
+begin
+    a := 10;
+    a += 1;
+    a -= 2;
+    a *= 3;
+    a /= 4;
+    b := max(max(max(0, 10), 20), 30);
+end.

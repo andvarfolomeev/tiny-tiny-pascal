@@ -1,0 +1,23 @@
+function max(num1, num2: integer): integer;
+var result: integer;
+begin
+   if (num1 > num2) then result := num1
+   else result := num2;
+   max := result;
+end;
+
+function pi_calc(const total: Integer): Real;
+var inside: Integer = 0; 
+    i: Integer;
+    point: record x, y: Real end;
+    x, y: Real;
+begin
+    for i := 0 to total do begin
+        point.x := random();
+        point.y := random();
+        if sqrt(point.x * point.x + point.y * point.y) < 1 then inside += 1;
+    end;
+    pi_calc := inside / total * 4 ;
+end;
+
+begin end.

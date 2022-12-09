@@ -1,0 +1,2 @@
+type i = Integer s = string
+begin end.

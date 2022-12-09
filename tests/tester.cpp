@@ -5,6 +5,7 @@
 
 #include "../src/scanner/scanner.h"
 #include "../src/simple_parser/simple_parser.h"
+#include "../src/parser/parser.h"
 
 namespace tester {
 
@@ -114,6 +115,15 @@ std::string SimpleParserTester::get_answer(const std::string& path_in) {
     simpleparser::SimpleParser parser(scanner);
     std::stringstream answer;
     parser.parse_expression()->draw(answer, 0);
+    return answer.str();
+}
+
+std::string ParserTester::get_answer(const std::string& path_in) {
+    auto stream = std::ifstream(path_in);
+    scanner::Scanner scanner(stream);
+    parser::Parser parser(scanner);
+    std::stringstream answer;
+    parser.program()->draw(answer, 0);
     return answer.str();
 }
 }  // namespace tester

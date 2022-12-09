@@ -1,0 +1,6 @@
+var p: record x, y: Real; end;
+begin
+    p.x := 20;
+    p.y := 10;
+    writeln(p.x, p.y);
+end.

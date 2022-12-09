@@ -44,6 +44,15 @@ class SimpleParserTester : public Tester {
    protected:
     std::string get_answer(const std::string &path_in) override;
 };
+
+class ParserTester : public Tester {
+   public:
+    explicit ParserTester(std::string path_to_files)
+        : Tester(std::move(path_to_files)) {}
+
+   protected:
+    std::string get_answer(const std::string &path_in) override;
+};
 }  // namespace tester
 
 #endif  // TESTER_H

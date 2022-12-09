@@ -1,0 +1,118 @@
+main
+   program name:
+      without name
+   decls:
+      function decl
+         max 
+            param
+               without modifier
+               num1 
+               num2 
+               type:
+                  integer 
+            type:
+               integer 
+         decls:
+            vars:
+               var
+                  result 
+                  type:
+                     integer 
+                  without exp
+         block:
+            compounds statements
+               if
+                  >
+                     num1 
+                     num2 
+                  :=
+                     result 
+                     num1 
+                  else:
+                     :=
+                     result 
+                     num2 
+               :=
+                  max 
+                  result 
+      function decl
+         pi_calc 
+            param
+               const 
+               total 
+               type:
+                  Integer 
+            type:
+               Real 
+         decls:
+            vars:
+               var
+                  inside 
+                  type:
+                     Integer 
+                  0
+               var
+                  i 
+                  type:
+                     Integer 
+                  without exp
+               var
+                  point 
+                  record
+                     fields
+                        type:
+                           Real 
+                        x 
+                        y 
+                  without exp
+               var
+                  x 
+                  y 
+                  type:
+                     Real 
+                  without exp
+         block:
+            compounds statements
+               for
+                  i 
+                  0
+                  to 
+                  total 
+                  compounds statements
+                     :=
+                        point 
+                           x 
+                        random 
+                     :=
+                        point 
+                           y 
+                        random 
+                     if
+                        <
+                           sqrt 
+                              +
+                                 *
+                                    point 
+                                       x 
+                                    point 
+                                       x 
+                                 *
+                                    point 
+                                       y 
+                                    point 
+                                       y 
+                           1
+                        +=
+                           inside 
+                           1
+                        else:
+                           empty
+               :=
+                  pi_calc 
+                  *
+                     /
+                        inside 
+                        total 
+                     4
+   block:
+      compounds statements

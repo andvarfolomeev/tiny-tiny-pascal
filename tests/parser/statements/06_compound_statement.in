@@ -1,0 +1,20 @@
+begin
+    writeln(1);
+    begin
+        writeln(2);
+        begin
+            writeln(3);
+            begin
+                writeln(4);
+            end;
+            writeln(5);
+        end;
+        writeln(6);
+        begin
+            writeln(7);
+        end;
+        writeln(8);
+    end;
+    writeln(9);
+    writeln(10);
+end.

@@ -1,0 +1,70 @@
+main
+   program name:
+      without name
+   decls:
+      vars:
+         var
+            a 
+            b 
+            type:
+               Integer 
+            without exp
+      function decl
+         max 
+            param
+               without modifier
+               num1 
+               num2 
+               type:
+                  integer 
+            type:
+               integer 
+         decls:
+            vars:
+               var
+                  result 
+                  type:
+                     integer 
+                  without exp
+         block:
+            compounds statements
+               if
+                  >
+                     num1 
+                     num2 
+                  :=
+                     result 
+                     num1 
+                  else:
+                     :=
+                     result 
+                     num2 
+               :=
+                  max 
+                  result 
+   block:
+      compounds statements
+         :=
+            a 
+            10
+         +=
+            a 
+            1
+         -=
+            a 
+            2
+         *=
+            a 
+            3
+         /=
+            a 
+            4
+         :=
+            b 
+            max 
+               max 
+                  max 
+                     0
+                     10
+                  20
+               30

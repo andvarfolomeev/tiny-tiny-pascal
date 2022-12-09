@@ -1,0 +1,20 @@
+main
+   program name:
+      without name
+   decls:
+      def types:
+         type def
+            i 
+            type:
+               Integer 
+      def types:
+         type def
+            r 
+            type:
+               Real 
+         type def
+            s 
+            type:
+               String 
+   block:
+      compounds statements

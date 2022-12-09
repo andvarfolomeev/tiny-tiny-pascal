@@ -1,0 +1,37 @@
+main
+   program name:
+      without name
+   decls:
+      function decl
+         a 
+            type:
+               Integer 
+         decls:
+         block:
+            compounds statements
+               :=
+                  a 
+                  10
+      function decl
+         b 
+            type:
+               Integer 
+         decls:
+         block:
+            compounds statements
+               :=
+                  b 
+                  20
+   block:
+      compounds statements
+         writeln 
+            *
+               +
+                  a 
+                  30
+               4
+            *
+               +
+                  b 
+                  40
+               5
