@@ -48,10 +48,7 @@ class Parser {
     SyntaxNodePointer type_decl();
 
     SyntaxNodePointer procedure_decl();
-    SyntaxNodePointer procedure_header();
-
     SyntaxNodePointer function_decl();
-
     SyntaxNodePointer formal_param_section();
 
     SyntaxNodePointer compound_statement();
@@ -59,9 +56,7 @@ class Parser {
     SyntaxNodePointer simple_statement();
     SyntaxNodePointer for_statement();
     SyntaxNodePointer while_statement();
-    SyntaxNodePointer do_while_statement();
     SyntaxNodePointer if_statement();
-    SyntaxNodePointer assigment_statement();
 
     SyntaxNodePointer expression();
     SyntaxNodePointer simple_expression();
@@ -73,7 +68,6 @@ class Parser {
     SyntaxNodePointers function_call();
     SyntaxNodePointers array_access();
     SyntaxNodePointer record_access();
-    SyntaxNodePointers param_list();
     SyntaxNodePointer set_constructor();
     SyntaxNodePointer set_element();
     SyntaxNodePointer identifier();
@@ -91,22 +85,29 @@ class Parser {
     SyntaxNodePointers fields_list();
     SyntaxNodePointer field_section();
 
-    SyntaxNodePointers list(
-        SyntaxNodePointer (Parser::*func)(), Separators sep_type,
-        std::optional<Separators> sep_end = {},
-        std::optional<Keywords> keyword_end = {});
+    SyntaxNodePointers list(SyntaxNodePointer (Parser::*func)(),
+                            Separators sep_type,
+                            std::optional<Separators> sep_end = {},
+                            std::optional<Keywords> keyword_end = {});
 
    private:
     Scanner scanner;
     Token current_token;
 
     Token next_token();
-    SyntaxException new_exception(const std::string &message);
 
+    template <typename T>
+    void require_vec(std::vector<T> item, bool eat = true);
+    void require(Keywords keyword, bool eat = true);
+    void require(Keywords keyword1, Keywords keyword2, bool eat = true);
+    void require(Separators sep, bool eat = true);
+    void require(Operators op, bool eat = true);
+    void require(TokenType type, bool eat = true);
+
+    SyntaxException new_exception(const std::string &message);
     template <typename T1, typename T2>
-    bool check_type(std::shared_ptr<T2> a) {
-        return dynamic_cast<T1*>(a.get()) != nullptr;
-    }
+
+    bool check_type(std::shared_ptr<T2> a);
 };
 }  // namespace parser
 

@@ -1,17 +1,31 @@
 #include "parser.h"
+
+#include <utility>
+
 #include "magic_enum.hpp"
 
+template <typename InputIt>
+std::string join_enum(InputIt first, InputIt last,
+                      const std::string& separator = ", ",
+                      const std::string& basic_res = "") {
+    if (first == last) {
+        return basic_res;
+    }
+
+    std::stringstream ss;
+    ss << *first;
+    ++first;
+
+    while (first != last) {
+        ss << separator;
+        ss << magic_enum::enum_name(*first);
+        ++first;
+    }
+
+    return ss.str();
+}
+
 namespace parser {
-Token Parser::next_token() {
-    current_token = scanner.next_token();
-    return current_token;
-}
-
-SyntaxException Parser::new_exception(const std::string& message) {
-    auto pos = current_token.get_pos();
-    return SyntaxException(pos.first, pos.second, message);
-}
-
 SyntaxNodePointer Parser::program() {
     // first token taken in constructor
     SyntaxNodePointer name = nullptr;
@@ -21,18 +35,13 @@ SyntaxNodePointer Parser::program() {
         name.swap(name_tmp);
     }
     auto block_ = block();
-    if (current_token != Separators::PERIOD) {
-        throw new_exception(". expected");
-    }
+    require(Separators::PERIOD);
     return std::make_shared<NodeProgram>(name, block_);
 }
 
 SyntaxNodePointer Parser::program_name() {
     auto name = identifier();
-    if (current_token != Separators::SEMICOLON) {
-        throw new_exception("; expected");
-    }
-    next_token();
+    require(Separators::SEMICOLON);
     return name;
 }
 
@@ -58,10 +67,7 @@ SyntaxNodePointer Parser::block() {
             break;
         }
     }
-    if (current_token != Keywords::BEGIN) {
-        throw new_exception("begin expected");
-    }
-    next_token();
+    require(Keywords::BEGIN);
     auto statements = compound_statement();
     return std::make_shared<NodeProgramBlock>(declarations, statements);
 }
@@ -82,16 +88,9 @@ SyntaxNodePointer Parser::const_decl() {
         auto id_type_tmp = type();
         id_type.swap(id_type_tmp);
     }
-    if (current_token != Operators::EQL) {
-        throw new_exception("= expected");
-    }
-    next_token();
+    require(Operators::EQL);
     auto exp = expression();
-    if (current_token != Separators::SEMICOLON) {
-        throw new_exception("; expected");
-    }
-    next_token();
-
+    require(Separators::SEMICOLON);
     return std::make_shared<NodeConstDecl>(id, id_type, exp);
 }
 
@@ -105,10 +104,7 @@ SyntaxNodePointer Parser::var_decls() {
 
 SyntaxNodePointer Parser::var_decl() {
     auto ids = list(&Parser::identifier, Separators::COMMA, {}, {});
-    if (current_token != Separators::COLON) {
-        throw new_exception(": expected");
-    }
-    next_token();
+    require(Separators::COLON);
     auto ids_type = type();
     SyntaxNodePointer exp = nullptr;
     if (current_token == Operators::EQL) {
@@ -119,10 +115,7 @@ SyntaxNodePointer Parser::var_decl() {
         auto exp_tmp = expression();
         exp.swap(exp_tmp);
     }
-    if (current_token != Separators::SEMICOLON) {
-        throw new_exception("; expected");
-    }
-    next_token();
+    require(Separators::SEMICOLON);
     return std::make_shared<NodeVarDecl>(ids, ids_type, exp);
 }
 
@@ -136,71 +129,36 @@ SyntaxNodePointer Parser::type_decls() {
 
 SyntaxNodePointer Parser::type_decl() {
     auto id = identifier();
-    if (current_token != Operators::EQL) {
-        throw new_exception("= expected");
-    }
-    next_token();
+    require(Operators::EQL);
     auto id_type = type();
-    if (current_token != Separators::SEMICOLON) {
-        throw new_exception("; expected");
-    }
-    next_token();
+    require(Separators::SEMICOLON);
     return std::make_shared<NodeTypeDecl>(id, id_type);
 }
 
 SyntaxNodePointer Parser::procedure_decl() {
     auto id = identifier();
-    if (current_token != Separators::LPAREN) {
-        throw new_exception("( expected");
-    }
-    next_token();
+    require(Separators::LPAREN);
     auto params = list(&Parser::formal_param_section, Separators::SEMICOLON,
                        Separators::RPAREN, {});
-    if (current_token != Separators::RPAREN) {
-        throw new_exception(") expected");
-    }
-    next_token();
-    if (current_token != Separators::SEMICOLON) {
-        throw new_exception("; expected");
-    }
-    next_token();
+    require(Separators::RPAREN);
+    require(Separators::SEMICOLON);
     auto block_ = block();
-    if (current_token != Separators::SEMICOLON) {
-        throw new_exception(
-            "; expected in procedure declarations after compound statement");
-    }
-    next_token();
+    require(Separators::SEMICOLON);
     return std::make_shared<NodeProcedureDecl>(
         std::make_shared<NodeHeaderProcedureDecl>(id, params), block_);
 }
 
 SyntaxNodePointer Parser::function_decl() {
     auto id = identifier();
-    if (current_token != Separators::LPAREN) {
-        throw new_exception("( expected");
-    }
-    next_token();
+    require(Separators::LPAREN);
     auto params = list(&Parser::formal_param_section, Separators::SEMICOLON,
                        Separators::RPAREN, {});
-    if (current_token != Separators::RPAREN) {
-        throw new_exception(") expected");
-    }
-    next_token();
-    if (current_token != Separators::COLON) {
-        throw new_exception(": expected");
-    }
-    next_token();
+    require(Separators::RPAREN);
+    require(Separators::COLON);
     auto function_type = type();
-    if (current_token != Separators::SEMICOLON) {
-        throw new_exception("; expected");
-    }
-    next_token();
+    require(Separators::SEMICOLON);
     auto block_ = block();
-    if (current_token != Separators::SEMICOLON) {
-        throw new_exception(
-            "; expected in function declarations after compound statement");
-    }
-    next_token();
+    require(Separators::SEMICOLON);
     return std::make_shared<NodeFunctionDecl>(
         std::make_shared<NodeHeaderFunctionDecl>(id, params, function_type),
         block_);
@@ -214,10 +172,7 @@ SyntaxNodePointer Parser::formal_param_section() {
         modifier = keyword();
     }
     auto idents = list(&Parser::identifier, Separators::COMMA, {}, {});
-    if (current_token != Separators::COLON) {
-        throw new_exception(": expected");
-    }
-    next_token();
+    require(Separators::COLON);
     return std::make_shared<NodeFormalParamSection>(modifier, idents, type());
 }
 
@@ -234,7 +189,7 @@ SyntaxNodePointer Parser::compound_statement() {
             break;
         }
         if (!stmts->empty() && i == 0) {
-            throw new_exception("; expected in compound statement");
+            throw new_exception("Expected in compound statement");
         }
         stmts->push_back(statement());
     }
@@ -263,7 +218,7 @@ SyntaxNodePointer Parser::simple_statement() {
     auto left = expression();
     if (check_type<NodeFuncCall>(left)) {
         return left;
-    } else if (check_type<NodeVarRef>(left)) { 
+    } else if (check_type<NodeVarRef>(left)) {
         if (!current_token.is({Operators::ASSIGN, Operators::ADDASSIGN,
                                Operators::SUBASSIGN, Operators::MULASSIGN,
                                Operators::QUOASSIGN})) {
@@ -274,6 +229,37 @@ SyntaxNodePointer Parser::simple_statement() {
         return std::make_shared<NodeAssigmentStatement>(op, left, expression());
     }
     throw new_exception("Illegal statement");
+}
+
+SyntaxNodePointer Parser::for_statement() {
+    auto id = identifier();
+    require(Operators::ASSIGN);
+    auto start_exp = expression();
+    require(Keywords::TO, Keywords::DOWNTO, false);
+    auto dir = keyword();
+    auto end_exp = expression();
+    require(Keywords::DO);
+    auto op = statement();
+    return std::make_shared<NodeForStatement>(id, start_exp, dir, end_exp, op);
+}
+
+SyntaxNodePointer Parser::while_statement() {
+    auto bool_exp = expression();
+    require(Keywords::DO);
+    return std::make_shared<NodeWhileStatement>(bool_exp, statement());
+}
+
+SyntaxNodePointer Parser::if_statement() {
+    auto exp = expression();
+    require(Keywords::THEN);
+    auto op = statement();
+    if (current_token == Keywords::ELSE) {
+        next_token();
+        auto else_op = statement();
+
+        return std::make_shared<NodeIfStatement>(exp, op, else_op);
+    }
+    return std::make_shared<NodeIfStatement>(exp, op, nullptr);
 }
 
 SyntaxNodePointer Parser::expression() {
@@ -298,51 +284,6 @@ SyntaxNodePointer Parser::simple_expression() {
         left = std::make_shared<NodeBinOp>(op, left, term());
     }
     return left;
-}
-
-SyntaxNodePointer Parser::for_statement() {
-    auto id = identifier();
-    if (current_token != Operators::ASSIGN) {
-        throw new_exception(":= expected");
-    }
-    next_token();
-    auto start_exp = expression();
-    if (!current_token.is({Keywords::TO, Keywords::DOWNTO})) {
-        throw new_exception("to or downto expected");
-    }
-    auto dir = keyword();
-    auto end_exp = expression();
-    if (current_token != Keywords::DO) {
-        throw new_exception("do expected");
-    }
-    next_token();
-    auto op = statement();
-    return std::make_shared<NodeForStatement>(id, start_exp, dir, end_exp, op);
-}
-
-SyntaxNodePointer Parser::while_statement() {
-    auto bool_exp = expression();
-    if (current_token != Keywords::DO) {
-        throw new_exception("do expected in while statement");
-    }
-    next_token();
-    return std::make_shared<NodeWhileStatement>(bool_exp, statement());
-}
-
-SyntaxNodePointer Parser::if_statement() {
-    auto exp = expression();
-    if (current_token != Keywords::THEN) {
-        throw new_exception("then expected");
-    }
-    next_token();
-    auto op = statement();
-    if (current_token == Keywords::ELSE) {
-        next_token();
-        auto else_op = statement();
-
-        return std::make_shared<NodeIfStatement>(exp, op, else_op);
-    }
-    return std::make_shared<NodeIfStatement>(exp, op, nullptr);
 }
 
 SyntaxNodePointer Parser::term() {
@@ -387,26 +328,20 @@ SyntaxNodePointer Parser::factor() {
     if (token == Separators::LPAREN) {
         next_token();
         auto exp = expression();
-        if (current_token != Separators::RPAREN) {
-            throw new_exception(") expected");
-        }
-        next_token();
+        require(Separators::RPAREN);
         return exp;
     }
     if (token == Separators::LBRACK) {
         next_token();
         auto set_constr = set_constructor();
-        if (current_token != Separators::RBRACK) {
-            throw new_exception("] expected");
-        }
-        next_token();
+        require(Separators::RBRACK);
         return set_constr;
     }
     throw new_exception("factor expected");
 }
 
 SyntaxNodePointer Parser::id_ref(SyntaxNodePointer i) {
-    auto left = i;
+    auto left = std::move(i);
     while (true) {
         if (current_token == Separators::LPAREN) {
             next_token();
@@ -425,28 +360,20 @@ SyntaxNodePointer Parser::id_ref(SyntaxNodePointer i) {
 }
 
 SyntaxNodePointers Parser::function_call() {
-    auto params = param_list();
-    if (current_token != Separators::RPAREN) {
-        throw new_exception(") expected");
-    }
-    next_token();
+    auto params =
+        list(&Parser::expression, Separators::COMMA, Separators::RPAREN, {});
+    require(Separators::RPAREN);
     return params;
 }
 
 SyntaxNodePointers Parser::array_access() {
-    auto params = param_list();
-    if (current_token != Separators::RBRACK) {
-        throw new_exception("] expected");
-    }
-    next_token();
+    auto params =
+        list(&Parser::expression, Separators::COMMA, Separators::RPAREN, {});
+    require(Separators::RBRACK);
     return params;
 }
 
 SyntaxNodePointer Parser::record_access() { return identifier(); }
-
-SyntaxNodePointers Parser::param_list() {
-    return list(&Parser::expression, Separators::COMMA, Separators::RPAREN, {});
-}
 
 SyntaxNodePointer Parser::set_constructor() {
     auto elements = std::make_shared<std::vector<SyntaxNodePointer>>();
@@ -468,18 +395,14 @@ SyntaxNodePointer Parser::set_element() {
 }
 
 SyntaxNodePointer Parser::identifier() {
-    if (current_token != TokenType::ID) {
-        throw new_exception("id expected");
-    }
+    require(TokenType::ID, false);
     auto res = std::make_shared<NodeId>(current_token);
     next_token();
     return res;
 }
 
 SyntaxNodePointer Parser::keyword() {
-    if (current_token != TokenType::KEYWORD) {
-        throw new_exception("keyword expected");
-    }
+    require(TokenType::KEYWORD, false);
     auto res = std::make_shared<NodeId>(current_token);
     next_token();
     return res;
@@ -492,7 +415,8 @@ SyntaxNodePointer Parser::type() {
     } else if (current_token == Keywords::RECORD) {
         next_token();
         return record_type();
-    } else if (current_token == TokenType::ID || current_token == Keywords::STRING) {
+    } else if (current_token == TokenType::ID ||
+               current_token == Keywords::STRING) {
         return simple_type();
     }
     throw new_exception("type expected");
@@ -506,18 +430,10 @@ SyntaxNodePointer Parser::simple_type() {
 }
 
 SyntaxNodePointer Parser::array_type() {
-    if (current_token != Separators::LBRACK) {
-        throw new_exception("[ expected in array declarations");
-    }
-    next_token();
+    require(Separators::LBRACK);
     auto ranges = index_ranges();
-    if (current_token != Separators::RBRACK) {
-        throw new_exception("] expected in array declarations");
-    }
-    if (next_token() != Keywords::OF) {
-        throw new_exception("of expected in array declarations");
-    }
-    next_token();
+    require(Separators::RBRACK);
+    require(Keywords::OF);
     return std::make_shared<NodeArrayType>(type(), ranges);
 }
 
@@ -527,10 +443,7 @@ SyntaxNodePointers Parser::index_ranges() {
 
 SyntaxNodePointer Parser::index_range() {
     auto exp1 = expression();
-    if (current_token != Separators::ELLIPSIS) {
-        throw new_exception(".. expected");
-    }
-    next_token();
+    require(Separators::ELLIPSIS);
     auto exp2 = expression();
     return std::make_shared<NodeArrayIndexRange>(exp1, exp2);
 }
@@ -540,9 +453,7 @@ SyntaxNodePointer Parser::record_type() {
     if (current_token == Separators::SEMICOLON) {
         next_token();
     }
-    if (next_token() == Keywords::END) {
-        throw new_exception("end expected");
-    }
+    require(Keywords::END);
     return std::make_shared<NodeRecordType>(fields);
 }
 
@@ -555,10 +466,7 @@ SyntaxNodePointers Parser::fields_list() {
 SyntaxNodePointer Parser::field_section() {
     auto idents =
         list(&Parser::identifier, Separators::COMMA, Separators::COLON, {});
-    if (current_token != Separators::COLON) {
-        throw new_exception("colon expected");
-    }
-    next_token();
+    require(Separators::COLON);
     return std::make_shared<NodeFieldSelection>(idents, type());
 }
 
@@ -581,7 +489,6 @@ SyntaxNodePointers Parser::list(SyntaxNodePointer (Parser::*func)(),
             msg << magic_enum::enum_name(sep_end.value());
             msg << " found, but element expected";
             throw new_exception(msg.str());
-            break;
         }
         if (keyword_end.has_value() && current_token == keyword_end.value()) {
             break;
@@ -589,5 +496,54 @@ SyntaxNodePointers Parser::list(SyntaxNodePointer (Parser::*func)(),
         result->push_back((this->*func)());
     }
     return result;
+}
+
+Token Parser::next_token() {
+    current_token = scanner.next_token();
+    return current_token;
+}
+
+template <typename T>
+void Parser::require_vec(std::vector<T> items, bool eat) {
+    if (!current_token.is(items)) {
+        std::stringstream msg;
+        msg << "Expected: ";
+        msg << join_enum(items.begin(), items.end(), "or");
+        msg << "; but found " << current_token.get_raw_value();
+        throw new_exception(msg.str());
+    }
+    if (eat) {
+        next_token();
+    }
+}
+
+void Parser::require(Keywords keyword, bool eat) {
+    return require_vec<Keywords>({keyword}, eat);
+}
+
+void Parser::require(Keywords keyword1, Keywords keyword2, bool eat) {
+    return require_vec<Keywords>({keyword1, keyword2}, eat);
+}
+
+void Parser::require(Separators sep, bool eat) {
+    return require_vec<Separators>({sep}, eat);
+}
+
+void Parser::require(Operators op, bool eat) {
+    return require_vec<Operators>({op}, eat);
+}
+
+void Parser::require(TokenType type, bool eat) {
+    return require_vec<TokenType>({type}, eat);
+}
+
+SyntaxException Parser::new_exception(const std::string& message) {
+    auto pos = current_token.get_pos();
+    return SyntaxException(pos.first, pos.second, message);
+}
+
+template <typename T1, typename T2>
+bool Parser::check_type(std::shared_ptr<T2> a) {
+    return dynamic_cast<T1*>(a.get()) != nullptr;
 }
 };  // namespace parser
