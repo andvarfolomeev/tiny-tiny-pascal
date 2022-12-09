@@ -1024,6 +1024,7 @@ _deps
 *.hex
 !tests/scanner/*.out
 !tests/simple_parser/*.out
+!tests/parser/*/*.out
 
 # Debug files
 *.dSYM/
