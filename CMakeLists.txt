@@ -14,9 +14,9 @@ function(enable_cxx_compiler_flag_if_supported flag)
     endif ()
 endfunction()
 
-enable_cxx_compiler_flag_if_supported("-Wall")
-enable_cxx_compiler_flag_if_supported("-Wextra")
-enable_cxx_compiler_flag_if_supported("-pedantic")
+# enable_cxx_compiler_flag_if_supported("-Wall")
+# enable_cxx_compiler_flag_if_supported("-Wextra")
+# enable_cxx_compiler_flag_if_supported("-pedantic")
 
 set(CMAKE_CXX_STANDARD 20)
 
