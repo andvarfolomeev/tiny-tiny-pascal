@@ -53,6 +53,11 @@ set(
         src/simple_parser/simple_parser.cpp
         src/simple_parser/simple_parser.h
 
+        src/parser/node.cpp
+        src/parser/node.h
+        src/parser/parser.cpp
+        src/parser/parser.h
+
         src/pascal_types.h
 )
 
