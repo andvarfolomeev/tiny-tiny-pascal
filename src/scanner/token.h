@@ -192,10 +192,12 @@ class Token {
     friend bool operator==(const Token &token, const TokenType &type);
     friend bool operator==(const Token &token, const Operators &op);
     friend bool operator==(const Token &token, const Separators &sep);
+    friend bool operator==(const Token &token, const Keywords &keyword);
 
     bool is(const std::vector<TokenType> &types);
     bool is(const std::vector<Operators> &values);
     bool is(const std::vector<Separators> &values);
+    bool is(const std::vector<Keywords> &values);
 
     [[nodiscard]] std::string to_string() const;
 
@@ -204,6 +206,8 @@ class Token {
     std::string get_raw_value();
 
     TokenType get_type();
+
+    std::pair<unsigned int, unsigned int> get_pos();
 };
 }  // namespace scanner
 

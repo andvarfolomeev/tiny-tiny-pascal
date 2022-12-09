@@ -64,6 +64,21 @@ bool operator==(const Token &token, const TokenType &type) {
     return token.type == type;
 }
 
+bool operator==(const Token &token, const Operators &op) {
+    if (token.type != TokenType::OPER) return false;
+    return token.get_value<Operators>() == op;
+}
+
+bool operator==(const Token &token, const Separators &sep) {
+    if (token.type != TokenType::SEPERATOR) return false;
+    return token.get_value<Separators>() == sep;
+}
+
+bool operator==(const Token &token, const Keywords &keyword) {
+    if (token.type != TokenType::KEYWORD) return false;
+    return token.get_value<Keywords>() == keyword;
+}
+
 bool Token::is(const std::vector<TokenType> &types) {
     return std::find(types.begin(), types.end(), type) != types.end();
 }
@@ -77,6 +92,12 @@ bool Token::is(const std::vector<Operators> &values) {
 bool Token::is(const std::vector<Separators> &values) {
     if (type != TokenType::SEPERATOR) return false;
     return std::find(values.begin(), values.end(), get_value<Separators>()) !=
+           values.end();
+}
+
+bool Token::is(const std::vector<Keywords> &values) {
+    if (type != TokenType::KEYWORD) return false;
+    return std::find(values.begin(), values.end(), get_value<Keywords>()) !=
            values.end();
 }
 
@@ -94,15 +115,8 @@ template <typename T>
 T Token::get_value() const {
     return std::get<T>(value);
 }
-
-bool operator==(const Token &token, const Operators &op) {
-    if (token.type != TokenType::OPER) return false;
-    return token.get_value<Operators>() == op;
-}
-
-bool operator==(const Token &token, const Separators &sep) {
-    if (token.type != TokenType::SEPERATOR) return false;
-    return token.get_value<Separators>() == sep;
+std::pair<unsigned int, unsigned int> Token::get_pos() {
+    return {line, column};
 }
 
 }  // namespace scanner
