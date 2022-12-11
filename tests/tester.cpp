@@ -3,9 +3,9 @@
 #include <filesystem>
 #include <fstream>
 
+#include "../src/parser/parser.h"
 #include "../src/scanner/scanner.h"
 #include "../src/simple_parser/simple_parser.h"
-#include "../src/parser/parser.h"
 
 namespace tester {
 
@@ -38,20 +38,20 @@ TestReport Tester::run_tests() {
                 report.inc_success();
             } else {
                 report.inc_failed();
-                std::cout << "\tExpected:" << std::endl;
-                std::cout << "\t" << answer_in_out << std::endl;
-                std::cout << "\tTaken: " << std::endl;
-                std::cout << "\t" << answer << std::endl;
+                std::cout << "Expected:" << std::endl;
+                std::cout << answer_in_out << std::endl;
+                std::cout << "Taken: " << std::endl;
+                std::cout << answer << std::endl;
             }
         } catch (TinyPascalException& ex) {
             if (answer_in_out == ex.what()) {
                 report.inc_success();
             } else {
                 report.inc_failed();
-                std::cout << "\tExpected:" << std::endl;
-                std::cout << "\t" << answer_in_out << std::endl;
-                std::cout << "\tTaken: " << std::endl;
-                std::cout << "\t" << ex.what() << std::endl;
+                std::cout << "Expected:" << std::endl;
+                std::cout << answer_in_out << std::endl;
+                std::cout << "Taken: " << std::endl;
+                std::cout << ex.what() << std::endl;
             }
         }
     }
