@@ -1,14 +1,12 @@
 // bnf rules:
-//
 // A, B  - concat
 // A | B - A or B
 // [A]   - zero or one entire
 // {A}   - zero or more entries
 // (A B) - group
 
-
 // program
-<program> ::= ["program" <id> ";"] {<declarations>} <main>
+<program> ::= ["program" <id> ";"] {<declarations>} <compound_statement>
 
 // declarations
 <declarations> ::= <const_declaration> | <var_declaration> | <type_declaration> | <function_declaration> |
@@ -17,51 +15,57 @@
 <one_const_declaration> ::= <id> [":" <type>] "=" <exp> ";"
 
 <var_declaration> ::= "var" <one_var_declaration> {<one_var_declaration>}
-<one_var_declaration> ::= <id> {"," <id>} ":" <type> ";" | <id> ":" <type> "=" <exp> ";"
+<one_var_declaration> ::= <id> {"," <id>} ":" <type> ";" | <id> ":" <type> [ "=" <exp> ] ";"
 
 <type_declaration> ::= "type" <one_type_declaration> {<one_type_declaration>}
 <one_type_declaration> ::= <id> "=" <type> ";"
 
-<function_declaration> ::= <function_header> {<const_declaration> | <var_declaration> | <type_declaration>} <stmts>
+<function_declaration> ::= <function_header> {<const_declaration> | <var_declaration> | <type_declaration>} <compound_statement> ";"
 <function_header> ::= "function" <id> "(" <parameters> ")" ":" <type> ";"
 
-<procedure_declaration> ::= <procedure_header> {<const_declaration> | <var_declaration> | <type_declaration>} <stmts>
+<procedure_declaration> ::= <procedure_header> {<const_declaration> | <var_declaration> | <type_declaration>} <compound_statement> ";"
 <procedure_header> ::= "procedure" <id> "(" <parameters> ")" ";"
 
 <parameters> ::= <parameter> {"," <parameter>}
 <parameter> ::= ["var" | "const"] <id_list> ":" <type>
 
-<main> ::= begin <statement> end "."
-
 // statements
+<statement_sequence> ::= {";"} <statement> {";" <statement>} {";"}
 <statement> ::= <simple_statement> | <structured_statement>
-<statement_sequence> ::= <statement> {";" <statement>}
 
-<simple_statement> ::= <assignment_statement> | <procedure_statement>
-<procedure_statement> ::= <id> | ["(" <id_list> ")"]
+<simple_statement> ::= <assignment_statement> | <function_call_statement>
+<function_call_statement> ::= <id> ["(" <id_list> ")"]
 <structured_statement> ::= <compound_statement> | <repetitive_statement> | <condition_statement>
 
 <compound_statement> ::= "begin" <statement_sequence> "end"
-<assignment_statement> ::= <id> <assignment_operators> <expression>
+<assignment_statement> ::= <var_ref> (":=" | "+=" | "-=" | "*=" | "/=") <expression>
 <repetitive_statement> ::= <for_statement> | <while_statement>
 <while_statement> ::= "while" <expression> "do" <statement>
 <for_statement> ::= "for" <id> ":=" <expression> ("to" | "downto") <expression> "do" <statement>
-<condition_statement> ::= <if_statement> | <case_statement>
+<condition_statement> ::= <if_statement>
 <if_statement> ::= "if" <expression> "then" <statement> ["else" <statement>]
-<case_statement> ::= "case" <expression> "of" <case_labels> {";" <case_labels> } ["else" <statement>]
-<case_labels> ::= <case_label_list> ":" <statement>
-<case_label_list> ::= <literal> | {"," <literal>}
 
 // expressions
-<expression> ::=
+<expression> ::= <simple_expression> {("=" | "<" | "<>" | "<=" | ">" | ">=") <simple_expression>}
+<simple_expression> ::= <term> {("+" | "-" | "or" | "xor") <term>}
+<term> ::= <simple_term> {("*" | "/" | "div" | "mod" | "and" | "shr" | "shl") <simple_term>}
+<simple_term> ::= {"+" | "-" | "not"} <factor>
+<factor> ::= "(" <expression> ")" | <string> | <number> | <var_ref>
+<var_ref> ::= <id> { <array_access> | <record_access> | <function_call> }
+<array_access> ::= "[" <expression_list> "]"
+<record_access> ::= "." <id>
+<function_call> ::= "(" [ <expression_list> ] ")"
 
 // types
-<type> ::=  <primitive_type> | <array_type>
-<primitive_type> ::= "integer" | "double" | "string" | "char"
-<array_type> ::= "array" <ranges> "of" <primitive_type>
+<type> ::=  <primitive_type> | <array_type> | <record_type>
+<primitive_type> ::= <id> | "string"
+<array_type> ::= "array" "[" <ranges> "]" "of" <type>
 <ranges> ::= <range> {"," <range>}
-<range> ::= <int> ".." <int>
+<range> ::= <expression> ".." <expression>
+<record_type> ::= "record" [ <fields_list> ] "end"
+<fields_list> ::= <field_section> {";" <field_section>}
+<field_section> ::= <id_list> ":" <type>
 
-//
+// utils
+<expression_list> ::= <expression> {"," <expression>}
 <id_list> ::= <id> {"," <id>}
-<assignment_operators> ::= "+=" | "-=" | "*=" | "/="
