@@ -26,9 +26,9 @@ std::string join_enum(InputIt first, InputIt last,
 }
 
 namespace parser {
-SyntaxNodePointer Parser::program() {
+std::shared_ptr<NodeProgram> Parser::program() {
     // first token taken in constructor
-    SyntaxNodePointer name = nullptr;
+    std::shared_ptr<NodeId> name = nullptr;
     if (current_token == Keywords::PROGRAM) {
         next_token();
         auto name_tmp = program_name();
@@ -39,50 +39,50 @@ SyntaxNodePointer Parser::program() {
     return std::make_shared<NodeProgram>(name, block_);
 }
 
-SyntaxNodePointer Parser::program_name() {
+std::shared_ptr<NodeId> Parser::program_name() {
     auto name = identifier();
     require(Separators::SEMICOLON);
     return name;
 }
 
-SyntaxNodePointer Parser::block() {
-    auto declarations = std::make_shared<std::vector<SyntaxNodePointer>>();
+std::shared_ptr<NodeBlock> Parser::block() {
+    auto declarations = std::vector<std::shared_ptr<NodeDecl>>();
     for (;;) {
         if (current_token == Keywords::CONST) {
             next_token();
-            declarations->push_back(const_decls());
+            declarations.push_back(const_decls());
         } else if (current_token == Keywords::VAR) {
             next_token();
-            declarations->push_back(var_decls());
+            declarations.push_back(var_decls());
         } else if (current_token == Keywords::TYPE) {
             next_token();
-            declarations->push_back(type_decls());
+            declarations.push_back(type_decls());
         } else if (current_token == Keywords::PROCEDURE) {
             next_token();
-            declarations->push_back(procedure_decl());
+            declarations.push_back(procedure_decl());
         } else if (current_token == Keywords::FUNCTION) {
             next_token();
-            declarations->push_back(function_decl());
+            declarations.push_back(function_decl());
         } else {
             break;
         }
     }
     require(Keywords::BEGIN);
     auto statements = compound_statement();
-    return std::make_shared<NodeProgramBlock>(declarations, statements);
+    return std::make_shared<NodeBlock>(declarations, statements);
 }
 
-SyntaxNodePointer Parser::const_decls() {
-    auto consts = std::make_shared<std::vector<SyntaxNodePointer>>();
+std::shared_ptr<NodeConstDecls> Parser::const_decls() {
+    auto consts = std::vector<std::shared_ptr<NodeConstDecl>>();
     while (current_token == TokenType::ID) {
-        consts->push_back(const_decl());
+        consts.push_back(const_decl());
     }
     return std::make_shared<NodeConstDecls>(consts);
 }
 
-SyntaxNodePointer Parser::const_decl() {
+std::shared_ptr<NodeConstDecl> Parser::const_decl() {
     auto id = identifier();
-    SyntaxNodePointer id_type = nullptr;
+    std::shared_ptr<NodeType> id_type = nullptr;
     if (current_token == Separators::COLON) {
         next_token();
         auto id_type_tmp = type();
@@ -94,21 +94,21 @@ SyntaxNodePointer Parser::const_decl() {
     return std::make_shared<NodeConstDecl>(id, id_type, exp);
 }
 
-SyntaxNodePointer Parser::var_decls() {
-    auto vars = std::make_shared<std::vector<SyntaxNodePointer>>();
+std::shared_ptr<NodeVarDecls> Parser::var_decls() {
+    auto vars = std::vector<std::shared_ptr<NodeVarDecl>>();
     while (current_token == TokenType::ID) {
-        vars->push_back(var_decl());
+        vars.push_back(var_decl());
     }
     return std::make_shared<NodeVarDecls>(vars);
 }
 
-SyntaxNodePointer Parser::var_decl() {
+std::shared_ptr<NodeVarDecl> Parser::var_decl() {
     auto ids = list(&Parser::identifier, Separators::COMMA, {}, {});
     require(Separators::COLON);
     auto ids_type = type();
-    SyntaxNodePointer exp = nullptr;
+    std::shared_ptr<NodeExpression> exp = nullptr;
     if (current_token == Operators::EQL) {
-        if (ids->size() != 1) {
+        if (ids.size() != 1) {
             throw new_exception("Only one variable can be initialized");
         }
         next_token();
@@ -119,15 +119,15 @@ SyntaxNodePointer Parser::var_decl() {
     return std::make_shared<NodeVarDecl>(ids, ids_type, exp);
 }
 
-SyntaxNodePointer Parser::type_decls() {
-    auto types = std::make_shared<std::vector<SyntaxNodePointer>>();
+std::shared_ptr<NodeTypeDecls> Parser::type_decls() {
+    auto types = std::vector<std::shared_ptr<NodeTypeDecl>>();
     while (current_token == TokenType::ID) {
-        types->push_back(type_decl());
+        types.push_back(type_decl());
     }
     return std::make_shared<NodeTypeDecls>(types);
 };
 
-SyntaxNodePointer Parser::type_decl() {
+std::shared_ptr<NodeTypeDecl> Parser::type_decl() {
     auto id = identifier();
     require(Operators::EQL);
     auto id_type = type();
@@ -135,7 +135,7 @@ SyntaxNodePointer Parser::type_decl() {
     return std::make_shared<NodeTypeDecl>(id, id_type);
 }
 
-SyntaxNodePointer Parser::procedure_decl() {
+std::shared_ptr<NodeProcedureDecl> Parser::procedure_decl() {
     auto id = identifier();
     require(Separators::LPAREN);
     auto params = list(&Parser::formal_param_section, Separators::SEMICOLON,
@@ -144,11 +144,10 @@ SyntaxNodePointer Parser::procedure_decl() {
     require(Separators::SEMICOLON);
     auto block_ = block();
     require(Separators::SEMICOLON);
-    return std::make_shared<NodeProcedureDecl>(
-        std::make_shared<NodeHeaderProcedureDecl>(id, params), block_);
+    return std::make_shared<NodeProcedureDecl>(id, params, block_);
 }
 
-SyntaxNodePointer Parser::function_decl() {
+std::shared_ptr<NodeFunctionDecl> Parser::function_decl() {
     auto id = identifier();
     require(Separators::LPAREN);
     auto params = list(&Parser::formal_param_section, Separators::SEMICOLON,
@@ -159,13 +158,12 @@ SyntaxNodePointer Parser::function_decl() {
     require(Separators::SEMICOLON);
     auto block_ = block();
     require(Separators::SEMICOLON);
-    return std::make_shared<NodeFunctionDecl>(
-        std::make_shared<NodeHeaderFunctionDecl>(id, params, function_type),
-        block_);
+    return std::make_shared<NodeFunctionDecl>(id, params, block_,
+                                              function_type);
 }
 
-SyntaxNodePointer Parser::formal_param_section() {
-    SyntaxNodePointer modifier = nullptr;
+std::shared_ptr<NodeFormalParamSection> Parser::formal_param_section() {
+    std::shared_ptr<NodeKeyword> modifier = nullptr;
     if (current_token == Keywords::VAR) {
         modifier = keyword();
     } else if (current_token == Keywords::CONST) {
@@ -176,8 +174,8 @@ SyntaxNodePointer Parser::formal_param_section() {
     return std::make_shared<NodeFormalParamSection>(modifier, idents, type());
 }
 
-SyntaxNodePointer Parser::compound_statement() {
-    auto stmts = std::make_shared<std::vector<SyntaxNodePointer>>();
+std::shared_ptr<NodeCompoundStatement> Parser::compound_statement() {
+    auto stmts = std::vector<std::shared_ptr<NodeStatement>>();
     while (true) {
         int i = 0;
         while (current_token == Separators::SEMICOLON) {
@@ -188,16 +186,16 @@ SyntaxNodePointer Parser::compound_statement() {
             next_token();
             break;
         }
-        if (!stmts->empty() && i == 0) {
-            throw new_exception("Expected in compound statement");
+        if (!stmts.empty() && i == 0) {
+            require(Separators::SEMICOLON);
         }
-        stmts->push_back(statement());
+        stmts.push_back(statement());
     }
     // TODO: improve exception
     return std::make_shared<NodeCompoundStatement>(stmts);
 }
 
-SyntaxNodePointer Parser::statement() {
+std::shared_ptr<NodeStatement> Parser::statement() {
     if (current_token == Keywords::IF) {
         next_token();
         return if_statement();
@@ -214,24 +212,28 @@ SyntaxNodePointer Parser::statement() {
     return simple_statement();
 }
 
-SyntaxNodePointer Parser::simple_statement() {
+std::shared_ptr<NodeStatement> Parser::simple_statement() {
     auto left = expression();
     if (check_type<NodeFuncCall>(left)) {
-        return left;
+        auto func_call = std::dynamic_pointer_cast<NodeFuncCall>(left);
+        return std::make_shared<NodeCallStatement>(func_call);
     } else if (check_type<NodeVarRef>(left)) {
+        auto var_ref = std::dynamic_pointer_cast<NodeVarRef>(left);
         if (!current_token.is({Operators::ASSIGN, Operators::ADDASSIGN,
                                Operators::SUBASSIGN, Operators::MULASSIGN,
                                Operators::QUOASSIGN})) {
-            return std::make_shared<NodeFuncCall>(left, nullptr);
+            return std::make_shared<NodeCallStatement>(
+                var_ref, std::vector<std::shared_ptr<NodeExpression>>());
         }
         auto op = current_token;
         next_token();
-        return std::make_shared<NodeAssigmentStatement>(op, left, expression());
+        return std::make_shared<NodeAssigmentStatement>(op, var_ref,
+                                                        expression());
     }
     throw new_exception("Illegal statement");
 }
 
-SyntaxNodePointer Parser::for_statement() {
+std::shared_ptr<NodeForStatement> Parser::for_statement() {
     auto id = identifier();
     require(Operators::ASSIGN);
     auto start_exp = expression();
@@ -243,13 +245,13 @@ SyntaxNodePointer Parser::for_statement() {
     return std::make_shared<NodeForStatement>(id, start_exp, dir, end_exp, op);
 }
 
-SyntaxNodePointer Parser::while_statement() {
+std::shared_ptr<NodeWhileStatement> Parser::while_statement() {
     auto bool_exp = expression();
     require(Keywords::DO);
     return std::make_shared<NodeWhileStatement>(bool_exp, statement());
 }
 
-SyntaxNodePointer Parser::if_statement() {
+std::shared_ptr<NodeIfStatement> Parser::if_statement() {
     auto exp = expression();
     require(Keywords::THEN);
     auto op = statement();
@@ -262,7 +264,7 @@ SyntaxNodePointer Parser::if_statement() {
     return std::make_shared<NodeIfStatement>(exp, op, nullptr);
 }
 
-SyntaxNodePointer Parser::expression() {
+std::shared_ptr<NodeExpression> Parser::expression() {
     auto left = simple_expression();
     while (current_token.is({Operators::EQL, Operators::LES, Operators::NEQ,
                              Operators::LEQ, Operators::GTR, Operators::GEQ}) ||
@@ -275,7 +277,7 @@ SyntaxNodePointer Parser::expression() {
     return left;
 }
 
-SyntaxNodePointer Parser::simple_expression() {
+std::shared_ptr<NodeExpression> Parser::simple_expression() {
     auto left = term();
     while (current_token.is({Operators::ADD, Operators::SUB}) ||
            current_token.is({Keywords::OR, Keywords::XOR})) {
@@ -286,7 +288,7 @@ SyntaxNodePointer Parser::simple_expression() {
     return left;
 }
 
-SyntaxNodePointer Parser::term() {
+std::shared_ptr<NodeExpression> Parser::term() {
     auto left = simple_term();
     while (current_token.is({Operators::MUL, Operators::QUO}) ||
            current_token.is({Keywords::DIV, Keywords::MOD, Keywords::AND,
@@ -298,7 +300,7 @@ SyntaxNodePointer Parser::term() {
     return left;
 }
 
-SyntaxNodePointer Parser::simple_term() {
+std::shared_ptr<NodeExpression> Parser::simple_term() {
     if (current_token.is({Operators::ADD, Operators::SUB}) ||
         current_token == Keywords::NOT) {
         auto un_op = current_token;
@@ -308,12 +310,8 @@ SyntaxNodePointer Parser::simple_term() {
     return factor();
 }
 
-SyntaxNodePointer Parser::factor() {
+std::shared_ptr<NodeExpression> Parser::factor() {
     auto token = current_token;
-    if (token == Keywords::NIL) {
-        next_token();
-        return std::make_shared<NodeNil>(token);
-    }
     if (token == TokenType::LITERAL_STRING) {
         next_token();
         return std::make_shared<NodeString>(token);
@@ -323,7 +321,7 @@ SyntaxNodePointer Parser::factor() {
         return std::make_shared<NodeNumber>(token);
     }
     if (token == TokenType::ID) {
-        return id_ref(identifier());
+        return var_ref(identifier());
     }
     if (token == Separators::LPAREN) {
         next_token();
@@ -340,18 +338,24 @@ SyntaxNodePointer Parser::factor() {
     throw new_exception("factor expected");
 }
 
-SyntaxNodePointer Parser::id_ref(SyntaxNodePointer i) {
+std::shared_ptr<NodeVarRef> Parser::var_ref(std::shared_ptr<NodeVarRef> i) {
     auto left = std::move(i);
     while (true) {
         if (current_token == Separators::LPAREN) {
             next_token();
-            left = std::make_shared<NodeFuncCall>(left, function_call());
+            auto params = list(&Parser::expression, Separators::COMMA,
+                               Separators::RPAREN, {});
+            require(Separators::RPAREN);
+            left = std::make_shared<NodeFuncCall>(left, params);
         } else if (current_token == Separators::LBRACK) {
             next_token();
-            left = std::make_shared<NodeArrayAccess>(left, array_access());
+            auto params = list(&Parser::expression, Separators::COMMA,
+                               Separators::RBRACK, {});
+            require(Separators::RBRACK);
+            left = std::make_shared<NodeArrayAccess>(left, params);
         } else if (current_token == Separators::PERIOD) {
             next_token();
-            left = std::make_shared<NodeRecordAccess>(left, record_access());
+            left = std::make_shared<NodeRecordAccess>(left, identifier());
         } else {
             break;
         }
@@ -359,33 +363,17 @@ SyntaxNodePointer Parser::id_ref(SyntaxNodePointer i) {
     return left;
 }
 
-SyntaxNodePointers Parser::function_call() {
-    auto params =
-        list(&Parser::expression, Separators::COMMA, Separators::RPAREN, {});
-    require(Separators::RPAREN);
-    return params;
-}
-
-SyntaxNodePointers Parser::array_access() {
-    auto params =
-        list(&Parser::expression, Separators::COMMA, Separators::RPAREN, {});
-    require(Separators::RBRACK);
-    return params;
-}
-
-SyntaxNodePointer Parser::record_access() { return identifier(); }
-
-SyntaxNodePointer Parser::set_constructor() {
-    auto elements = std::make_shared<std::vector<SyntaxNodePointer>>();
-    elements->push_back(set_element());
+std::shared_ptr<NodeSetConstructor> Parser::set_constructor() {
+    auto elements = std::vector<std::shared_ptr<NodeSetElement>>();
+    elements.push_back(set_element());
     while (current_token == Separators::COMMA) {
         next_token();
-        elements->push_back(set_element());
+        elements.push_back(set_element());
     }
     return std::make_shared<NodeSetConstructor>(elements);
 }
 
-SyntaxNodePointer Parser::set_element() {
+std::shared_ptr<NodeSetElement> Parser::set_element() {
     auto exp = expression();
     if (current_token == Separators::ELLIPSIS) {
         next_token();
@@ -394,21 +382,21 @@ SyntaxNodePointer Parser::set_element() {
     return std::make_shared<NodeSetSimpleElement>(exp);
 }
 
-SyntaxNodePointer Parser::identifier() {
+std::shared_ptr<NodeId> Parser::identifier() {
     require(TokenType::ID, false);
     auto res = std::make_shared<NodeId>(current_token);
     next_token();
     return res;
 }
 
-SyntaxNodePointer Parser::keyword() {
+std::shared_ptr<NodeKeyword> Parser::keyword() {
     require(TokenType::KEYWORD, false);
-    auto res = std::make_shared<NodeId>(current_token);
+    auto res = std::make_shared<NodeKeyword>(current_token);
     next_token();
     return res;
 }
 
-SyntaxNodePointer Parser::type() {
+std::shared_ptr<NodeType> Parser::type() {
     if (current_token == Keywords::ARRAY) {
         next_token();
         return array_type();
@@ -422,34 +410,31 @@ SyntaxNodePointer Parser::type() {
     throw new_exception("type expected");
 }
 
-SyntaxNodePointer Parser::simple_type() {
+std::shared_ptr<NodeType> Parser::simple_type() {
     if (current_token == Keywords::STRING) {
         return std::make_shared<NodeSimpleType>(keyword());
     }
     return std::make_shared<NodeSimpleType>(identifier());
 }
 
-SyntaxNodePointer Parser::array_type() {
+std::shared_ptr<NodeArrayType> Parser::array_type() {
     require(Separators::LBRACK);
-    auto ranges = index_ranges();
+    auto ranges = list(&Parser::index_range, Separators::COMMA, {}, {});
     require(Separators::RBRACK);
     require(Keywords::OF);
     return std::make_shared<NodeArrayType>(type(), ranges);
 }
 
-SyntaxNodePointers Parser::index_ranges() {
-    return list(&Parser::index_range, Separators::COMMA, {}, {});
-}
-
-SyntaxNodePointer Parser::index_range() {
+std::shared_ptr<NodeRange> Parser::index_range() {
     auto exp1 = expression();
     require(Separators::ELLIPSIS);
     auto exp2 = expression();
-    return std::make_shared<NodeArrayIndexRange>(exp1, exp2);
+    return std::make_shared<NodeRange>(exp1, exp2);
 }
 
-SyntaxNodePointer Parser::record_type() {
-    auto fields = fields_list();
+std::shared_ptr<NodeRecordType> Parser::record_type() {
+    auto fields =
+        list(&Parser::field_section, Separators::SEMICOLON, {}, Keywords::END);
     if (current_token == Separators::SEMICOLON) {
         next_token();
     }
@@ -457,31 +442,25 @@ SyntaxNodePointer Parser::record_type() {
     return std::make_shared<NodeRecordType>(fields);
 }
 
-SyntaxNodePointers Parser::fields_list() {
-    auto fields =
-        list(&Parser::field_section, Separators::SEMICOLON, {}, Keywords::END);
-    return fields;
-}
-
-SyntaxNodePointer Parser::field_section() {
+std::shared_ptr<NodeFieldSelection> Parser::field_section() {
     auto idents =
         list(&Parser::identifier, Separators::COMMA, Separators::COLON, {});
     require(Separators::COLON);
     return std::make_shared<NodeFieldSelection>(idents, type());
 }
 
-SyntaxNodePointers Parser::list(SyntaxNodePointer (Parser::*func)(),
-                                Separators sep_type,
-                                std::optional<Separators> sep_end,
-                                std::optional<Keywords> keyword_end) {
-    auto result = std::make_shared<std::vector<SyntaxNodePointer>>();
+template <typename T>
+std::vector<T> Parser::list(T (Parser::*func)(), Separators sep_type,
+                            std::optional<Separators> sep_end,
+                            std::optional<Keywords> keyword_end) {
+    auto result = std::vector<T>();
     if (sep_end.has_value() && current_token == sep_end.value()) {
         return result;
     }
     if (keyword_end.has_value() && current_token == keyword_end.value()) {
         return result;
     }
-    result->push_back((this->*func)());
+    result.push_back((this->*func)());
     while (current_token == sep_type) {
         next_token();
         if (sep_end.has_value() && current_token == sep_end.value()) {
@@ -493,7 +472,7 @@ SyntaxNodePointers Parser::list(SyntaxNodePointer (Parser::*func)(),
         if (keyword_end.has_value() && current_token == keyword_end.value()) {
             break;
         }
-        result->push_back((this->*func)());
+        result.push_back((this->*func)());
     }
     return result;
 }

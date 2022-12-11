@@ -53,10 +53,20 @@ set(
         src/simple_parser/simple_parser.cpp
         src/simple_parser/simple_parser.h
 
-        src/parser/node.cpp
-        src/parser/node.h
-        src/parser/parser.cpp
         src/parser/parser.h
+        src/parser/parser.cpp
+        src/parser/node/node.h
+        src/parser/node/node.cpp
+        src/parser/node/node_declaration.h
+        src/parser/node/node_declaration.cpp
+        src/parser/node/node_expression.h
+        src/parser/node/node_expression.cpp
+        src/parser/node/node_program.h
+        src/parser/node/node_program.cpp
+        src/parser/node/node_statement.h
+        src/parser/node/node_statement.cpp
+        src/parser/node/node_type.h
+        src/parser/node/node_type.cpp
 
         src/pascal_types.h
 )

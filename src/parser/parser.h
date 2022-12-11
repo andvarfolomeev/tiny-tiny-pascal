@@ -4,7 +4,7 @@
 #include <optional>
 
 #include "../scanner/scanner.h"
-#include "node.h"
+#include "node/nodes.h"
 
 using namespace scanner;
 
@@ -32,63 +32,58 @@ class Parser {
    public:
     explicit Parser(Scanner &scanner)
         : scanner(scanner), current_token(scanner.next_token()) {}
-    SyntaxNodePointer program();
+    std::shared_ptr<NodeProgram> program();
 
-    SyntaxNodePointer program_name();
+    std::shared_ptr<NodeId> program_name();
 
-    SyntaxNodePointer block();
+    std::shared_ptr<NodeBlock> block();
 
-    SyntaxNodePointer const_decls();
-    SyntaxNodePointer const_decl();
+    std::shared_ptr<NodeConstDecls> const_decls();
+    std::shared_ptr<NodeConstDecl> const_decl();
 
-    SyntaxNodePointer var_decls();
-    SyntaxNodePointer var_decl();
+    std::shared_ptr<NodeVarDecls> var_decls();
+    std::shared_ptr<NodeVarDecl> var_decl();
 
-    SyntaxNodePointer type_decls();
-    SyntaxNodePointer type_decl();
+    std::shared_ptr<NodeTypeDecls> type_decls();
+    std::shared_ptr<NodeTypeDecl> type_decl();
 
-    SyntaxNodePointer procedure_decl();
-    SyntaxNodePointer function_decl();
-    SyntaxNodePointer formal_param_section();
+    std::shared_ptr<NodeProcedureDecl> procedure_decl();
+    std::shared_ptr<NodeFunctionDecl> function_decl();
+    std::shared_ptr<NodeFormalParamSection> formal_param_section();
 
-    SyntaxNodePointer compound_statement();
-    SyntaxNodePointer statement();
-    SyntaxNodePointer simple_statement();
-    SyntaxNodePointer for_statement();
-    SyntaxNodePointer while_statement();
-    SyntaxNodePointer if_statement();
+    std::shared_ptr<NodeCompoundStatement> compound_statement();
+    std::shared_ptr<NodeStatement> statement();
+    std::shared_ptr<NodeStatement> simple_statement();
+    std::shared_ptr<NodeForStatement> for_statement();
+    std::shared_ptr<NodeWhileStatement> while_statement();
+    std::shared_ptr<NodeIfStatement> if_statement();
 
-    SyntaxNodePointer expression();
-    SyntaxNodePointer simple_expression();
-    SyntaxNodePointer term();
-    SyntaxNodePointer simple_term();
-    SyntaxNodePointer factor();
-    SyntaxNodePointer id_ref(SyntaxNodePointer i);
+    std::shared_ptr<NodeExpression> expression();
+    std::shared_ptr<NodeExpression> simple_expression();
+    std::shared_ptr<NodeExpression> term();
+    std::shared_ptr<NodeExpression> simple_term();
+    std::shared_ptr<NodeExpression> factor();
+    std::shared_ptr<NodeVarRef> var_ref(std::shared_ptr<NodeVarRef> i);
 
-    SyntaxNodePointers function_call();
-    SyntaxNodePointers array_access();
-    SyntaxNodePointer record_access();
-    SyntaxNodePointer set_constructor();
-    SyntaxNodePointer set_element();
-    SyntaxNodePointer identifier();
-    SyntaxNodePointer keyword();
+    std::shared_ptr<NodeSetConstructor> set_constructor();
+    std::shared_ptr<NodeSetElement> set_element();
+    std::shared_ptr<NodeId> identifier();
+    std::shared_ptr<NodeKeyword> keyword();
 
-    SyntaxNodePointer type();
+    std::shared_ptr<NodeType> type();
 
-    SyntaxNodePointer simple_type();
+    std::shared_ptr<NodeType> simple_type();
 
-    SyntaxNodePointer array_type();
-    SyntaxNodePointers index_ranges();
-    SyntaxNodePointer index_range();
+    std::shared_ptr<NodeArrayType> array_type();
+    std::shared_ptr<NodeRange> index_range();
 
-    SyntaxNodePointer record_type();
-    SyntaxNodePointers fields_list();
-    SyntaxNodePointer field_section();
+    std::shared_ptr<NodeRecordType> record_type();
+    std::shared_ptr<NodeFieldSelection> field_section();
 
-    SyntaxNodePointers list(SyntaxNodePointer (Parser::*func)(),
-                            Separators sep_type,
-                            std::optional<Separators> sep_end = {},
-                            std::optional<Keywords> keyword_end = {});
+    template <typename T>
+    std::vector<T> list(T (Parser::*func)(), Separators sep_type,
+                        std::optional<Separators> sep_end = {},
+                        std::optional<Keywords> keyword_end = {});
 
    private:
     Scanner scanner;
