@@ -25,13 +25,13 @@ main
                   size 
       function decl
          create_vector 
-            param
-               without modifier
-               n 
-               type:
-                  integer 
+         type:
+            vector 
+         param
+            without modifier
+            n 
             type:
-               vector 
+               integer 
          decls:
             vars:
                var
@@ -75,13 +75,13 @@ main
                   size 
       function decl
          create_point_vector 
-            param
-               without modifier
-               n 
-               type:
-                  integer 
+         type:
+            point_vector 
+         param
+            without modifier
+            n 
             type:
-               point_vector 
+               integer 
          decls:
             vars:
                var

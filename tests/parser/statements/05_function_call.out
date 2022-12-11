@@ -4,12 +4,12 @@ main
    decls:
       function decl
          max 
-            param
-               without modifier
-               num1 
-               num2 
-               type:
-                  integer 
+         type:
+            integer 
+         param
+            without modifier
+            num1 
+            num2 
             type:
                integer 
          decls:
@@ -37,8 +37,8 @@ main
                   result 
       function decl
          a 
-            type:
-               Integer 
+         type:
+            Integer 
          decls:
          block:
             compounds statements
@@ -54,4 +54,3 @@ main
          writeln 
             a 
          a 
-            empty vector

@@ -4,8 +4,8 @@ main
    decls:
       function decl
          super_function 
-            type:
-               Integer 
+         type:
+            Integer 
          decls:
          block:
             compounds statements
@@ -14,13 +14,13 @@ main
                   10
       function decl
          super_function1 
-            param
-               const 
-               a 
-               b 
-               c 
-               type:
-                  Integer 
+         type:
+            Integer 
+         param
+            const
+            a 
+            b 
+            c 
             type:
                Integer 
          decls:

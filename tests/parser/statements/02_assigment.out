@@ -11,12 +11,12 @@ main
             without exp
       function decl
          max 
-            param
-               without modifier
-               num1 
-               num2 
-               type:
-                  integer 
+         type:
+            integer 
+         param
+            without modifier
+            num1 
+            num2 
             type:
                integer 
          decls:

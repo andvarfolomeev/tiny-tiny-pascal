@@ -16,7 +16,7 @@ main
          var
             s 
             type:
-               String 
+               String
             without exp
    block:
       compounds statements

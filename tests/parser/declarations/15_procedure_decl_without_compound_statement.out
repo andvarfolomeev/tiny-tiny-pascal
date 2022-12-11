@@ -1,1 +1,1 @@
-Line: 4; Column: 10; ; expected in procedure declarations after compound statement
+Line: 4; Column: 10; Expected: SEMICOLON; but found .

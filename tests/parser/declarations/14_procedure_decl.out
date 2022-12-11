@@ -4,21 +4,21 @@ main
    decls:
       procedure decl
          a 
-            param
-               var 
-               b 
-               type:
-                  Integer 
-            param
-               const 
-               c 
-               type:
-                  Real 
-            param
-               without modifier
-               d 
-               type:
-                  String 
+         param
+            var
+            b 
+            type:
+               Integer 
+         param
+            const
+            c 
+            type:
+               Real 
+         param
+            without modifier
+            d 
+            type:
+               String
          decls:
          block:
             compounds statements

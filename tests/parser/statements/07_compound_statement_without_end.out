@@ -1,1 +1,1 @@
-Line: 5; Column: 4; ; expected in compound statement
+Line: 5; Column: 4; Expected: SEMICOLON; but found .

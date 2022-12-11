@@ -4,8 +4,8 @@ main
    decls:
       function decl
          a 
-            type:
-               Integer 
+         type:
+            Integer 
          decls:
          block:
             compounds statements
@@ -14,8 +14,8 @@ main
                   10
       function decl
          b 
-            type:
-               Integer 
+         type:
+            Integer 
          decls:
          block:
             compounds statements

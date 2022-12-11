@@ -1,1 +1,1 @@
-Line: 1; Column: 12; = expected
+Line: 1; Column: 12; Expected: EQL; but found ;
