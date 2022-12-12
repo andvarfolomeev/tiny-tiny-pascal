@@ -92,7 +92,7 @@ class Parser {
     Token next_token();
 
     template <typename T>
-    void require_vec(std::vector<T> item, bool eat = true);
+    void require_vec(const std::vector<T> &items, bool eat = true);
     void require(Keywords keyword, bool eat = true);
     void require(Keywords keyword1, Keywords keyword2, bool eat = true);
     void require(Separators sep, bool eat = true);

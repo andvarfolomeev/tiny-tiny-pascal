@@ -483,7 +483,7 @@ Token Parser::next_token() {
 }
 
 template <typename T>
-void Parser::require_vec(std::vector<T> items, bool eat) {
+void Parser::require_vec(const std::vector<T>& items, bool eat) {
     if (!current_token.is(items)) {
         std::stringstream msg;
         msg << "Expected: ";
