@@ -148,7 +148,9 @@ Token Scanner::next_token() {
                                          get_buffer());
                 }
 
-                return prepare_token(TokenType::ID, get_buffer(), get_buffer());
+                std::string buffer_in_lower = get_buffer();
+                std::transform(buffer_in_lower.begin(), buffer_in_lower.end(), buffer_in_lower.begin(), ::tolower);
+                return prepare_token(TokenType::ID, buffer_in_lower, get_buffer());
             }
             break;
     }
