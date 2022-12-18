@@ -69,6 +69,19 @@ set(
         src/parser/node/node_type.h
         src/parser/node/node_type.cpp
 
+        src/symbol_table/symbol.h
+        src/symbol_table/symbol.cpp
+        src/symbol_table/symbol_function.h
+        src/symbol_table/symbol_function.cpp
+        src/symbol_table/symbol_table.h
+        src/symbol_table/symbol_table.cpp
+        src/symbol_table/symbol_table_stack.h
+        src/symbol_table/symbol_table_stack.cpp
+        src/symbol_table/symbol_types.h
+        src/symbol_table/symbol_types.cpp
+        src/symbol_table/symbol_var.h
+        src/symbol_table/symbol_var.cpp
+
         src/pascal_types.h
 )
 
