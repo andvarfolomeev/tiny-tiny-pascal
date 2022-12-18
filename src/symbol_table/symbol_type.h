@@ -24,17 +24,6 @@ class SymbolString : public SymbolType {
     SymbolString() : SymbolType("string") {}
 };
 
-class SymbolArray : public SymbolType {
-   public:
-    SymbolArray(std::shared_ptr<SymbolType> elem,
-                std::vector<std::pair<size_t, size_t>> ranges)
-        : SymbolType("array"), elem(elem), ranges(ranges) {}
-
-   protected:
-    std::shared_ptr<SymbolType> elem;
-    std::vector<std::pair<size_t, size_t>> ranges;
-};
-
 class SymbolRecord : public SymbolType {
    public:
     SymbolRecord(std::shared_ptr<SymbolTable> fields)

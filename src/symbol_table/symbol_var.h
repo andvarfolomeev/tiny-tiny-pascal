@@ -2,7 +2,7 @@
 #define SYMBOL_VAR_H
 
 #include "symbol.h"
-#include "symbol_types.h"
+#include "symbol_type.h"
 
 class SymbolVar : public Symbol {
    public:

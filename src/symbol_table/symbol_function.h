@@ -4,7 +4,7 @@
 #include "../parser/node/node_statement.h"
 #include "symbol.h"
 #include "symbol_table.h"
-#include "symbol_types.h"
+#include "symbol_type.h"
 
 class SymbolProcedure : public Symbol {
    public:

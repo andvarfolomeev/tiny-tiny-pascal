@@ -77,8 +77,10 @@ set(
         src/symbol_table/symbol_table.cpp
         src/symbol_table/symbol_table_stack.h
         src/symbol_table/symbol_table_stack.cpp
-        src/symbol_table/symbol_types.h
-        src/symbol_table/symbol_types.cpp
+        src/symbol_table/symbol_type.h
+        src/symbol_table/symbol_type.cpp
+        src/symbol_table/symbol_type_array.h
+        src/symbol_table/symbol_type_array.cpp
         src/symbol_table/symbol_var.h
         src/symbol_table/symbol_var.cpp
 
