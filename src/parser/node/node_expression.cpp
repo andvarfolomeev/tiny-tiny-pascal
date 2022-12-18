@@ -5,6 +5,10 @@ void NodeId::draw(std::ostream& os, int depth) {
     os << token.get_raw_value() << " ";
 }
 
+std::string NodeId::get_name() {
+    return token.get_value<std::string>();
+}
+
 void NodeBinOp::draw(std::ostream& os, int depth) {
     os << token.get_raw_value() << "\n";
     draw_path(os, depth + 1);

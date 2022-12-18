@@ -12,4 +12,7 @@ void SyntaxNode::draw_path(std::ostream& os, int depth) {
 void NodeKeyword::draw(std::ostream& os, int depth) {
     os << token.get_raw_value();
 }
+std::string NodeKeyword::get_name() {
+    return token.get_value<std::string>();
+}
 };  // namespace parser

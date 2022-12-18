@@ -31,6 +31,7 @@ class NodeKeyword : public SyntaxNode {
    public:
     NodeKeyword(Token token) : token(std::move(token)) {}
     void draw(std::ostream &os, int depth) override;
+    std::string get_name();
 
    protected:
     Token token;

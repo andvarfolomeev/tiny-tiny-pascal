@@ -15,6 +15,7 @@ class NodeId : public NodeVarRef {
    public:
     explicit NodeId(Token token) : token(std::move(token)) {}
     void draw(std::ostream &os, int depth) override;
+    std::string get_name();
 
    protected:
     Token token;
