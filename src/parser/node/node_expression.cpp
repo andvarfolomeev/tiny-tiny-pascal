@@ -1,13 +1,11 @@
 #include "node_expression.h"
 
 namespace parser {
-void NodeId::draw(std::ostream& os, int depth) {
+void NodeId::draw(std::ostream& os, [[maybe_unused]] int depth) {
     os << token.get_raw_value() << " ";
 }
 
-std::string NodeId::get_name() {
-    return token.get_value<std::string>();
-}
+std::string NodeId::get_name() { return token.get_value<std::string>(); }
 
 void NodeBinOp::draw(std::ostream& os, int depth) {
     os << token.get_raw_value() << "\n";
@@ -33,11 +31,11 @@ void NodeRelOp::draw(std::ostream& os, int depth) {
     right->draw(os, depth + 1);
 }
 
-void NodeNumber::draw(std::ostream& os, int depth) {
+void NodeNumber::draw(std::ostream& os, [[maybe_unused]] int depth) {
     os << token.get_raw_value();
 }
 
-void NodeString::draw(std::ostream& os, int depth) {
+void NodeString::draw(std::ostream& os, [[maybe_unused]] int depth) {
     os << token.get_raw_value();
 }
 

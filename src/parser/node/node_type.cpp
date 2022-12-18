@@ -1,7 +1,9 @@
 #include "node_type.h"
 
 namespace parser {
-void NodeType::draw(std::ostream& os, int depth) { os << "Type"; }
+void NodeType::draw(std::ostream& os, [[maybe_unused]] int depth) {
+    os << "Type";
+}
 
 void NodeSimpleType::draw(std::ostream& os, int depth) {
     os << "type:\n";
