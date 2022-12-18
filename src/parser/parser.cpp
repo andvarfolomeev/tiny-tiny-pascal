@@ -320,6 +320,10 @@ std::shared_ptr<NodeExpression> Parser::factor() {
         next_token();
         return std::make_shared<NodeNumber>(token);
     }
+    if (token.is({Keywords::TRUE, Keywords::FALSE})) {
+        next_token();
+        return std::make_shared<NodeBoolean>(token);
+    }
     if (token == TokenType::ID) {
         return var_ref(identifier());
     }

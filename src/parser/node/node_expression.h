@@ -21,6 +21,15 @@ class NodeId : public NodeVarRef {
     Token token;
 };
 
+class NodeBoolean : public NodeExpression {
+   public:
+    NodeBoolean(Token token) : token(std::move(token)) {}
+    void draw(std::ostream &os, int depth) override;
+
+   private:
+    Token token;
+};
+
 class NodeBinOp : public NodeExpression {
    public:
     NodeBinOp(Token token, std::shared_ptr<NodeExpression> left,
