@@ -60,6 +60,7 @@ set(
         src/parser/node/node.cpp
         src/parser/node/node_declaration.h
         src/parser/node/node_declaration.cpp
+        src/parser/node/node_base_expression.h
         src/parser/node/node_expression.h
         src/parser/node/node_expression.cpp
         src/parser/node/node_program.h
