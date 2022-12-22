@@ -5,7 +5,6 @@
 #include "scanner/scanner.h"
 #include "simple_parser/simple_parser.h"
 
-
 int main(int argc, char* argv[]) {
     argparse::ArgumentParser program("tiny_tiny_pascal");
 
@@ -84,6 +83,8 @@ int main(int argc, char* argv[]) {
             parser::Parser p(scanner);
             auto head = p.program();
             head->draw(std::cout, 0);
+            std::cout << "\n";
+            p.get_symbol_table_stack()->draw(std::cout);
             std::cout << "\n";
         } catch (const simpleparser::SyntaxException& ex) {
             std::cout << ex.what();
