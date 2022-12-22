@@ -27,14 +27,22 @@ class SyntaxNode {
     }
 };
 
-class NodeKeyword : public SyntaxNode {
+class NodeWithStringToken : public SyntaxNode {
    public:
-    NodeKeyword(Token token) : token(std::move(token)) {}
-    void draw(std::ostream &os, int depth) override;
-    std::string get_name();
+    explicit NodeWithStringToken(Token token) : token(std::move(token)) {}
+    virtual void draw(std::ostream &os, int depth) = 0;
+    virtual std::string get_name() = 0;
+    Token get_token();
 
    protected:
     Token token;
+};
+
+class NodeKeyword : public NodeWithStringToken {
+   public:
+    explicit NodeKeyword(Token token) : NodeWithStringToken(std::move(token)) {}
+    void draw(std::ostream &os, int depth) override;
+    std::string get_name() override;
 };
 }  // namespace parser
 
