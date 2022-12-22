@@ -7,6 +7,7 @@
 #include "node.h"
 #include "node_expression.h"
 #include "node_statement.h"
+#include "node_type.h"
 
 namespace parser {
 using namespace scanner;
@@ -20,6 +21,7 @@ class NodeBlock : public NodeDecl {
         : declarations(std::move(declarations)),
           compound_statement(std::move(compound_statement)) {}
     void draw(std::ostream &os, int depth) override;
+    std::shared_ptr<NodeCompoundStatement> get_compound_statement();
 
    protected:
     std::vector<std::shared_ptr<NodeDecl>> declarations;
@@ -98,16 +100,19 @@ class NodeFormalParamSection : public NodeDecl {
    public:
     NodeFormalParamSection(std::shared_ptr<NodeKeyword> modifier,
                            std::vector<std::shared_ptr<NodeId>> ids,
-                           std::shared_ptr<SyntaxNode> type)
+                           std::shared_ptr<NodeType> type)
         : modifier(std::move(modifier)),
           ids(std::move(ids)),
           type(std::move(type)) {}
     void draw(std::ostream &os, int depth) override;
+    std::shared_ptr<NodeKeyword> get_modifier() { return modifier; }
+    std::vector<std::shared_ptr<NodeId>> get_ids() { return ids; };
+    std::shared_ptr<NodeType> get_type() { return type; };
 
    protected:
     std::shared_ptr<NodeKeyword> modifier;
     std::vector<std::shared_ptr<NodeId>> ids;
-    std::shared_ptr<SyntaxNode> type;
+    std::shared_ptr<NodeType> type;
 };
 
 class NodeProcedureDecl : public NodeDecl {

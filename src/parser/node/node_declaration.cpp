@@ -11,6 +11,10 @@ void NodeBlock::draw(std::ostream& os, int depth) {
     compound_statement->draw(os, depth + 1);
 }
 
+std::shared_ptr<NodeCompoundStatement> NodeBlock::get_compound_statement() {
+    return compound_statement;
+}
+
 void NodeVarDecl::draw(std::ostream& os, int depth) {
     os << "var";
     draw_vector(os, depth + 1, ids);
