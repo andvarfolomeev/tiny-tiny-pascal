@@ -19,6 +19,7 @@ class NodeSimpleType : public NodeType {
     NodeSimpleType(std::shared_ptr<NodeId> id) : id(std::move(id)) {}
     NodeSimpleType(std::shared_ptr<NodeKeyword> id) : id(std::move(id)) {}
     void draw(std::ostream &os, int depth) override;
+    std::string get_name();
 
    private:
     std::shared_ptr<SyntaxNode> id;
@@ -30,6 +31,9 @@ class NodeRange : public NodeExpression {
               std::shared_ptr<NodeExpression> exp2)
         : exp1(std::move(exp1)), exp2(std::move(exp2)) {}
     void draw(std::ostream &os, int depth) override;
+    std::shared_ptr<NodeExpression> get_beg_exp();
+    std::shared_ptr<NodeExpression> get_end_exp();
+
 
    private:
     std::shared_ptr<NodeExpression> exp1;
@@ -42,18 +46,22 @@ class NodeArrayType : public NodeType {
                   std::vector<std::shared_ptr<NodeRange>> ranges)
         : type(std::move(type)), ranges(std::move(ranges)) {}
     void draw(std::ostream &os, int depth) override;
+    std::shared_ptr<NodeType> get_type();
+    std::vector<std::shared_ptr<NodeRange>> get_ranges();
 
    private:
     std::shared_ptr<NodeType> type;
     std::vector<std::shared_ptr<NodeRange>> ranges;
 };
 
-class NodeFieldSelection : public NodeType {
+class NodeFieldSelection : public SyntaxNode {
    public:
     NodeFieldSelection(std::vector<std::shared_ptr<NodeId>> idents,
                        std::shared_ptr<NodeType> type)
         : idents(std::move(idents)), type(std::move(type)) {}
     void draw(std::ostream &os, int depth) override;
+    std::vector<std::shared_ptr<NodeId>> get_idents();
+    std::shared_ptr<NodeType> get_type();
 
    private:
     std::vector<std::shared_ptr<NodeId>> idents;
@@ -62,9 +70,11 @@ class NodeFieldSelection : public NodeType {
 
 class NodeRecordType : public NodeType {
    public:
-    NodeRecordType(std::vector<std::shared_ptr<NodeFieldSelection>> fields)
+    explicit NodeRecordType(
+        std::vector<std::shared_ptr<NodeFieldSelection>> fields)
         : fields(std::move(fields)) {}
     void draw(std::ostream &os, int depth) override;
+    std::vector<std::shared_ptr<NodeFieldSelection>> get_fields();
 
    private:
     std::vector<std::shared_ptr<NodeFieldSelection>> fields;
