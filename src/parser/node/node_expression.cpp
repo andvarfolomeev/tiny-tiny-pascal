@@ -119,4 +119,10 @@ void NodeSetRangeElement::draw(std::ostream& os, int depth) {
 void NodeSetConstructor::draw(std::ostream& os, int depth) {
     draw_vector(os, depth, elements);
 }
+std::shared_ptr<NodeExpression> NodeCastToDecimal::get_expression() {
+    return exp;
+}
+std::shared_ptr<SymbolType> NodeCastToDecimal::calc_sym_type() {
+    return std::shared_ptr<SymbolDouble>();
+}
 };  // namespace parser

@@ -87,6 +87,16 @@ class NodeNumber : public NodeExpression {
     Token token;
 };
 
+class NodeCastToDecimal : public NodeExpression {
+   public:
+    NodeCastToDecimal(std::shared_ptr<NodeExpression> &exp) : exp(exp) {}
+    std::shared_ptr<NodeExpression> get_expression();
+    std::shared_ptr<SymbolType> calc_sym_type() override;
+
+   private:
+    std::shared_ptr<NodeExpression> exp;
+};
+
 class NodeString : public NodeExpression {
    public:
     explicit NodeString(Token token) : token(std::move(token)) {}
