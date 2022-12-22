@@ -26,6 +26,7 @@ class NodeBoolean : public NodeExpression {
    public:
     explicit NodeBoolean(Token token) : token(std::move(token)) {}
     void draw(std::ostream &os, int depth) override;
+    std::shared_ptr<SymbolType> calc_sym_type() override;
 
    private:
     Token token;
@@ -39,6 +40,7 @@ class NodeBinOp : public NodeExpression {
           left(std::move(left)),
           right(std::move(right)) {}
     void draw(std::ostream &os, int depth) override;
+    std::shared_ptr<SymbolType> calc_sym_type() override;
 
    private:
     Token token;
@@ -52,6 +54,7 @@ class NodeUnOp : public NodeExpression {
     NodeUnOp(Token token, std::shared_ptr<NodeExpression> operand)
         : token(std::move(token)), operand(std::move(operand)) {}
     void draw(std::ostream &os, int depth) override;
+    std::shared_ptr<SymbolType> calc_sym_type() override;
 
    private:
     Token token;
@@ -66,6 +69,7 @@ class NodeRelOp : public NodeExpression {
           left(std::move(left)),
           right(std::move(right)) {}
     void draw(std::ostream &os, int depth) override;
+    std::shared_ptr<SymbolType> calc_sym_type() override;
 
    private:
     Token token;
@@ -77,6 +81,7 @@ class NodeNumber : public NodeExpression {
    public:
     explicit NodeNumber(Token token) : token(std::move(token)) {}
     void draw(std::ostream &os, int depth) override;
+    std::shared_ptr<SymbolType> calc_sym_type() override;
 
    private:
     Token token;
@@ -86,6 +91,7 @@ class NodeString : public NodeExpression {
    public:
     explicit NodeString(Token token) : token(std::move(token)) {}
     void draw(std::ostream &os, int depth) override;
+    std::shared_ptr<SymbolType> calc_sym_type() override;
 
    private:
     Token token;
@@ -97,6 +103,7 @@ class NodeFuncCall : public NodeVarRef {
                  std::vector<std::shared_ptr<NodeExpression>> params)
         : var_ref(std::move(var_ref)), params(std::move(params)) {}
     void draw(std::ostream &os, int depth) override;
+    std::shared_ptr<SymbolType> calc_sym_type() override;
 
     std::shared_ptr<NodeVarRef> get_var_ref();
     std::vector<std::shared_ptr<NodeExpression>> get_params();
@@ -112,6 +119,7 @@ class NodeArrayAccess : public NodeVarRef {
                     std::vector<std::shared_ptr<NodeExpression>> params)
         : var_ref(std::move(var_ref)), params(std::move(params)) {}
     void draw(std::ostream &os, int depth) override;
+    std::shared_ptr<SymbolType> calc_sym_type() override;
 
    private:
     std::shared_ptr<NodeVarRef> var_ref;
@@ -124,6 +132,7 @@ class NodeRecordAccess : public NodeVarRef {
                      std::shared_ptr<NodeId> field)
         : var_ref(std::move(var_ref)), field(std::move(field)) {}
     void draw(std::ostream &os, int depth) override;
+    std::shared_ptr<SymbolType> calc_sym_type() override;
 
    private:
     std::shared_ptr<NodeVarRef> var_ref;
