@@ -1,7 +1,12 @@
 #include "symbol_table.h"
+
+#include <iomanip>
+#include <memory>
 #include <stdexcept>
 
-std::shared_ptr<Symbol> SymbolTable::at(std::string name) {
+#include "symbol_type.h"
+
+std::shared_ptr<Symbol> SymbolTable::get(std::string name) {
     if (data.contains(name)) {
         return data.at(name);
     }
@@ -19,4 +24,51 @@ void SymbolTable::push(std::string name, std::shared_ptr<Symbol> symbol) {
         throw std::runtime_error("double declaration");
     }
     data[name] = symbol;
+    ordered_names.push_back(name);
+}
+
+std::shared_ptr<SymbolTable> SymbolTable::get_with_builtin() {
+    auto table = std::make_shared<SymbolTable>();
+    table->push("boolean", std::make_shared<SymbolBoolean>());
+    table->push("integer", std::make_shared<SymbolInteger>());
+    table->push("double", std::make_shared<SymbolDouble>());
+    table->push("string", std::make_shared<SymbolString>());
+    return table;
+}
+
+void SymbolTable::draw(std::ostream& os, int depth) {
+    auto width_num = 30;
+    auto n_cols = 3;
+    std::string sep(width_num * n_cols, '-');
+    std::string sep_(width_num * n_cols, '=');
+    std::string sep__(width_num * n_cols, '~');
+    auto vert_sep = '|';
+    if (depth == 0) {
+        os << sep << "\n"
+           << vert_sep << std::setw(width_num - 1) << std::left  //
+           << " id"                                              //
+           << vert_sep << std::setw(width_num - 1) << std::left  //
+           << " type of object"                                  //
+           << vert_sep << std::setw(width_num - 2) << std::left  //
+           << " ret type" << vert_sep << "\n"
+           << sep << "\n";
+    } else {
+        os << sep_ << "\n";
+    }
+    for (auto& name : ordered_names) {
+        auto sym = data[name];
+        os << vert_sep << " " << std::setw(width_num - 2) << std::left  //
+           << sym->get_name()                                           //
+           << vert_sep << " " << std::setw(width_num - 2) << std::left  //
+           << sym->get_type_of_object_str()                             //
+           << vert_sep << " " << std::setw(width_num - 3) << std::left  //
+           << sym->get_ret_type_str()                                   //
+           << vert_sep << "\n";
+        sym->draw_additional(os, depth + 1);
+    }
+    if (depth == 0) {
+        os << sep << "\n";
+    } else {
+        os << sep__ << "\n";
+    }
 }
