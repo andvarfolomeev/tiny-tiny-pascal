@@ -4,6 +4,9 @@
 #include <optional>
 
 #include "../scanner/scanner.h"
+#include "../symbol_table/symbol_table_stack.h"
+#include "../symbol_table/symbol_type_array.h"
+#include "../symbol_table/symbol_var.h"
 #include "node/nodes.h"
 
 using namespace scanner;
@@ -31,7 +34,9 @@ class SyntaxException : public TinyPascalException {
 class Parser {
    public:
     explicit Parser(Scanner &scanner)
-        : scanner(scanner), current_token(scanner.next_token()) {}
+        : scanner(scanner), current_token(scanner.next_token()) {
+        symbol_table_stack = std::make_shared<SymbolTableStack>();
+    }
     std::shared_ptr<NodeProgram> program();
 
     std::shared_ptr<NodeId> program_name();
@@ -84,12 +89,23 @@ class Parser {
     std::vector<T> list(T (Parser::*func)(), Separators sep_type,
                         std::optional<Separators> sep_end = {},
                         std::optional<Keywords> keyword_end = {});
+    std::shared_ptr<SymbolTableStack> get_symbol_table_stack();
 
    private:
     Scanner scanner;
     Token current_token;
+    std::shared_ptr<SymbolTableStack> symbol_table_stack;
 
     Token next_token();
+
+    std::shared_ptr<SymbolType> get_symbol_type(
+        const std::shared_ptr<NodeType> &type);
+    std::shared_ptr<SymbolType> get_symbol_type(
+        const std::shared_ptr<NodeRecordType> &type);
+    std::shared_ptr<SymbolType> get_symbol_type(
+        const std::shared_ptr<NodeArrayType> &array_type);
+    void push_formal_params(
+        const std::vector<std::shared_ptr<NodeFormalParamSection>> &params);
 
     template <typename T>
     void require_vec(const std::vector<T> &items, bool eat = true);
