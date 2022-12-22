@@ -6,7 +6,8 @@
 class SymbolTable {
    public:
     SymbolTable() {}
-    std::shared_ptr<Symbol> at(std::string name);
+    std::shared_ptr<Symbol> get(std::string name);
+    void del(std::string name);
     void push(std::string name, std::shared_ptr<Symbol> symbol);
 
    protected:
