@@ -8,7 +8,7 @@ void NodeId::draw(std::ostream& os, [[maybe_unused]] int depth) {
 std::string NodeId::get_name() { return token.get_value<std::string>(); }
 
 void NodeBoolean::draw(std::ostream& os, [[maybe_unused]] int depth) {
-    os << token.get_value<std::string>();
+    os << token.get_raw_value();
 }
 
 void NodeBinOp::draw(std::ostream& os, int depth) {

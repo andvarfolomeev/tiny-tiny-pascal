@@ -1,13 +1,14 @@
 #ifndef PARSER_NODE_EXPRESSION_H
 #define PARSER_NODE_EXPRESSION_H
 
+#include <utility>
+
 #include "../../scanner/token.h"
 #include "node.h"
+#include "node_base_expression.h"
 
 namespace parser {
 using namespace scanner;
-
-class NodeExpression : public SyntaxNode {};
 
 class NodeVarRef : public NodeExpression {};
 
@@ -23,7 +24,7 @@ class NodeId : public NodeVarRef {
 
 class NodeBoolean : public NodeExpression {
    public:
-    NodeBoolean(Token token) : token(std::move(token)) {}
+    explicit NodeBoolean(Token token) : token(std::move(token)) {}
     void draw(std::ostream &os, int depth) override;
 
    private:
@@ -74,7 +75,7 @@ class NodeRelOp : public NodeExpression {
 
 class NodeNumber : public NodeExpression {
    public:
-    NodeNumber(Token token) : token(std::move(token)) {}
+    explicit NodeNumber(Token token) : token(std::move(token)) {}
     void draw(std::ostream &os, int depth) override;
 
    private:
@@ -83,7 +84,7 @@ class NodeNumber : public NodeExpression {
 
 class NodeString : public NodeExpression {
    public:
-    NodeString(Token token) : token(std::move(token)) {}
+    explicit NodeString(Token token) : token(std::move(token)) {}
     void draw(std::ostream &os, int depth) override;
 
    private:
@@ -133,7 +134,7 @@ class NodeSetElement : public NodeExpression {};
 
 class NodeSetSimpleElement : public NodeSetElement {
    public:
-    NodeSetSimpleElement(std::shared_ptr<NodeExpression> exp)
+    explicit NodeSetSimpleElement(std::shared_ptr<NodeExpression> exp)
         : exp(std::move(exp)) {}
     void draw(std::ostream &os, int depth) override;
 
@@ -155,8 +156,9 @@ class NodeSetRangeElement : public NodeSetElement {
 
 class NodeSetConstructor : public NodeExpression {
    public:
-    NodeSetConstructor(std::vector<std::shared_ptr<NodeSetElement>> elements)
-        : elements(elements) {}
+    explicit NodeSetConstructor(
+        std::vector<std::shared_ptr<NodeSetElement>> elements)
+        : elements(std::move(elements)) {}
     void draw(std::ostream &os, int depth) override;
 
    private:
