@@ -37,8 +37,8 @@ CPMAddPackage(
 set(
         SOURCE
 
-        src/core/exception.cpp
-        src/core/exception.h
+        src/exception.cpp
+        src/exception.h
 
         src/scanner/buffered_istream.cpp
         src/scanner/buffered_istream.h

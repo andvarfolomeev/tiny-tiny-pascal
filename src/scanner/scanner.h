@@ -6,7 +6,7 @@
 #include <sstream>
 #include <utility>
 
-#include "../core/exception.h"
+#include "../exception.h"
 #include "buffered_istream.h"
 #include "token.h"
 
