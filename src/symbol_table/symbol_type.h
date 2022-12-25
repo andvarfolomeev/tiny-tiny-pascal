@@ -11,6 +11,8 @@ class SymbolType : public Symbol {
     bool is_type() final { return true; }
     std::string get_type_of_object_str() override;
     std::string get_ret_type_str() override;
+    virtual std::shared_ptr<SymbolType> resolve_alias();
+    virtual bool operator==(std::shared_ptr<SymbolType> other);
 };
 
 class SymbolBoolean : public SymbolType {
@@ -48,6 +50,7 @@ class SymbolTypeAlias : public SymbolType {
     SymbolTypeAlias(std::string name, std::shared_ptr<SymbolType> original)
         : SymbolType(std::move(name)), original(std::move(original)) {}
     std::string get_type_of_object_str() override;
+    std::shared_ptr<SymbolType> resolve_alias() override;
 
    protected:
     std::shared_ptr<SymbolType> original;
