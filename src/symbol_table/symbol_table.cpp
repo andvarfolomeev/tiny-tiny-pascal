@@ -72,3 +72,15 @@ void SymbolTable::draw(std::ostream& os, int depth) {
         os << sep__ << "\n";
     }
 }
+
+int SymbolTable::size() {
+    return data.size();
+}
+
+std::map<std::string, std::shared_ptr<Symbol>>::iterator SymbolTable::begin() {
+    return data.begin();
+}
+
+std::map<std::string, std::shared_ptr<Symbol>>::iterator SymbolTable::end() {
+    return data.end();
+}
