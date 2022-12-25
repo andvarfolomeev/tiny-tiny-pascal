@@ -63,6 +63,12 @@ std::shared_ptr<SymbolType> NodeNumber::calc_sym_type() {
     return std::make_shared<SymbolInteger>();
 }
 
+void NodeCastToDecimal::draw(std::ostream &os, [[maybe_unused]] int depth) {
+    os << "cast\n";
+    draw_path(os, depth + 1);
+    exp->draw(os, depth + 1);
+}
+
 void NodeString::draw(std::ostream& os, [[maybe_unused]] int depth) {
     os << token.get_raw_value();
 }

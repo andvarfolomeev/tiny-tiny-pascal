@@ -89,7 +89,9 @@ class NodeNumber : public NodeExpression {
 
 class NodeCastToDecimal : public NodeExpression {
    public:
-    NodeCastToDecimal(std::shared_ptr<NodeExpression> &exp) : exp(exp) {}
+    explicit NodeCastToDecimal(std::shared_ptr<NodeExpression> exp)
+        : exp(std::move(exp)) {}
+    void draw(std::ostream &os, int depth) override;
     std::shared_ptr<NodeExpression> get_expression();
     std::shared_ptr<SymbolType> calc_sym_type() override;
 
