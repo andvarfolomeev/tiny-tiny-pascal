@@ -8,16 +8,18 @@
 
 class SymbolArray : public SymbolType {
    public:
-    SymbolArray(std::shared_ptr<SymbolType> elem,
+    SymbolArray(std::shared_ptr<SymbolType> type,
                 std::vector<std::pair<std::shared_ptr<parser::NodeExpression>,
                                       std::shared_ptr<parser::NodeExpression>>>
                     ranges)
         : SymbolType("array"),
-          elem(std::move(std::move(elem))),
+          type(std::move(std::move(type))),
           ranges(std::move(ranges)) {}
+    std::string get_type_of_object_str() override;
+    bool equivalent_to(std::shared_ptr<SymbolType> other) override;
 
    protected:
-    std::shared_ptr<SymbolType> elem;
+    std::shared_ptr<SymbolType> type;
     std::vector<std::pair<std::shared_ptr<parser::NodeExpression>,
                           std::shared_ptr<parser::NodeExpression>>>
         ranges;
