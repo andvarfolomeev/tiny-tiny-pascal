@@ -10,6 +10,7 @@ class SymbolVar : public Symbol {
         : Symbol(name), type(std::move(type)) {}
     std::string get_type_of_object_str() override;
     std::string get_ret_type_str() override;
+    std::shared_ptr<SymbolType> get_type();
 
    protected:
     std::shared_ptr<SymbolType> type;
