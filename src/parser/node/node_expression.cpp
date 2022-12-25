@@ -12,7 +12,7 @@ void NodeBoolean::draw(std::ostream& os, [[maybe_unused]] int depth) {
 }
 
 std::shared_ptr<SymbolType> NodeBoolean::calc_sym_type() {
-    return std::make_shared<SymbolBoolean>();
+    return SYMBOL_BOOLEAN;
 }
 
 void NodeBinOp::draw(std::ostream& os, int depth) {
@@ -49,7 +49,7 @@ void NodeRelOp::draw(std::ostream& os, int depth) {
 }
 
 std::shared_ptr<SymbolType> NodeRelOp::calc_sym_type() {
-    return std::make_shared<SymbolBoolean>();
+    return SYMBOL_BOOLEAN;
 }
 
 void NodeNumber::draw(std::ostream& os, [[maybe_unused]] int depth) {
@@ -58,12 +58,12 @@ void NodeNumber::draw(std::ostream& os, [[maybe_unused]] int depth) {
 
 std::shared_ptr<SymbolType> NodeNumber::calc_sym_type() {
     if (token == TokenType::LITERAL_DOUBLE) {
-        return std::make_shared<SymbolDouble>();
+        return SYMBOL_DOUBLE;
     }
-    return std::make_shared<SymbolInteger>();
+    return SYMBOL_INTEGER;
 }
 
-void NodeCastToDecimal::draw(std::ostream &os, [[maybe_unused]] int depth) {
+void NodeCastToDecimal::draw(std::ostream& os, [[maybe_unused]] int depth) {
     os << "cast\n";
     draw_path(os, depth + 1);
     exp->draw(os, depth + 1);
@@ -74,7 +74,7 @@ void NodeString::draw(std::ostream& os, [[maybe_unused]] int depth) {
 }
 
 std::shared_ptr<SymbolType> NodeString::calc_sym_type() {
-    return std::make_shared<SymbolString>();
+    return SYMBOL_STRING;
 }
 
 void NodeFuncCall::draw(std::ostream& os, int depth) {

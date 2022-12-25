@@ -11,7 +11,7 @@ std::string SymbolProcedure::get_type_of_object_str() { return "procedure"; }
 
 void SymbolProcedure::draw_additional(std::ostream& os, int depth) {
     Symbol::draw_additional(os, depth);
-    locals->draw(os, depth);
+    if (locals != nullptr) locals->draw(os, depth);
 }
 
 void SymbolFunction::set_ret_type(std::shared_ptr<SymbolType> ret_) {

@@ -6,8 +6,8 @@
 
 class SymbolType : public Symbol {
    public:
-    SymbolType(std::string name) : Symbol(name) {}
-    ~SymbolType() override {}
+    explicit SymbolType(std::string name) : Symbol(name) {}
+    ~SymbolType() override = default;
     bool is_type() final { return true; }
     std::string get_type_of_object_str() override;
     std::string get_ret_type_str() override;
@@ -30,14 +30,25 @@ class SymbolDouble : public SymbolType {
     SymbolDouble() : SymbolType("double") {}
 };
 
+class SymbolChar : public SymbolType {
+   public:
+    SymbolChar() : SymbolType("char") {}
+};
+
 class SymbolString : public SymbolType {
    public:
     SymbolString() : SymbolType("string") {}
 };
 
+const auto SYMBOL_BOOLEAN = std::make_shared<SymbolBoolean>();
+const auto SYMBOL_INTEGER = std::make_shared<SymbolInteger>();
+const auto SYMBOL_DOUBLE = std::make_shared<SymbolDouble>();
+const auto SYMBOL_CHAR = std::make_shared<SymbolChar>();
+const auto SYMBOL_STRING = std::make_shared<SymbolString>();
+
 class SymbolRecord : public SymbolType {
    public:
-    SymbolRecord(std::shared_ptr<SymbolTable> fields)
+    explicit SymbolRecord(std::shared_ptr<SymbolTable> fields)
         : SymbolType("record"), fields(std::move(fields)) {}
     std::string get_type_of_object_str() override;
     bool equivalent_to(std::shared_ptr<SymbolType> other) override;

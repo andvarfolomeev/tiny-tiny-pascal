@@ -21,6 +21,13 @@ class SymbolProcedure : public Symbol {
     std::shared_ptr<parser::NodeCompoundStatement> body;
 };
 
+const auto SYMBOL_WRITELN =
+    std::make_shared<SymbolProcedure>("writeln", nullptr, nullptr);
+const auto SYMBOL_WRITE =
+    std::make_shared<SymbolProcedure>("write", nullptr, nullptr);
+const auto SYMBOL_READ =
+    std::make_shared<SymbolProcedure>("read", nullptr, nullptr);
+
 class SymbolFunction : public SymbolProcedure {
    public:
     SymbolFunction(std::string name, std::shared_ptr<SymbolTable> locals,

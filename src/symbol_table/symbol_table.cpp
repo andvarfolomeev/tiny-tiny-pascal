@@ -4,6 +4,7 @@
 #include <memory>
 #include <stdexcept>
 
+#include "symbol_function.h"
 #include "symbol_type.h"
 
 std::shared_ptr<Symbol> SymbolTable::get(std::string name) {
@@ -29,10 +30,14 @@ void SymbolTable::push(std::string name, std::shared_ptr<Symbol> symbol) {
 
 std::shared_ptr<SymbolTable> SymbolTable::get_with_builtin() {
     auto table = std::make_shared<SymbolTable>();
-    table->push("boolean", std::make_shared<SymbolBoolean>());
-    table->push("integer", std::make_shared<SymbolInteger>());
-    table->push("double", std::make_shared<SymbolDouble>());
-    table->push("string", std::make_shared<SymbolString>());
+    table->push("boolean", SYMBOL_BOOLEAN);
+    table->push("integer", SYMBOL_INTEGER);
+    table->push("double", SYMBOL_DOUBLE);
+    table->push("char", SYMBOL_CHAR);
+    table->push("string", SYMBOL_STRING);
+    table->push("writeln", SYMBOL_WRITELN);
+    table->push("write", SYMBOL_WRITE);
+    table->push("read", SYMBOL_READ);
     return table;
 }
 
@@ -73,9 +78,7 @@ void SymbolTable::draw(std::ostream& os, int depth) {
     }
 }
 
-int SymbolTable::size() {
-    return data.size();
-}
+int SymbolTable::size() { return data.size(); }
 
 std::map<std::string, std::shared_ptr<Symbol>>::iterator SymbolTable::begin() {
     return data.begin();
