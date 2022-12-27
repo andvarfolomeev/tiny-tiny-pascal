@@ -1,5 +1,6 @@
 #include "parser.h"
 
+#include <ranges>
 #include <utility>
 
 #include "../symbol_table/symbol_function.h"
@@ -562,13 +563,12 @@ std::shared_ptr<SymbolType> Parser::get_symbol_type(
 std::shared_ptr<SymbolType> Parser::get_symbol_type(
     const std::shared_ptr<NodeArrayType>& array_type) {
     auto sym_type = get_symbol_type(array_type->get_type());
-    std::vector<std::pair<std::shared_ptr<NodeExpression>,
-                          std::shared_ptr<NodeExpression>>>
-        ranges;
-    for (auto& range : array_type->get_ranges()) {
-        ranges.emplace_back(range->get_beg_exp(), range->get_end_exp());
+    auto ranges_ = array_type->get_ranges();
+    for (auto& range : std::views::reverse(ranges_)) {
+        sym_type = std::make_shared<SymbolArray>(sym_type, range->get_beg_exp(),
+                                                 range->get_end_exp());
     }
-    return std::make_shared<SymbolArray>(sym_type, ranges);
+    return sym_type;
 }
 
 void Parser::push_formal_params(
