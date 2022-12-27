@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <memory>
 #include <stdexcept>
+#include <numeric>
 
 #include "symbol_function.h"
 #include "symbol_type.h"
@@ -42,19 +43,19 @@ std::shared_ptr<SymbolTable> SymbolTable::get_with_builtin() {
 }
 
 void SymbolTable::draw(std::ostream& os, int depth) {
-    auto width_num = 30;
-    auto n_cols = 3;
-    std::string sep(width_num * n_cols, '-');
-    std::string sep_(width_num * n_cols, '=');
-    std::string sep__(width_num * n_cols, '~');
+    std::vector<int> widths = {30, 30, 90};
+    auto widths_num = std::accumulate(widths.begin(), widths.end(), 0);
+    std::string sep(widths_num, '-');
+    std::string sep_(widths_num , '=');
+    std::string sep__(widths_num , '~');
     auto vert_sep = '|';
     if (depth == 0) {
         os << sep << "\n"
-           << vert_sep << std::setw(width_num - 1) << std::left  //
+           << vert_sep << std::setw(widths[0] - 1) << std::left  //
            << " id"                                              //
-           << vert_sep << std::setw(width_num - 1) << std::left  //
+           << vert_sep << std::setw(widths[1] - 1) << std::left  //
            << " type of object"                                  //
-           << vert_sep << std::setw(width_num - 2) << std::left  //
+           << vert_sep << std::setw(widths[2] - 2) << std::left  //
            << " ret type" << vert_sep << "\n"
            << sep << "\n";
     } else {
@@ -62,12 +63,12 @@ void SymbolTable::draw(std::ostream& os, int depth) {
     }
     for (auto& name : ordered_names) {
         auto sym = data[name];
-        os << vert_sep << " " << std::setw(width_num - 2) << std::left  //
+        os << vert_sep << " " << std::setw(widths[0] - 2) << std::left  //
            << sym->get_name()                                           //
-           << vert_sep << " " << std::setw(width_num - 2) << std::left  //
+           << vert_sep << " " << std::setw(widths[1] - 2) << std::left  //
            << sym->get_type_of_object_str()                             //
-           << vert_sep << " " << std::setw(width_num - 3) << std::left  //
-           << sym->get_ret_type_str()                                   //
+           << vert_sep << " " << std::setw(widths[2] - 3) << std::left  //
+           << sym->get_ret_type_str()                                  //
            << vert_sep << "\n";
         sym->draw_additional(os, depth + 1);
     }
