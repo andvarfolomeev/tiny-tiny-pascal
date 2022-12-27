@@ -17,6 +17,7 @@ class SymbolArray : public SymbolType {
           high(std::move(high)) {}
     std::string get_type_of_object_str() override;
     bool equivalent_to(std::shared_ptr<SymbolType> other) override;
+    std::string to_str() override;
 
    protected:
     std::shared_ptr<SymbolType> type;

@@ -20,4 +20,4 @@ void SymbolFunction::set_ret_type(std::shared_ptr<SymbolType> ret_) {
 
 std::string SymbolFunction::get_type_of_object_str() { return "function"; }
 
-std::string SymbolFunction::get_ret_type_str() { return "some type"; }
+std::string SymbolFunction::get_ret_type_str() { return ret->to_str(); }
