@@ -3,8 +3,11 @@
 
 #include <utility>
 
-#include "../parser/node/node_base_expression.h"
 #include "symbol_type.h"
+
+namespace parser {
+class NodeExpression;
+}
 
 class SymbolArray : public SymbolType {
    public:
