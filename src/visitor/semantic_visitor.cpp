@@ -9,14 +9,11 @@
 namespace visitor {
 using namespace parser;
 
-// OK
 void SemanticVisitor::visit([[maybe_unused]] NodeKeyword *node) {}
-// OK
 void SemanticVisitor::visit(NodeBlock *node) {
     for (auto &decl : node->declarations) decl->accept(this);
     node->compound_statement->accept(this);
 }
-// OK
 void SemanticVisitor::visit(NodeVarDecl *node) {
     for (auto &id : node->ids) {
         check_id_duplicate(id);
@@ -25,11 +22,11 @@ void SemanticVisitor::visit(NodeVarDecl *node) {
     }
     node->type->accept(this);
 }
-// OK
+
 void SemanticVisitor::visit(NodeVarDecls *node) {
     for (auto &var_decl : node->vars) var_decl->accept(this);
 }
-// OK
+
 void SemanticVisitor::visit(NodeConstDecl *node) {
     if (node->exp != nullptr) {
         node->exp->accept(this);
@@ -41,22 +38,22 @@ void SemanticVisitor::visit(NodeConstDecl *node) {
     sym_table_stack->push(
         std::make_shared<SymbolVar>(node->id->get_name(), sym_type));
 }
-// OK
+
 void SemanticVisitor::visit(NodeConstDecls *node) {
     for (auto &const_decl : node->consts) const_decl->accept(this);
 }
-// OK
+
 void SemanticVisitor::visit(NodeTypeDecl *node) {
     check_id_duplicate(node->id);
     node->type->accept(this);
     sym_table_stack->push(std::make_shared<SymbolTypeAlias>(
         node->id->get_name(), get_symbol_type(node->type)));
 }
-// OK
+
 void SemanticVisitor::visit(NodeTypeDecls *node) {
     for (auto &type_decl : node->types) type_decl->accept(this);
 }
-// OK
+
 void SemanticVisitor::visit(NodeFormalParamSection *node) {
     auto modifier = node->get_modifier();
     auto sym_type = get_symbol_type(node->get_type());
@@ -81,7 +78,7 @@ void SemanticVisitor::visit(NodeFormalParamSection *node) {
         sym_table_stack->push(id->get_name(), symbol_param);
     }
 }
-// OK
+
 void SemanticVisitor::visit(NodeProcedureDecl *node) {
     check_id_duplicate(node->id);
     auto local_table = std::make_shared<SymbolTable>();
@@ -93,7 +90,7 @@ void SemanticVisitor::visit(NodeProcedureDecl *node) {
     sym_table_stack->pop();
     sym_table_stack->push(symbol_proc);
 }
-// OK
+
 void SemanticVisitor::visit(NodeFunctionDecl *node) {
     check_id_duplicate(node->id);
     auto local_table = std::make_shared<SymbolTable>();
@@ -121,12 +118,12 @@ void SemanticVisitor::visit(NodeId *node) {
     node->sym_type =
         get_symbol_type_by_id(node->get_name());  // maybe check functions
 }
-// OK
+
 void SemanticVisitor::visit(NodeBoolean *node) {
     node->sym_type = SYMBOL_BOOLEAN;
     node->is_lvalue = false;
 }
-// OK
+
 void SemanticVisitor::visit(NodeBinOp *node) {
     if (node->sym_type != nullptr) return;
 
@@ -207,7 +204,7 @@ void SemanticVisitor::visit(NodeBinOp *node) {
     throw std::runtime_error(
         R"(Operator is not overloaded "type1" "op" "type2")");
 }
-// OK
+
 void SemanticVisitor::visit(NodeUnOp *node) {
     if (node->sym_type != nullptr) return;
 
@@ -237,7 +234,7 @@ void SemanticVisitor::visit(NodeUnOp *node) {
     }
     throw std::runtime_error(R"(Operator is not overloaded "op" "type")");
 }
-// OK
+
 void SemanticVisitor::visit(NodeRelOp *node) {
     if (node->sym_type != nullptr) return;
 
@@ -256,7 +253,7 @@ void SemanticVisitor::visit(NodeRelOp *node) {
     throw std::runtime_error(
         R"(Operator is not overloaded "type1" "op" "type2")");
 }
-// OK
+
 void SemanticVisitor::visit(NodeNumber *node) {
     if (node->token == TokenType::LITERAL_INTEGER)
         node->sym_type = SYMBOL_INTEGER;
@@ -264,9 +261,9 @@ void SemanticVisitor::visit(NodeNumber *node) {
         node->sym_type = SYMBOL_DOUBLE;
     node->is_lvalue = false;
 }
-// OK
+
 void SemanticVisitor::visit([[maybe_unused]] NodeCast *node) {}
-// OK
+
 void SemanticVisitor::visit(NodeString *node) {
     node->sym_type = SYMBOL_STRING;
     node->is_lvalue = false;
@@ -312,7 +309,7 @@ void SemanticVisitor::visit(NodeFuncCall *node) {
     }
     node->is_lvalue = false;
 }
-// OK
+
 void SemanticVisitor::visit(NodeArrayAccess *node) {
     node->var_ref->accept(this);
     node->index->accept(this);
@@ -329,7 +326,7 @@ void SemanticVisitor::visit(NodeArrayAccess *node) {
     node->sym_type = sym_type_casted->get_inner_type();
     node->is_lvalue = node->var_ref->is_lvalue;
 }
-// OK
+
 void SemanticVisitor::visit(NodeRecordAccess *node) {
     node->var_ref->accept(this);
     check_type_exist(node->var_ref);
@@ -351,22 +348,25 @@ void SemanticVisitor::visit(NodeRecordAccess *node) {
 void SemanticVisitor::visit([[maybe_unused]] NodeSetElement *node) {}
 // TODO: not necessary
 void SemanticVisitor::visit([[maybe_unused]] NodeSetConstructor *node) {}
-// OK
+
 void SemanticVisitor::visit(NodeProgram *node) {
     sym_table_stack->alloc();
     node->block->accept(this);
 }
-// OK
+
 void SemanticVisitor::visit(NodeCallStatement *node) {
     node->func_call->accept(this);
 }
-// OK
+
 void SemanticVisitor::visit(NodeCompoundStatement *node) {
     for (auto &stmt : node->stmts) stmt->accept(this);
 }
-// OK
+
 void SemanticVisitor::visit(NodeForStatement *node) {
-    // TODO: check lvalue
+    node->param->accept(this);
+    if (!node->param->is_lvalue) {
+        throw std::runtime_error("lvalue expected");
+    }
     node->start_exp->accept(this);
     node->end_exp->accept(this);
     if (!node->start_exp->get_sym_type()->equivalent_to(SYMBOL_INTEGER) ||
@@ -375,14 +375,14 @@ void SemanticVisitor::visit(NodeForStatement *node) {
     }
     node->stmt->accept(this);
 }
-// OK
+
 void SemanticVisitor::visit(NodeWhileStatement *node) {
     node->exp->accept(this);
     if (!node->exp->get_sym_type()->equivalent_to(SYMBOL_BOOLEAN))
         throw std::runtime_error("Boolean expected");
     node->stmt->accept(this);
 }
-// OK
+
 void SemanticVisitor::visit(NodeIfStatement *node) {
     node->exp->accept(this);
     if (!node->exp->get_sym_type()->equivalent_to(SYMBOL_BOOLEAN))
@@ -432,7 +432,7 @@ void SemanticVisitor::visit(NodeAssigmentStatement *node) {
     throw std::runtime_error("unknown assignment operator");
 }
 void SemanticVisitor::visit([[maybe_unused]] NodeSimpleType *node) {}
-// OK
+
 void SemanticVisitor::visit(NodeRange *node) {
     auto beg = node->get_beg_exp();
     auto end = node->get_end_exp();
