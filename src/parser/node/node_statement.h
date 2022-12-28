@@ -21,6 +21,7 @@ class NodeCallStatement : public NodeStatement, public NodeFuncCall {
 
     void draw(std::ostream &os, int depth) override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
+    friend class visitor::SemanticVisitor;
 };
 
 class NodeCompoundStatement : public NodeStatement {
@@ -29,6 +30,7 @@ class NodeCompoundStatement : public NodeStatement {
         : stmts(std::move(stmts)) {}
     void draw(std::ostream &os, int depth) override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
+    friend class visitor::SemanticVisitor;
 
    private:
     std::vector<std::shared_ptr<NodeStatement>> stmts;
@@ -48,6 +50,7 @@ class NodeForStatement : public NodeStatement {
           stmt(std::move(stmt)) {}
     void draw(std::ostream &os, int depth) override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
+    friend class visitor::SemanticVisitor;
 
    private:
     std::shared_ptr<NodeId> param;
@@ -64,6 +67,7 @@ class NodeWhileStatement : public NodeStatement {
         : exp(std::move(exp)), stmt(std::move(stmt)) {}
     void draw(std::ostream &os, int depth) override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
+    friend class visitor::SemanticVisitor;
 
    private:
     std::shared_ptr<NodeExpression> exp;
@@ -80,6 +84,7 @@ class NodeIfStatement : public NodeStatement {
           else_stmt(std::move(else_stmt)) {}
     void draw(std::ostream &os, int depth) override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
+    friend class visitor::SemanticVisitor;
 
    private:
     std::shared_ptr<NodeExpression> exp;
@@ -94,6 +99,7 @@ class NodeAssigmentStatement : public NodeStatement {
         : op(std::move(op)), var_ref(std::move(var_ref)), exp(std::move(exp)) {}
     void draw(std::ostream &os, int depth) override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
+    friend class visitor::SemanticVisitor;
 
    private:
     Token op;

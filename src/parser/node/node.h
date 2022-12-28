@@ -8,6 +8,7 @@
 
 #include "../../scanner/token.h"
 #include "../../visitor/base_visitor.h"
+#include "../../visitor/semantic_visitor.h"
 
 namespace parser {
 using namespace scanner;
@@ -19,6 +20,7 @@ class SyntaxNode {
     virtual void draw(std::ostream &os, int depth) = 0;
     void draw_path(std::ostream &os, int depth);
     virtual void accept(BaseVisitor *visitor) = 0;
+    friend class visitor::SemanticVisitor;
 
     template <typename T>
     void draw_vector(std::ostream &os, int depth,
@@ -48,6 +50,7 @@ class NodeKeyword : public NodeWithStringToken {
     void draw(std::ostream &os, int depth) override;
     std::string get_name() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
+    friend class visitor::SemanticVisitor;
 };
 }  // namespace parser
 
