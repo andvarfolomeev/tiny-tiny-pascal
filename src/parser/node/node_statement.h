@@ -20,6 +20,7 @@ class NodeCallStatement : public NodeStatement, public NodeFuncCall {
         : NodeFuncCall(func_call->get_var_ref(), func_call->get_params()) {}
 
     void draw(std::ostream &os, int depth) override;
+    void accept(BaseVisitor *visitor) override { visitor->visit(this); }
 };
 
 class NodeCompoundStatement : public NodeStatement {
@@ -27,6 +28,7 @@ class NodeCompoundStatement : public NodeStatement {
     NodeCompoundStatement(std::vector<std::shared_ptr<NodeStatement>> stmts)
         : stmts(std::move(stmts)) {}
     void draw(std::ostream &os, int depth) override;
+    void accept(BaseVisitor *visitor) override { visitor->visit(this); }
 
    private:
     std::vector<std::shared_ptr<NodeStatement>> stmts;
@@ -45,6 +47,7 @@ class NodeForStatement : public NodeStatement {
           end_exp(std::move(end_exp)),
           stmt(std::move(stmt)) {}
     void draw(std::ostream &os, int depth) override;
+    void accept(BaseVisitor *visitor) override { visitor->visit(this); }
 
    private:
     std::shared_ptr<NodeId> param;
@@ -60,6 +63,7 @@ class NodeWhileStatement : public NodeStatement {
                        std::shared_ptr<NodeStatement> stmt)
         : exp(std::move(exp)), stmt(std::move(stmt)) {}
     void draw(std::ostream &os, int depth) override;
+    void accept(BaseVisitor *visitor) override { visitor->visit(this); }
 
    private:
     std::shared_ptr<NodeExpression> exp;
@@ -75,6 +79,7 @@ class NodeIfStatement : public NodeStatement {
           stmt(std::move(stmt)),
           else_stmt(std::move(else_stmt)) {}
     void draw(std::ostream &os, int depth) override;
+    void accept(BaseVisitor *visitor) override { visitor->visit(this); }
 
    private:
     std::shared_ptr<NodeExpression> exp;
@@ -88,6 +93,7 @@ class NodeAssigmentStatement : public NodeStatement {
                            std::shared_ptr<NodeExpression> exp)
         : op(std::move(op)), var_ref(std::move(var_ref)), exp(std::move(exp)) {}
     void draw(std::ostream &os, int depth) override;
+    void accept(BaseVisitor *visitor) override { visitor->visit(this); }
 
    private:
     Token op;

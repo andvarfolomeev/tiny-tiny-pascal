@@ -22,6 +22,7 @@ class NodeBlock : public NodeDecl {
           compound_statement(std::move(compound_statement)) {}
     void draw(std::ostream &os, int depth) override;
     std::shared_ptr<NodeCompoundStatement> get_compound_statement();
+    void accept(BaseVisitor *visitor) override { visitor->visit(this); }
 
    protected:
     std::vector<std::shared_ptr<NodeDecl>> declarations;
@@ -35,6 +36,7 @@ class NodeVarDecl : public NodeDecl {
                 std::shared_ptr<NodeExpression> exp)
         : ids(std::move(ids)), type(std::move(type)), exp(std::move(exp)) {}
     void draw(std::ostream &os, int depth) override;
+    void accept(BaseVisitor *visitor) override { visitor->visit(this); }
 
    protected:
     std::vector<std::shared_ptr<NodeId>> ids;
@@ -47,6 +49,7 @@ class NodeVarDecls : public NodeDecl {
     explicit NodeVarDecls(std::vector<std::shared_ptr<NodeVarDecl>> vars)
         : vars(std::move(vars)) {}
     void draw(std::ostream &os, int depth) override;
+    void accept(BaseVisitor *visitor) override { visitor->visit(this); }
 
    protected:
     std::vector<std::shared_ptr<NodeVarDecl>> vars;
@@ -58,6 +61,7 @@ class NodeConstDecl : public NodeDecl {
                   std::shared_ptr<NodeExpression> exp)
         : id(std::move(id)), type(std::move(type)), exp(std::move(exp)) {}
     void draw(std::ostream &os, int depth) override;
+    void accept(BaseVisitor *visitor) override { visitor->visit(this); }
 
    protected:
     std::shared_ptr<NodeId> id;
@@ -70,6 +74,7 @@ class NodeConstDecls : public NodeDecl {
     explicit NodeConstDecls(std::vector<std::shared_ptr<NodeConstDecl>> consts)
         : consts(std::move(consts)) {}
     void draw(std::ostream &os, int depth) override;
+    void accept(BaseVisitor *visitor) override { visitor->visit(this); }
 
    protected:
     std::vector<std::shared_ptr<NodeConstDecl>> consts;
@@ -80,6 +85,7 @@ class NodeTypeDecl : public NodeDecl {
     NodeTypeDecl(std::shared_ptr<NodeId> id, std::shared_ptr<SyntaxNode> type)
         : id(std::move(id)), type(std::move(type)) {}
     void draw(std::ostream &os, int depth) override;
+    void accept(BaseVisitor *visitor) override { visitor->visit(this); }
 
    protected:
     std::shared_ptr<NodeId> id;
@@ -91,6 +97,7 @@ class NodeTypeDecls : public NodeDecl {
     explicit NodeTypeDecls(std::vector<std::shared_ptr<NodeTypeDecl>> types)
         : types(std::move(types)) {}
     void draw(std::ostream &os, int depth) override;
+    void accept(BaseVisitor *visitor) override { visitor->visit(this); }
 
    protected:
     std::vector<std::shared_ptr<NodeTypeDecl>> types;
@@ -108,6 +115,7 @@ class NodeFormalParamSection : public NodeDecl {
     std::shared_ptr<NodeKeyword> get_modifier() { return modifier; }
     std::vector<std::shared_ptr<NodeId>> get_ids() { return ids; };
     std::shared_ptr<NodeType> get_type() { return type; };
+    void accept(BaseVisitor *visitor) override { visitor->visit(this); }
 
    protected:
     std::shared_ptr<NodeKeyword> modifier;
@@ -125,6 +133,7 @@ class NodeProcedureDecl : public NodeDecl {
           params(std::move(params)),
           block(std::move(block)) {}
     void draw(std::ostream &os, int depth) override;
+    void accept(BaseVisitor *visitor) override { visitor->visit(this); }
 
    protected:
     std::shared_ptr<NodeId> id;
@@ -140,6 +149,7 @@ class NodeFunctionDecl : public NodeProcedureDecl {
         std::shared_ptr<NodeBlock> block, std::shared_ptr<SyntaxNode> type)
         : NodeProcedureDecl(id, params, block), type(std::move(type)) {}
     void draw(std::ostream &os, int depth) override;
+    void accept(BaseVisitor *visitor) override { visitor->visit(this); }
 
    protected:
     std::shared_ptr<SyntaxNode> type;

@@ -1,20 +1,24 @@
 #ifndef PARSER_NODE_H
 #define PARSER_NODE_H
 
+#include <any>
 #include <iostream>
 #include <memory>
 #include <vector>
 
 #include "../../scanner/token.h"
+#include "../../visitor/base_visitor.h"
 
 namespace parser {
 using namespace scanner;
+using namespace visitor;
 
 class SyntaxNode {
    public:
     virtual ~SyntaxNode() = default;
     virtual void draw(std::ostream &os, int depth) = 0;
     void draw_path(std::ostream &os, int depth);
+    virtual void accept(BaseVisitor *visitor) = 0;
 
     template <typename T>
     void draw_vector(std::ostream &os, int depth,
@@ -43,6 +47,7 @@ class NodeKeyword : public NodeWithStringToken {
     explicit NodeKeyword(Token token) : NodeWithStringToken(std::move(token)) {}
     void draw(std::ostream &os, int depth) override;
     std::string get_name() override;
+    void accept(BaseVisitor *visitor) override { visitor->visit(this); }
 };
 }  // namespace parser
 
