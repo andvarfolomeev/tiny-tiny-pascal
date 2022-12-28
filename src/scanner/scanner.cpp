@@ -149,8 +149,10 @@ Token Scanner::next_token() {
                 }
 
                 std::string buffer_in_lower = get_buffer();
-                std::transform(buffer_in_lower.begin(), buffer_in_lower.end(), buffer_in_lower.begin(), ::tolower);
-                return prepare_token(TokenType::ID, buffer_in_lower, get_buffer());
+                std::transform(buffer_in_lower.begin(), buffer_in_lower.end(),
+                               buffer_in_lower.begin(), ::tolower);
+                return prepare_token(TokenType::ID, buffer_in_lower,
+                                     get_buffer());
             }
             break;
     }
@@ -315,6 +317,7 @@ Token Scanner::scan_number_literal(int numeral_system) {
                     current_state = scale;
                 } else if (buffer_peek() == '.' && peek() == '.') {
                     unconsume();
+                    type = TokenType::LITERAL_INTEGER;
                     current_state = finish;
                 } else if (try_consume('e') || try_consume('E')) {
                     exponent_part.push_back(buffer_peek());
