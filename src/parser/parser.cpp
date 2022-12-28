@@ -3,7 +3,6 @@
 #include <ranges>
 #include <utility>
 
-#include "../symbol_table/symbol_function.h"
 #include "magic_enum.hpp"
 
 template <typename InputIt>
@@ -31,7 +30,6 @@ namespace parser {
 std::shared_ptr<NodeProgram> Parser::program() {
     // first token taken in constructor
     std::shared_ptr<NodeId> name = nullptr;
-    symbol_table_stack->alloc_with_builtin();
     if (current_token == Keywords::PROGRAM) {
         next_token();
         auto name_tmp = program_name();
@@ -94,10 +92,6 @@ std::shared_ptr<NodeConstDecl> Parser::const_decl() {
     require(Operators::EQL);
     auto exp = expression();
     require(Separators::SEMICOLON);
-    // TODO: calc type from expression when id_type is nullptr
-    symbol_table_stack->push(id->get_name(),
-                             std::make_shared<SymbolConst>(
-                                 id->get_name(), get_symbol_type(id_type)));
     return std::make_shared<NodeConstDecl>(id, id_type, exp);
 }
 
@@ -123,11 +117,6 @@ std::shared_ptr<NodeVarDecl> Parser::var_decl() {
         exp.swap(exp_tmp);
     }
     require(Separators::SEMICOLON);
-    auto sym_type = get_symbol_type(ids_type);
-    for (auto id : ids) {
-        symbol_table_stack->push(id->get_name(), std::make_shared<SymbolVar>(
-                                                     id->get_name(), sym_type));
-    }
     return std::make_shared<NodeVarDecl>(ids, ids_type, exp);
 }
 
@@ -144,55 +133,31 @@ std::shared_ptr<NodeTypeDecl> Parser::type_decl() {
     require(Operators::EQL);
     auto id_type = type();
     require(Separators::SEMICOLON);
-    symbol_table_stack->push(id->get_name(),
-                             std::make_shared<SymbolTypeAlias>(
-                                 id->get_name(), get_symbol_type(id_type)));
     return std::make_shared<NodeTypeDecl>(id, id_type);
 }
 
 std::shared_ptr<NodeProcedureDecl> Parser::procedure_decl() {
     auto id = identifier();
-    auto local_table = std::make_shared<SymbolTable>();
-    auto symbol_proc =
-        std::make_shared<SymbolProcedure>(id->get_name(), local_table, nullptr);
-    symbol_table_stack->push(id->get_name(), symbol_proc);
     require(Separators::LPAREN);
-    symbol_table_stack->push(local_table);
     auto params = list(&Parser::formal_param_section, Separators::SEMICOLON,
                        Separators::RPAREN, {});
-    push_formal_params(params);
     require(Separators::RPAREN);
     require(Separators::SEMICOLON);
     auto block_ = block();
-    symbol_table_stack->pop();
-    symbol_proc->set_body(block_->get_compound_statement());
     require(Separators::SEMICOLON);
     return std::make_shared<NodeProcedureDecl>(id, params, block_);
 }
 
 std::shared_ptr<NodeFunctionDecl> Parser::function_decl() {
     auto id = identifier();
-    auto local_table = std::make_shared<SymbolTable>();
-    auto symbol_func = std::make_shared<SymbolFunction>(
-        id->get_name(), local_table, nullptr, nullptr);
-    // adding a function to a table provides a check that the function name
-    // does not match the parameter names and local declarations
-    local_table->push(symbol_func->get_name(), symbol_func);
-    symbol_table_stack->push(id->get_name(), symbol_func);
     require(Separators::LPAREN);
-    symbol_table_stack->push(local_table);
     auto params = list(&Parser::formal_param_section, Separators::SEMICOLON,
                        Separators::RPAREN, {});
-    push_formal_params(params);
     require(Separators::RPAREN);
     require(Separators::COLON);
     auto function_type = type();
-    symbol_func->set_ret_type(get_symbol_type(function_type));
     require(Separators::SEMICOLON);
     auto block_ = block();
-    symbol_table_stack->pop();
-    local_table->del(symbol_func->get_name());
-    symbol_func->set_body(block_->get_compound_statement());
     require(Separators::SEMICOLON);
     return std::make_shared<NodeFunctionDecl>(id, params, block_,
                                               function_type);
@@ -517,84 +482,9 @@ std::vector<T> Parser::list(T (Parser::*func)(), Separators sep_type,
     return result;
 }
 
-std::shared_ptr<SymbolTableStack> Parser::get_symbol_table_stack() {
-    return symbol_table_stack;
-}
-
 Token Parser::next_token() {
     current_token = scanner.next_token();
     return current_token;
-}
-
-std::shared_ptr<SymbolType> Parser::get_symbol_type(
-    const std::shared_ptr<NodeType>& type) {
-    if (check_type<NodeRecordType>(type)) {
-        return get_symbol_type(std::dynamic_pointer_cast<NodeRecordType>(type));
-    }
-    if (check_type<NodeArrayType>(type)) {
-        return get_symbol_type(std::dynamic_pointer_cast<NodeArrayType>(type));
-    }
-    // builtin primitive type or alias
-    auto sym_type = symbol_table_stack->get(
-        std::dynamic_pointer_cast<NodeSimpleType>(type)->get_name());
-    if (sym_type == nullptr) {
-        throw std::runtime_error("Not found type");
-    }
-    if (!sym_type->is_type()) {
-        throw std::runtime_error("Found but is not type");
-    }
-    return std::dynamic_pointer_cast<SymbolType>(sym_type);
-}
-
-std::shared_ptr<SymbolType> Parser::get_symbol_type(
-    const std::shared_ptr<NodeRecordType>& type) {
-    auto fields = type->get_fields();
-    auto table = std::make_shared<SymbolTable>();
-    for (auto& field : fields) {
-        auto sym_type = get_symbol_type(field->get_type());
-        for (auto& id : field->get_idents()) {
-            table->push(id->get_name(),
-                        std::make_shared<SymbolVar>(id->get_name(), sym_type));
-        }
-    }
-    return std::make_shared<SymbolRecord>(table);
-}
-
-std::shared_ptr<SymbolType> Parser::get_symbol_type(
-    const std::shared_ptr<NodeArrayType>& array_type) {
-    auto sym_type = get_symbol_type(array_type->get_type());
-    auto ranges_ = array_type->get_ranges();
-    for (auto& range : std::views::reverse(ranges_)) {
-        sym_type = std::make_shared<SymbolArray>(sym_type, range->get_beg_exp(),
-                                                 range->get_end_exp());
-    }
-    return sym_type;
-}
-
-void Parser::push_formal_params(
-    const std::vector<std::shared_ptr<NodeFormalParamSection>>& params) {
-    for (auto& formal_param : params) {
-        auto modifier = formal_param->get_modifier();
-        auto sym_type = get_symbol_type(formal_param->get_type());
-
-        for (auto& id : formal_param->get_ids()) {
-            std::shared_ptr<SymbolVar> symbol_param;
-            if (modifier != nullptr) {
-                auto token = modifier->get_token();
-                if (token == Keywords::CONST) {
-                    symbol_param =
-                        std::make_shared<SymbolConst>(id->get_name(), sym_type);
-                } else {
-                    symbol_param = std::make_shared<SymbolVarParam>(
-                        id->get_name(), sym_type);
-                }
-            } else {
-                symbol_param =
-                    std::make_shared<SymbolParam>(id->get_name(), sym_type);
-            }
-            symbol_table_stack->push(id->get_name(), symbol_param);
-        }
-    }
 }
 
 template <typename T>
