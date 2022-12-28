@@ -224,7 +224,8 @@ std::shared_ptr<NodeStatement> Parser::simple_statement() {
                                Operators::SUBASSIGN, Operators::MULASSIGN,
                                Operators::QUOASSIGN})) {
             return std::make_shared<NodeCallStatement>(
-                var_ref, std::vector<std::shared_ptr<NodeExpression>>());
+                std::make_shared<NodeFuncCall>(
+                    var_ref, std::vector<std::shared_ptr<NodeExpression>>()));
         }
         auto op = current_token;
         next_token();
@@ -354,10 +355,12 @@ std::shared_ptr<NodeVarRef> Parser::var_ref(std::shared_ptr<NodeVarRef> i) {
             left = std::make_shared<NodeFuncCall>(left, params);
         } else if (current_token == Separators::LBRACK) {
             next_token();
-            auto params = list(&Parser::expression, Separators::COMMA,
-                               Separators::RBRACK, {});
+            auto indexes = list(&Parser::expression, Separators::COMMA,
+                                Separators::RBRACK, {});
             require(Separators::RBRACK);
-            left = std::make_shared<NodeArrayAccess>(left, params);
+            for (auto& index : indexes) {
+                left = std::make_shared<NodeArrayAccess>(left, index);
+            }
         } else if (current_token == Separators::PERIOD) {
             next_token();
             left = std::make_shared<NodeRecordAccess>(left, identifier());
