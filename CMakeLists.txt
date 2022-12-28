@@ -85,6 +85,11 @@ set(
         src/symbol_table/symbol_var.h
         src/symbol_table/symbol_var.cpp
 
+        src/visitor/base_visitor.h
+        src/visitor/base_visitor.cpp
+        src/visitor/semantic_visitor.h
+        src/visitor/semantic_visitor.cpp
+
         src/pascal_types.h
 )
 
