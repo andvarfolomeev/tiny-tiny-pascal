@@ -10,7 +10,8 @@ using namespace scanner;
 
 class NodeExpression : public SyntaxNode {
    public:
-    virtual std::shared_ptr<SymbolType> calc_sym_type() { return sym_type; }
+    virtual std::shared_ptr<SymbolType> get_sym_type() { return sym_type; }
+    bool is_lvalue = true;
 
    protected:
     std::shared_ptr<SymbolType> sym_type = nullptr;

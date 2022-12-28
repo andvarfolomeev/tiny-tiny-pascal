@@ -2,7 +2,7 @@
 
 namespace parser {
 void NodeCallStatement::draw(std::ostream& os, int depth) {
-    NodeFuncCall::draw(os, depth);
+    func_call->draw(os, depth);
 }
 
 void NodeCompoundStatement::draw(std::ostream& os, int depth) {

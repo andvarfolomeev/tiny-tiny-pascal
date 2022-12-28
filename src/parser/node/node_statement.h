@@ -10,18 +10,17 @@ using namespace scanner;
 
 class NodeStatement : public SyntaxNode {};
 
-class NodeCallStatement : public NodeStatement, public NodeFuncCall {
+class NodeCallStatement : public NodeStatement {
    public:
-    NodeCallStatement(std::shared_ptr<NodeVarRef> var_ref,
-                      std::vector<std::shared_ptr<NodeExpression>> params)
-        : NodeFuncCall(var_ref, params) {}
-
     NodeCallStatement(std::shared_ptr<NodeFuncCall> func_call)
-        : NodeFuncCall(func_call->get_var_ref(), func_call->get_params()) {}
+        : func_call(std::move(func_call)) {}
 
     void draw(std::ostream &os, int depth) override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
+
+   protected:
+    std::shared_ptr<NodeFuncCall> func_call;
 };
 
 class NodeCompoundStatement : public NodeStatement {
