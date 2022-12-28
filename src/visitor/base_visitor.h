@@ -35,6 +35,7 @@ class NodeForStatement;
 class NodeWhileStatement;
 class NodeIfStatement;
 class NodeAssigmentStatement;
+class NodeType;
 class NodeSimpleType;
 class NodeRange;
 class NodeArrayType;
