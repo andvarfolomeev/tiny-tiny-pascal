@@ -13,6 +13,7 @@ class SymbolType : public Symbol {
     std::string get_ret_type_str() override;
     virtual SymbolType* resolve_alias();
     virtual bool equivalent_to(std::shared_ptr<SymbolType> other);
+    virtual bool is_arithmetic();
     virtual std::string to_str();
 };
 
@@ -24,11 +25,13 @@ class SymbolBoolean : public SymbolType {
 class SymbolInteger : public SymbolType {
    public:
     SymbolInteger() : SymbolType("integer") {}
+    bool is_arithmetic() override;
 };
 
 class SymbolDouble : public SymbolType {
    public:
     SymbolDouble() : SymbolType("double") {}
+    bool is_arithmetic() override;
 };
 
 class SymbolChar : public SymbolType {
@@ -70,4 +73,8 @@ class SymbolTypeAlias : public SymbolType {
    protected:
     std::shared_ptr<SymbolType> original;
 };
+
+bool equivalent(const std::shared_ptr<SymbolType>& type1,
+                const std::shared_ptr<SymbolType>& type2,
+                const std::shared_ptr<SymbolType>& type3);
 #endif
