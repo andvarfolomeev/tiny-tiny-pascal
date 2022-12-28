@@ -2,8 +2,8 @@
 
 #include <iomanip>
 #include <memory>
-#include <stdexcept>
 #include <numeric>
+#include <stdexcept>
 
 #include "symbol_function.h"
 #include "symbol_type.h"
@@ -29,6 +29,10 @@ void SymbolTable::push(std::string name, std::shared_ptr<Symbol> symbol) {
     ordered_names.push_back(name);
 }
 
+void SymbolTable::push(const std::shared_ptr<Symbol>&& symbol) {
+    push(symbol->get_name(), symbol);
+}
+
 std::shared_ptr<SymbolTable> SymbolTable::get_with_builtin() {
     auto table = std::make_shared<SymbolTable>();
     table->push("boolean", SYMBOL_BOOLEAN);
@@ -46,8 +50,8 @@ void SymbolTable::draw(std::ostream& os, int depth) {
     std::vector<int> widths = {30, 30, 90};
     auto widths_num = std::accumulate(widths.begin(), widths.end(), 0);
     std::string sep(widths_num, '-');
-    std::string sep_(widths_num , '=');
-    std::string sep__(widths_num , '~');
+    std::string sep_(widths_num, '=');
+    std::string sep__(widths_num, '~');
     auto vert_sep = '|';
     if (depth == 0) {
         os << sep << "\n"
@@ -68,7 +72,7 @@ void SymbolTable::draw(std::ostream& os, int depth) {
            << vert_sep << " " << std::setw(widths[1] - 2) << std::left  //
            << sym->get_type_of_object_str()                             //
            << vert_sep << " " << std::setw(widths[2] - 3) << std::left  //
-           << sym->get_ret_type_str()                                  //
+           << sym->get_ret_type_str()                                   //
            << vert_sep << "\n";
         sym->draw_additional(os, depth + 1);
     }

@@ -8,6 +8,10 @@ void SymbolTableStack::push(std::string name, std::shared_ptr<Symbol> value) {
     data.back()->push(name, value);
 }
 
+void SymbolTableStack::push(const std::shared_ptr<Symbol> &&value) {
+    push(value->get_name(), value);
+}
+
 void SymbolTableStack::push(std::shared_ptr<SymbolTable> table) {
     data.push_back(table);
 }
