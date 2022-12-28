@@ -4,6 +4,7 @@
 #include "parser/parser.h"
 #include "scanner/scanner.h"
 #include "simple_parser/simple_parser.h"
+#include "visitor/semantic_visitor.h"
 
 int main(int argc, char* argv[]) {
     argparse::ArgumentParser program("tiny_tiny_pascal");
@@ -19,6 +20,10 @@ int main(int argc, char* argv[]) {
         .implicit_value(true);
     program.add_argument("--parser")
         .help("run parser")
+        .default_value(false)
+        .implicit_value(true);
+    program.add_argument("--semantic")
+        .help("run semantic")
         .default_value(false)
         .implicit_value(true);
 
@@ -77,6 +82,7 @@ int main(int argc, char* argv[]) {
     }
 
     auto run_parser = program.get<bool>("--parser");
+    auto run_semantic = program.get<bool>("--semantic");
     if (run_parser) {
         try {
             scanner::Scanner scanner(file);
@@ -84,7 +90,12 @@ int main(int argc, char* argv[]) {
             auto head = p.program();
             head->draw(std::cout, 0);
             std::cout << "\n";
-            p.get_symbol_table_stack()->draw(std::cout);
+            if (run_semantic) {
+                auto semantic_visitor =
+                    std::make_shared<visitor::SemanticVisitor>();
+                semantic_visitor->visit(head.get());
+                semantic_visitor->get_sym_table_stack()->draw(std::cout);
+            }
             std::cout << "\n";
         } catch (const simpleparser::SyntaxException& ex) {
             std::cout << ex.what();
