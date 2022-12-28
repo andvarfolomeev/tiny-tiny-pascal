@@ -85,18 +85,24 @@ int main(int argc, char* argv[]) {
     auto run_semantic = program.get<bool>("--semantic");
     if (run_parser) {
         try {
-            scanner::Scanner scanner(file);
-            parser::Parser p(scanner);
-            auto head = p.program();
-            head->draw(std::cout, 0);
-            std::cout << "\n";
             if (run_semantic) {
+                scanner::Scanner scanner(file);
+                parser::Parser p(scanner);
+                auto head = p.program();
                 auto semantic_visitor =
                     std::make_shared<visitor::SemanticVisitor>();
                 semantic_visitor->visit(head.get());
+                head->draw(std::cout, 0);
+                std::cout << "\n";
                 semantic_visitor->get_sym_table_stack()->draw(std::cout);
+                std::cout << "\n";
+            } else {
+                scanner::Scanner scanner(file);
+                parser::Parser p(scanner);
+                auto head = p.program();
+                head->draw(std::cout, 0);
+                std::cout << "\n";
             }
-            std::cout << "\n";
         } catch (const simpleparser::SyntaxException& ex) {
             std::cout << ex.what();
             return EXIT_FAILURE;
