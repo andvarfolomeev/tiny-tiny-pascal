@@ -11,6 +11,7 @@ class SymbolTableStack {
     void push(std::shared_ptr<SymbolTable> table);
     void pop();
     std::shared_ptr<Symbol> get(std::string name);
+    std::shared_ptr<Symbol> get_in_scope(std::string name);
     void alloc();
     void alloc_with_builtin();
     void draw(std::ostream &os);

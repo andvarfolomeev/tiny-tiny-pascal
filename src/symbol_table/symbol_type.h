@@ -57,6 +57,7 @@ class SymbolRecord : public SymbolType {
     std::string get_type_of_object_str() override;
     bool equivalent_to(std::shared_ptr<SymbolType> other) override;
     std::string to_str() override;
+    std::shared_ptr<SymbolTable>& get_fields();
 
    protected:
     std::shared_ptr<SymbolTable> fields;
@@ -77,4 +78,9 @@ class SymbolTypeAlias : public SymbolType {
 bool equivalent(const std::shared_ptr<SymbolType>& type1,
                 const std::shared_ptr<SymbolType>& type2,
                 const std::shared_ptr<SymbolType>& type3);
+bool equivalent(const std::shared_ptr<SymbolType>& type1,
+                const std::shared_ptr<SymbolType>& type2,
+                std::vector<std::shared_ptr<SymbolType>> types);
+bool equivalent(const std::shared_ptr<SymbolType>& type,
+                std::vector<std::shared_ptr<SymbolType>> types);
 #endif

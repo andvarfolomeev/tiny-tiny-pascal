@@ -15,3 +15,4 @@ std::string SymbolArray::to_str() {
     os << "array of " << type->to_str();
     return os.str();
 }
+std::shared_ptr<SymbolType> SymbolArray::get_inner_type() { return type; }

@@ -8,6 +8,11 @@
 #include "symbol_function.h"
 #include "symbol_type.h"
 
+SymbolTable::SymbolTable(std::vector<std::shared_ptr<Symbol>> symbols) {
+    for (auto& symbol : symbols) {
+        push(symbol);
+    }
+}
 std::shared_ptr<Symbol> SymbolTable::get(std::string name) {
     if (data.contains(name)) {
         return data.at(name);
@@ -29,7 +34,7 @@ void SymbolTable::push(std::string name, std::shared_ptr<Symbol> symbol) {
     ordered_names.push_back(name);
 }
 
-void SymbolTable::push(const std::shared_ptr<Symbol>&& symbol) {
+void SymbolTable::push(const std::shared_ptr<Symbol> symbol) {
     push(symbol->get_name(), symbol);
 }
 
@@ -43,6 +48,8 @@ std::shared_ptr<SymbolTable> SymbolTable::get_with_builtin() {
     table->push("writeln", SYMBOL_WRITELN);
     table->push("write", SYMBOL_WRITE);
     table->push("read", SYMBOL_READ);
+    table->push("random", SYMBOL_RANDOM);
+    table->push("sqrt", SYMBOL_SQRT);
     return table;
 }
 
@@ -91,4 +98,7 @@ std::map<std::string, std::shared_ptr<Symbol>>::iterator SymbolTable::begin() {
 
 std::map<std::string, std::shared_ptr<Symbol>>::iterator SymbolTable::end() {
     return data.end();
+}
+std::vector<std::string>& SymbolTable::get_ordered_names() {
+    return ordered_names;
 }

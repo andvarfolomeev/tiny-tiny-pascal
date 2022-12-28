@@ -21,6 +21,7 @@ class SymbolArray : public SymbolType {
     std::string get_type_of_object_str() override;
     bool equivalent_to(std::shared_ptr<SymbolType> other) override;
     std::string to_str() override;
+    std::shared_ptr<SymbolType> get_inner_type();
 
    protected:
     std::shared_ptr<SymbolType> type;

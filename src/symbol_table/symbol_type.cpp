@@ -48,9 +48,31 @@ std::string SymbolRecord::to_str() {
     os << "end";
     return os.str();
 }
+std::shared_ptr<SymbolTable>& SymbolRecord::get_fields() { return fields; }
 
 bool equivalent(const std::shared_ptr<SymbolType>& type1,
                 const std::shared_ptr<SymbolType>& type2,
                 const std::shared_ptr<SymbolType>& type3) {
-    return type1 == type2 && type2 == type3;
+    return type1->equivalent_to(type2) && type2->equivalent_to(type3);
+}
+
+bool equivalent(const std::shared_ptr<SymbolType>& type1,
+                const std::shared_ptr<SymbolType>& type2,
+                std::vector<std::shared_ptr<SymbolType>> types) {
+    for (auto& type : types) {
+        if (equivalent(type1, type2, type)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool equivalent(const std::shared_ptr<SymbolType>& type,
+                std::vector<std::shared_ptr<SymbolType>> types) {
+    for (auto& type_ : types) {
+        if (type->equivalent_to(type_)) {
+            return true;
+        }
+    }
+    return false;
 }

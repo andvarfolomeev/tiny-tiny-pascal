@@ -28,6 +28,10 @@ std::shared_ptr<Symbol> SymbolTableStack::get(std::string name) {
     return nullptr;
 }
 
+std::shared_ptr<Symbol> SymbolTableStack::get_in_scope(std::string name) {
+    return data.back()->get(name);
+}
+
 void SymbolTableStack::alloc() {
     data.push_back(std::make_shared<SymbolTable>());
 }
