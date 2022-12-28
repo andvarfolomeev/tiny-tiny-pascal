@@ -15,6 +15,7 @@ class NodeTypeDecls;
 class NodeFormalParamSection;
 class NodeProcedureDecl;
 class NodeFunctionDecl;
+class NodeVarRef;
 class NodeId;
 class NodeBoolean;
 class NodeBinOp;
