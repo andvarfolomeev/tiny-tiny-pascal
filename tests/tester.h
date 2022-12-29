@@ -53,6 +53,14 @@ class ParserTester : public Tester {
    protected:
     std::string get_answer(const std::string &path_in) override;
 };
+class SemanticTester : public Tester {
+   public:
+    explicit SemanticTester(std::string path_to_files)
+        : Tester(std::move(path_to_files)) {}
+
+   protected:
+    std::string get_answer(const std::string &path_in) override;
+};
 }  // namespace tester
 
 #endif  // TESTER_H

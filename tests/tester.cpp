@@ -126,4 +126,19 @@ std::string ParserTester::get_answer(const std::string& path_in) {
     parser.program()->draw(answer, 0);
     return answer.str();
 }
+
+std::string SemanticTester::get_answer(const std::string& path_in) {
+    auto stream = std::ifstream(path_in);
+    std::stringstream answer;
+    scanner::Scanner scanner(stream);
+    parser::Parser p(scanner);
+    auto head = p.program();
+    auto semantic_visitor = std::make_shared<visitor::SemanticVisitor>();
+    semantic_visitor->visit(head.get());
+    head->draw(answer, 0);
+    answer << "\n";
+    semantic_visitor->get_sym_table_stack()->draw(answer);
+    answer << "\n";
+    return answer.str();
+}
 }  // namespace tester
