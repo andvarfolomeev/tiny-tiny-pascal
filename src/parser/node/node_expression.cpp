@@ -90,8 +90,8 @@ std::vector<std::shared_ptr<NodeExpression>> NodeFuncCall::get_params() {
 void NodeArrayAccess::draw(std::ostream& os, int depth) {
     var_ref->draw(os, depth);
     os << "\n";
-    draw_path(os, depth + 1);
-    index->draw(os, depth + 1);
+    draw_path(os, depth + 2);
+    index->draw(os, depth + 2);
 }
 
 void NodeRecordAccess::draw(std::ostream& os, int depth) {
