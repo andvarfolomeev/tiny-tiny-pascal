@@ -1,6 +1,10 @@
 #ifndef VISITOR_SEMANTIC_VISITOR_H
 #define VISITOR_SEMANTIC_VISITOR_H
 
+#include <sstream>
+
+#include "../exception.h"
+#include "../scanner/token.h"
 #include "../symbol_table/symbol_table_stack.h"
 #include "../symbol_table/symbol_type_array.h"
 #include "../symbol_table/symbol_var.h"
@@ -69,6 +73,36 @@ class SemanticVisitor : public BaseVisitor {
 
    protected:
     std::shared_ptr<SymbolTableStack> sym_table_stack;
+};
+
+class SemanticException : public TinyPascalException {
+   public:
+    [[nodiscard]] const char* what() const noexcept override {
+        return message.c_str();
+    }
+
+    [[maybe_unused]] explicit SemanticException(unsigned int current_line,
+                                                unsigned int current_column,
+                                                const std::string& message) {
+        std::ostringstream string_stream;
+        string_stream << "Line: " << current_line
+                      << "; Column: " << current_column << "; " << message;
+        this->message = string_stream.str();
+    }
+    [[maybe_unused]] explicit SemanticException(scanner::Token token,
+                                                const std::string& message) {
+        std::ostringstream string_stream;
+        auto [current_line, current_column] = token.get_pos();
+        string_stream << "Line: " << current_line
+                      << "; Column: " << current_column << "; " << message;
+        this->message = string_stream.str();
+    }
+    [[maybe_unused]] explicit SemanticException(const std::string& message) {
+        this->message = message;
+    }
+
+   protected:
+    std::string message;
 };
 
 }  // namespace visitor
