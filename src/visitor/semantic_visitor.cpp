@@ -63,8 +63,8 @@ void SemanticVisitor::visit(NodeFormalParamSection *node) {
         if (modifier != nullptr) {
             auto token = modifier->get_token();
             if (token == Keywords::CONST) {
-                symbol_param =
-                    std::make_shared<SymbolConst>(id->get_name(), sym_type);
+                symbol_param = std::make_shared<SymbolConstParam>(
+                    id->get_name(), sym_type);
             } else {
                 symbol_param =
                     std::make_shared<SymbolVarParam>(id->get_name(), sym_type);
@@ -215,21 +215,21 @@ void SemanticVisitor::visit(NodeUnOp *node) {
     node->sym_type = SYMBOL_BOOLEAN;
 
     if (node->token.is({Operators::ADD, Operators::SUB})) {
-        if (node->operand->get_sym_type() == SYMBOL_INTEGER) {
+        if (node->operand->get_sym_type()->equivalent_to(SYMBOL_INTEGER)) {
             node->sym_type = SYMBOL_INTEGER;
             return;
         }
-        if (node->operand->get_sym_type() == SYMBOL_DOUBLE) {
+        if (node->operand->get_sym_type()->equivalent_to(SYMBOL_DOUBLE)) {
             node->sym_type = SYMBOL_DOUBLE;
             return;
         }
     }
     if (node->token == Keywords::NOT) {
-        if (node->operand->get_sym_type() == SYMBOL_INTEGER) {
+        if (node->operand->get_sym_type()->equivalent_to(SYMBOL_INTEGER)) {
             node->sym_type = SYMBOL_INTEGER;
             return;
         }
-        if (node->operand->get_sym_type() == SYMBOL_BOOLEAN) {
+        if (node->operand->get_sym_type()->equivalent_to(SYMBOL_BOOLEAN)) {
             node->sym_type = SYMBOL_BOOLEAN;
             return;
         }
@@ -308,6 +308,7 @@ void SemanticVisitor::visit(NodeFuncCall *node) {
         for (unsigned int i = 0; i < count_of_params; ++i) {
             auto sym = table->get(ordered_names[i]);
             auto sym_var = std::dynamic_pointer_cast<SymbolVar>(sym);
+            // TODO: check var
             solve_casting(sym_var->get_type(), node->params[i]);
             if (!sym_var->get_type()->equivalent_to(
                     node->params[i]->get_sym_type())) {
