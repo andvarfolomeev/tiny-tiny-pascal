@@ -26,7 +26,8 @@ unsigned int SymbolProcedure::get_count_of_params() {
     unsigned int res = 0;
     for (auto& name : locals->get_ordered_names()) {
         auto sym = locals->get(name);
-        auto sym_var = std::dynamic_pointer_cast<SymbolVar>(sym);
+        auto sym_var = std::dynamic_pointer_cast<SymbolParam>(sym);
+        if (sym_var == nullptr) return res;
         if (!sym_var->is_param()) {
             break;
         }
