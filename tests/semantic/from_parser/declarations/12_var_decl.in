@@ -1,0 +1,3 @@
+var a: Integer = 10; b: Real = 1000.0;
+
+begin end.

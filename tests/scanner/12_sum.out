@@ -10,10 +10,10 @@
 3         12        SEPERATOR           	COMMA                         ,                             
 3         14        ID                  	answer                        answer                        
 3         20        SEPERATOR           	COLON                         :                             
-3         22        ID                  	Integer                       Integer                       
+3         22        ID                  	integer                       Integer                       
 3         29        SEPERATOR           	SEMICOLON                     ;                             
 5         1         KEYWORD             	BEGIN                         begin                         
-6         5         ID                  	ReadLn                        ReadLn                        
+6         5         ID                  	readln                        ReadLn                        
 6         11        SEPERATOR           	LPAREN                        (                             
 6         12        ID                  	n                             n                             
 6         13        SEPERATOR           	RPAREN                        )                             
@@ -30,7 +30,7 @@
 8         19        ID                  	n                             n                             
 8         21        KEYWORD             	DO                            do                            
 8         24        KEYWORD             	BEGIN                         begin                         
-9         9         ID                  	ReadLn                        ReadLn                        
+9         9         ID                  	readln                        ReadLn                        
 9         15        SEPERATOR           	LPAREN                        (                             
 9         16        ID                  	x                             x                             
 9         17        SEPERATOR           	RPAREN                        )                             
@@ -41,7 +41,7 @@
 10        20        SEPERATOR           	SEMICOLON                     ;                             
 11        5         KEYWORD             	END                           end                           
 11        8         SEPERATOR           	SEMICOLON                     ;                             
-12        5         ID                  	WriteLn                       WriteLn                       
+12        5         ID                  	writeln                       WriteLn                       
 12        12        SEPERATOR           	LPAREN                        (                             
 12        13        ID                  	answer                        answer                        
 12        19        SEPERATOR           	RPAREN                        )                             

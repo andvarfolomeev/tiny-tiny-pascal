@@ -1,0 +1,4 @@
+function (): Integer;
+begin end;
+
+begin end.

@@ -1,9 +1,9 @@
 1         1         SEPERATOR           	LBRACK                        [                             
-1         2         LITERAL_DOUBLE      	1                             1                             
+1         2         LITERAL_INTEGER     	1                             1                             
 1         3         SEPERATOR           	ELLIPSIS                      ..                            
 1         5         LITERAL_INTEGER     	5                             5                             
 1         6         SEPERATOR           	RBRACK                        ]                             
-2         1         LITERAL_DOUBLE      	1                             1                             
+2         1         LITERAL_INTEGER     	1                             1                             
 2         2         SEPERATOR           	ELLIPSIS                      ..                            
 2         4         LITERAL_INTEGER     	5                             5                             
 2         5         eof                 	EOF                           EOF                           

@@ -1,0 +1,5 @@
+const a = 123;
+const b: Integer = 123;
+    c = (2 + 3) * 10;
+    d = 'Hello, world';
+begin end.

@@ -1,0 +1,64 @@
+function super_function(): Integer;
+begin
+    super_function := 10;
+end;
+
+function super_function1(const a, b, c: Integer): Integer;
+begin
+    super_function := a * b * c;
+end;
+
+var a: Double = 10;
+    b: Double = 11;
+    c: Double = 12;
+    d: Double = 13;
+var ai: Integer = 10;
+    bi: integer = 11;
+    ci: integer = 12;
+
+begin
+    writeln(+3 * super_function() + 4 * ---super_function1(1,2,3));
+    writeln(+3);
+    writeln(-3);
+    writeln(-+---++--3);
+    writeln(2+++++3);
+    writeln(2-++++3);
+
+    writeln(2 + 3);
+    writeln(2 - 3);
+    writeln(2 * 3);
+    writeln(2 / 3);
+
+    writeln(a + 3);
+    writeln(a - 3);
+    writeln(a * 3);
+    writeln(a / 3);
+
+    writeln(a + a);
+    writeln(a - a);
+    writeln(a * a);
+    writeln(a / a);
+
+    writeln(a + b + c + d);
+    writeln(a + b + c + d * a);
+
+    writeln(a - b - c - d);
+    writeln(a - b - c - d * a);
+
+    writeln(b * (a + b));
+    writeln(a / b * c / b);
+
+    writeln(ai div bi);
+    writeln(ai mod bi);
+
+    writeln(ai + bi div ci);
+    writeln(ai + bi mod ci);
+
+    writeln(ai xor bi);
+    writeln(ai shr bi);
+    writeln(ai shl bi);
+
+    writeln(ai + bi xor ci);
+    writeln(ai + bi shr ci);
+    writeln(ai + bi shl ci);
+end.

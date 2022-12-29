@@ -1,0 +1,314 @@
+main
+   program name:
+      without name
+   decls:
+      function decl
+         super_function 
+         type:
+            Integer 
+         decls:
+         block:
+            compounds statements
+               :=
+                  super_function 
+                  10
+      function decl
+         super_function1 
+         type:
+            Integer 
+         param
+            const
+            a 
+            b 
+            c 
+            type:
+               Integer 
+         decls:
+         block:
+            compounds statements
+               :=
+                  super_function 
+                  *
+                     *
+                        a 
+                        b 
+                     c 
+      vars:
+         var
+            a 
+            type:
+               Double 
+            10
+         var
+            b 
+            type:
+               Double 
+            11
+         var
+            c 
+            type:
+               Double 
+            12
+         var
+            d 
+            type:
+               Double 
+            13
+      vars:
+         var
+            ai 
+            type:
+               Integer 
+            10
+         var
+            bi 
+            type:
+               integer 
+            11
+         var
+            ci 
+            type:
+               integer 
+            12
+   block:
+      compounds statements
+         writeln 
+            +
+               *
+                  +
+                     3
+                  super_function 
+               *
+                  4
+                  -
+                     -
+                        -
+                           super_function1 
+                              1
+                              2
+                              3
+         writeln 
+            +
+               3
+         writeln 
+            -
+               3
+         writeln 
+            -
+               +
+                  -
+                     -
+                        -
+                           +
+                              +
+                                 -
+                                    -
+                                       3
+         writeln 
+            +
+               2
+               +
+                  +
+                     +
+                        +
+                           3
+         writeln 
+            -
+               2
+               +
+                  +
+                     +
+                        +
+                           3
+         writeln 
+            +
+               2
+               3
+         writeln 
+            -
+               2
+               3
+         writeln 
+            *
+               2
+               3
+         writeln 
+            /
+               2
+               3
+         writeln 
+            +
+               a 
+               cast
+                  3
+         writeln 
+            -
+               a 
+               cast
+                  3
+         writeln 
+            *
+               a 
+               cast
+                  3
+         writeln 
+            /
+               a 
+               cast
+                  3
+         writeln 
+            +
+               a 
+               a 
+         writeln 
+            -
+               a 
+               a 
+         writeln 
+            *
+               a 
+               a 
+         writeln 
+            /
+               a 
+               a 
+         writeln 
+            +
+               +
+                  +
+                     a 
+                     b 
+                  c 
+               d 
+         writeln 
+            +
+               +
+                  +
+                     a 
+                     b 
+                  c 
+               *
+                  d 
+                  a 
+         writeln 
+            -
+               -
+                  -
+                     a 
+                     b 
+                  c 
+               d 
+         writeln 
+            -
+               -
+                  -
+                     a 
+                     b 
+                  c 
+               *
+                  d 
+                  a 
+         writeln 
+            *
+               b 
+               +
+                  a 
+                  b 
+         writeln 
+            /
+               *
+                  /
+                     a 
+                     b 
+                  c 
+               b 
+         writeln 
+            div
+               ai 
+               bi 
+         writeln 
+            mod
+               ai 
+               bi 
+         writeln 
+            +
+               ai 
+               div
+                  bi 
+                  ci 
+         writeln 
+            +
+               ai 
+               mod
+                  bi 
+                  ci 
+         writeln 
+            xor
+               ai 
+               bi 
+         writeln 
+            shr
+               ai 
+               bi 
+         writeln 
+            shl
+               ai 
+               bi 
+         writeln 
+            xor
+               +
+                  ai 
+                  bi 
+               ci 
+         writeln 
+            +
+               ai 
+               shr
+                  bi 
+                  ci 
+         writeln 
+            +
+               ai 
+               shl
+                  bi 
+                  ci 
+------------------------------------------------------------------------------------------------------------------------------------------------------
+| id                          | type of object              | ret type                                                                               |
+------------------------------------------------------------------------------------------------------------------------------------------------------
+| boolean                     | type                        | boolean                                                                                |
+| integer                     | type                        | integer                                                                                |
+| double                      | type                        | double                                                                                 |
+| char                        | type                        | char                                                                                   |
+| string                      | type                        | string                                                                                 |
+| writeln                     | procedure                   | writeln                                                                                |
+| write                       | procedure                   | write                                                                                  |
+| read                        | procedure                   | read                                                                                   |
+| random                      | function                    | double                                                                                 |
+======================================================================================================================================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+| sqrt                        | function                    | double                                                                                 |
+======================================================================================================================================================
+| x                           | param                       | double                                                                                 |
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------
+| id                          | type of object              | ret type                                                                               |
+------------------------------------------------------------------------------------------------------------------------------------------------------
+| super_function              | function                    | integer                                                                                |
+======================================================================================================================================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+| super_function1             | function                    | integer                                                                                |
+======================================================================================================================================================
+| a                           | const param                 | integer                                                                                |
+| b                           | const param                 | integer                                                                                |
+| c                           | const param                 | integer                                                                                |
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+| a                           | var                         | double                                                                                 |
+| b                           | var                         | double                                                                                 |
+| c                           | var                         | double                                                                                 |
+| d                           | var                         | double                                                                                 |
+| ai                          | var                         | integer                                                                                |
+| bi                          | var                         | integer                                                                                |
+| ci                          | var                         | integer                                                                                |
+------------------------------------------------------------------------------------------------------------------------------------------------------
+

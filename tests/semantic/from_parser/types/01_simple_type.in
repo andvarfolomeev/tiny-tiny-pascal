@@ -1,0 +1,4 @@
+var a: Integer;
+    b: Double;
+    s: string;
+begin end.

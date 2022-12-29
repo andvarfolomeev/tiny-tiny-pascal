@@ -1,0 +1,6 @@
+procedure (var b: Integer; const c: Real; d: String);
+begin
+    writeln(b, c, d);
+end;
+
+begin end.

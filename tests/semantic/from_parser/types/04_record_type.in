@@ -1,0 +1,5 @@
+var point: record
+    x, y: Double;
+    size: Double;
+end;
+begin end.
