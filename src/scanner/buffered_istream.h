@@ -5,10 +5,27 @@
 #include <functional>
 #include <sstream>
 
+#include "../position.h"
+
 namespace scanner {
 class BufferedIStream {
+   public:
+    explicit BufferedIStream(std::ifstream &input_stream)
+        : input_stream(input_stream),
+          pos({1, 1}),
+          column_after_new_line(1),
+          is_eof(false) {}
+
+    [[nodiscard]] bool eof() const;
+
+    Position get_pos() const;
+    [[nodiscard]] int get_current_line() const;
+    [[nodiscard]] int get_current_column() const;
+
+   private:
     std::ifstream &input_stream;
-    unsigned int current_line, current_column, column_after_new_line;
+    Position pos;
+    int column_after_new_line;
     std::string buffer;
     bool is_eof;
 
@@ -63,19 +80,6 @@ class BufferedIStream {
      * @return
      */
     char buffer_peek();
-
-   public:
-    explicit BufferedIStream(std::ifstream &input_stream)
-        : input_stream(input_stream),
-          current_line(1),
-          current_column(1),
-          column_after_new_line(1),
-          is_eof(false) {}
-
-    [[nodiscard]] bool eof() const;
-
-    [[nodiscard]] unsigned int get_current_line() const;
-    [[nodiscard]] unsigned int get_current_column() const;
 };
 
 }  // namespace scanner

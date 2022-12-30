@@ -14,11 +14,11 @@ char BufferedIStream::consume() {
         is_eof = true;
     }
     if (c == '\n') {
-        column_after_new_line = current_line;
-        ++current_line;
-        current_column = 1;
+        column_after_new_line = pos.second;
+        ++pos.first;
+        pos.second = 1;
     } else {
-        ++current_column;
+        ++pos.second;
     }
     return c;
 }
@@ -35,10 +35,10 @@ char BufferedIStream::unconsume() {
     input_stream.unget();
     if (!buffer.empty()) {
         if (buffer_peek() != '\n') {
-            --current_column;
+            --pos.second;
         } else {
-            current_line--;
-            current_column = column_after_new_line;
+            pos.first--;
+            pos.second = column_after_new_line;
         }
         buffer.pop_back();
         return buffer.back();
@@ -69,11 +69,11 @@ char BufferedIStream::buffer_peek() {
     return buffer[buffer.size() - 1];
 }
 
-unsigned int BufferedIStream::get_current_line() const { return current_line; }
+Position BufferedIStream::get_pos() const { return pos; }
 
-unsigned int BufferedIStream::get_current_column() const {
-    return current_column;
-}
+int BufferedIStream::get_current_line() const { return pos.first; }
+
+int BufferedIStream::get_current_column() const { return pos.second; }
 
 [[nodiscard]] bool BufferedIStream::eof() const { return is_eof; }
 
