@@ -9,24 +9,6 @@
 using namespace scanner;
 
 namespace parser {
-class SyntaxException : public TinyPascalException {
-   protected:
-    std::string message;
-
-   public:
-    [[nodiscard]] const char *what() const noexcept override {
-        return message.c_str();
-    }
-
-    [[maybe_unused]] explicit SyntaxException(unsigned int current_line,
-                                              unsigned int current_column,
-                                              const std::string &message) {
-        std::ostringstream string_stream;
-        string_stream << "Line: " << current_line
-                      << "; Column: " << current_column << "; " << message;
-        this->message = string_stream.str();
-    }
-};
 
 class Parser {
    public:
@@ -99,7 +81,6 @@ class Parser {
     void require(Operators op, bool eat = true);
     void require(TokenType type, bool eat = true);
 
-    SyntaxException new_exception(const std::string &message);
     template <typename T1, typename T2>
 
     bool check_type(std::shared_ptr<T2> a);

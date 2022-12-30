@@ -110,7 +110,8 @@ std::shared_ptr<NodeVarDecl> Parser::var_decl() {
     std::shared_ptr<NodeExpression> exp = nullptr;
     if (current_token == Operators::EQL) {
         if (ids.size() != 1) {
-            throw new_exception("Only one variable can be initialized");
+            throw make_exc<ParserException>(current_token.get_pos())
+                << "Only one variable can be initialized" << make_exc_end;
         }
         next_token();
         auto exp_tmp = expression();
@@ -164,12 +165,9 @@ std::shared_ptr<NodeFunctionDecl> Parser::function_decl() {
 }
 
 std::shared_ptr<NodeFormalParamSection> Parser::formal_param_section() {
-    std::shared_ptr<NodeKeyword> modifier = nullptr;
-    if (current_token == Keywords::VAR) {
-        modifier = keyword();
-    } else if (current_token == Keywords::CONST) {
-        modifier = keyword();
-    }
+    std::shared_ptr<NodeKeyword> modifier =
+        (current_token.is({Keywords::VAR, Keywords::CONST})) ? keyword()
+                                                             : nullptr;
     auto idents = list(&Parser::identifier, Separators::COMMA, {}, {});
     require(Separators::COLON);
     return std::make_shared<NodeFormalParamSection>(modifier, idents, type());
@@ -232,7 +230,8 @@ std::shared_ptr<NodeStatement> Parser::simple_statement() {
         return std::make_shared<NodeAssigmentStatement>(op, var_ref,
                                                         expression());
     }
-    throw new_exception("Illegal statement");
+    throw make_exc<ParserException>(current_token.get_pos())
+        << "Illegal statement" << make_exc_end;
 }
 
 std::shared_ptr<NodeForStatement> Parser::for_statement() {
@@ -341,7 +340,8 @@ std::shared_ptr<NodeExpression> Parser::factor() {
         require(Separators::RBRACK);
         return set_constr;
     }
-    throw new_exception("factor expected");
+    throw make_exc<ParserException>(current_token.get_pos())
+        << "factor expected" << make_exc_end;
 }
 
 std::shared_ptr<NodeVarRef> Parser::var_ref(std::shared_ptr<NodeVarRef> i) {
@@ -415,7 +415,8 @@ std::shared_ptr<NodeType> Parser::type() {
                current_token == Keywords::STRING) {
         return simple_type();
     }
-    throw new_exception("type expected");
+    throw make_exc<ParserException>(current_token.get_pos())
+        << "type expected" << make_exc_end;
 }
 
 std::shared_ptr<NodeType> Parser::simple_type() {
@@ -472,10 +473,9 @@ std::vector<T> Parser::list(T (Parser::*func)(), Separators sep_type,
     while (current_token == sep_type) {
         next_token();
         if (sep_end.has_value() && current_token == sep_end.value()) {
-            std::stringstream msg;
-            msg << magic_enum::enum_name(sep_end.value());
-            msg << " found, but element expected";
-            throw new_exception(msg.str());
+            throw make_exc<ParserException>(current_token.get_pos())
+                << magic_enum::enum_name(sep_end.value())
+                << " found, but element expected" << make_exc_end;
         }
         if (keyword_end.has_value() && current_token == keyword_end.value()) {
             break;
@@ -493,11 +493,9 @@ Token Parser::next_token() {
 template <typename T>
 void Parser::require_vec(const std::vector<T>& items, bool eat) {
     if (!current_token.is(items)) {
-        std::stringstream msg;
-        msg << "Expected: ";
-        msg << join_enum(items.begin(), items.end(), "or");
-        msg << "; but found " << current_token.get_raw_value();
-        throw new_exception(msg.str());
+        throw make_exc<ParserException>(current_token.get_pos())
+            << "Expected  " << join_enum(items.begin(), items.end(), "or")
+            << "; but found " << current_token.get_raw_value() << make_exc_end;
     }
     if (eat) {
         next_token();
@@ -522,11 +520,6 @@ void Parser::require(Operators op, bool eat) {
 
 void Parser::require(TokenType type, bool eat) {
     return require_vec<TokenType>({type}, eat);
-}
-
-SyntaxException Parser::new_exception(const std::string& message) {
-    auto pos = current_token.get_pos();
-    return SyntaxException(pos.first, pos.second, message);
 }
 
 template <typename T1, typename T2>
