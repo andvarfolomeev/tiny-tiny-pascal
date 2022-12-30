@@ -4,7 +4,6 @@
 
 int main() {
     auto res = tester::ScannerTester("../tests/scanner/").run_tests();
-    res += tester::SimpleParserTester("../tests/simple_parser/").run_tests();
 
     std::vector<std::string> parser_tests_dirs = {
         "../tests/parser/declarations/", "../tests/parser/statements/",
