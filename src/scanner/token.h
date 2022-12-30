@@ -172,17 +172,12 @@ enum class TokenType {
 };
 std::ostream &operator<<(std::ostream &os, const TokenType &type);
 
-class Token {
-    unsigned int line, column;
-    TokenType type;
-    TokenValue value;
-    std::string raw_value;  // the string being scanned
+using Position = std::pair<unsigned int, unsigned int>;
 
+class Token {
    public:
-    Token(unsigned int line, unsigned int column, TokenType type,
-          TokenValue value, std::string raw_value)
-        : line(line),
-          column(column),
+    Token(Position pos, TokenType type, TokenValue value, std::string raw_value)
+        : pos(std::move(pos)),
           type(type),
           value(std::move(value)),
           raw_value(std::move(raw_value)){};
@@ -199,7 +194,7 @@ class Token {
     bool is(const std::vector<Separators> &values);
     bool is(const std::vector<Keywords> &values);
 
-    [[nodiscard]] std::string to_string() const;
+    [[nodiscard]] std::string to_str() const;
 
     template <typename T>
     T get_value() const;
@@ -207,7 +202,13 @@ class Token {
 
     TokenType get_type();
 
-    std::pair<unsigned int, unsigned int> get_pos();
+    Position get_pos();
+
+   private:
+    Position pos;
+    TokenType type;
+    TokenValue value;
+    std::string raw_value;  // the string being scanned
 };
 }  // namespace scanner
 

@@ -27,8 +27,9 @@ std::ostream &operator<<(std::ostream &os, const TokenType &type) {
 }
 
 std::ostream &operator<<(std::ostream &os, const scanner::Token &token) {
-    os << std::setw(10) << std::left << token.line << std::setw(10) << std::left
-       << token.column << std::setw(20) << std::left << token.type << "\t";
+    os << std::setw(10) << std::left << token.pos.first << std::setw(10)
+       << std::left << token.pos.second << std::setw(20) << std::left
+       << token.type << "\t";
     switch (token.type) {
         case TokenType::LITERAL_INTEGER:
             os << std::setw(30) << std::left << token.get_value<Integer>();
@@ -101,7 +102,7 @@ bool Token::is(const std::vector<Keywords> &values) {
            values.end();
 }
 
-std::string Token::to_string() const {
+std::string Token::to_str() const {
     std::ostringstream ss;
     ss << (*this);
     return ss.str();
@@ -115,8 +116,7 @@ template <typename T>
 T Token::get_value() const {
     return std::get<T>(value);
 }
-std::pair<unsigned int, unsigned int> Token::get_pos() {
-    return {line, column};
-}
+
+Position Token::get_pos() { return pos; }
 
 }  // namespace scanner
