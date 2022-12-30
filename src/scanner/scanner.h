@@ -7,12 +7,20 @@
 #include <utility>
 
 #include "../exception.h"
+#include "../position.h"
 #include "buffered_istream.h"
 #include "token.h"
 
 namespace scanner {
 class Scanner : public BufferedIStream {
-    unsigned int first_line, first_column;
+   public:
+    explicit Scanner(std::ifstream &input_stream)
+        : BufferedIStream(input_stream), first_pos({1, 1}) {}
+
+    Token next_token();
+
+   private:
+    Position first_pos;
 
     [[nodiscard]] Token prepare_token(TokenType type, const TokenValue &value,
                                       const std::string &raw_value) const;
@@ -56,78 +64,8 @@ class Scanner : public BufferedIStream {
     [[nodiscard]] Integer get_integer_value(std::string raw,
                                             int numeral_system) const;
     static Double get_double_value(const std::string &raw);
-
-   public:
-    explicit Scanner(std::ifstream &input_stream)
-        : BufferedIStream(input_stream), first_line(1), first_column(1) {}
-
-    Token next_token();
 };
 
-class ScannerException : public TinyPascalException {
-   public:
-    [[nodiscard]] const char *what() const noexcept override {
-        return message.c_str();
-    }
-
-    [[maybe_unused]] explicit ScannerException(unsigned int current_line,
-                                               unsigned int current_column,
-                                               const std::string &message) {
-        std::ostringstream string_stream;
-        string_stream << "Line: " << current_line
-                      << "; Column: " << current_column << "; " << message;
-        this->message = string_stream.str();
-    }
-
-   protected:
-    std::string message;
-};
-
-class UnexpectedTokenException : public ScannerException {
-   public:
-    UnexpectedTokenException(unsigned int current_line, unsigned current_column)
-        : ScannerException(current_line, current_column, "Unexpected token") {}
-};
-
-class IllegalCharacterException : public ScannerException {
-   public:
-    IllegalCharacterException(unsigned int current_line,
-                              unsigned current_column, char c)
-        : ScannerException(current_line, current_column,
-                           "Illegal character: ") {
-        message.push_back(c);
-    }
-};
-
-class StringExceedsLineException : public ScannerException {
-   public:
-    StringExceedsLineException(unsigned int current_line,
-                               unsigned current_column)
-        : ScannerException(current_line, current_column,
-                           "String exceeds line") {}
-};
-
-class UnterminatedBlockCommentException : public ScannerException {
-   public:
-    UnterminatedBlockCommentException(unsigned int current_line,
-                                      unsigned current_column)
-        : ScannerException(current_line, current_column,
-                           "Unterminated block comment") {}
-};
-
-class IntegerOverflowException : public ScannerException {
-   public:
-    IntegerOverflowException(unsigned int current_line, unsigned current_column)
-        : ScannerException(current_line, current_column, "Integer overflow") {}
-};
-
-class InvalidIntegerExpressionException : public ScannerException {
-   public:
-    InvalidIntegerExpressionException(unsigned int current_line,
-                                      unsigned current_column)
-        : ScannerException(current_line, current_column,
-                           "Invalid integer expression") {}
-};
 }  // namespace scanner
 
 #endif  // LEXER_SCANNER_H

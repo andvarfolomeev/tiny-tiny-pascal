@@ -17,8 +17,7 @@ Token Scanner::next_token() {
         c = consume();
 
         // save position in case of unclosed comment
-        first_column = get_current_column() - 1;
-        first_line = get_current_line();
+        first_pos = {get_current_line(), get_current_column() - 1};
 
         if (c == '/' && try_consume('/')) {
             skip_line_comment();
@@ -32,8 +31,7 @@ Token Scanner::next_token() {
     } while (true);
 
     // take into account that the consume method was called
-    first_column = get_current_column() - 1;
-    first_line = get_current_line();
+    first_pos = {get_current_line(), get_current_column() - 1};
 
     clear_buffer();
     add_to_buffer(c);
@@ -157,8 +155,8 @@ Token Scanner::next_token() {
             break;
     }
 
-    // means that the token type is invalid
-    throw UnexpectedTokenException(first_line, first_column);
+    throw make_exc<ScannerException>(first_pos)
+        << "Unexpected token" << make_exc_end;
 }
 
 bool Scanner::is_space(char c) { return c == '\t' || c == ' ' || c == '\n'; }
@@ -192,7 +190,8 @@ Token Scanner::scan_string_literal(bool start_with_hash) {
                 if (try_consume('\'')) {
                     current_state = pre_spec_char;
                 } else if (buffer_peek() == '\n' || buffer_peek() == EOF) {
-                    throw StringExceedsLineException(first_line, first_column);
+                    throw make_exc<ScannerException>(first_pos)
+                        << "String exceeds line" << make_exc_end;
                 } else {
                     value_buffer.push_back(peek());
                     consume();
@@ -212,8 +211,8 @@ Token Scanner::scan_string_literal(bool start_with_hash) {
                         number_of_special_symbol * 10 + buffer_peek() - '0';
                     current_state = read_number;
                 } else {
-                    throw IllegalCharacterException(
-                        get_current_line(), get_current_column(), peek());
+                    throw make_exc<ScannerException>()
+                        << "Illegal character: " << peek() << make_exc_end;
                 }
                 break;
             case read_number:
@@ -335,8 +334,8 @@ Token Scanner::scan_number_literal(int numeral_system) {
                     exponent_part.push_back(buffer_peek());
                     current_state = exp_sign;
                 } else {
-                    throw IllegalCharacterException(
-                        get_current_line(), get_current_column(), peek());
+                    throw make_exc<ScannerException>(get_pos())
+                        << "Illegal character: " << peek() << make_exc_end;
                 }
                 break;
             case exp_dec:
@@ -351,8 +350,8 @@ Token Scanner::scan_number_literal(int numeral_system) {
                 if (try_consume([](char c) { return is_digit(c); })) {
                     current_state = exp_dec;
                 } else {
-                    throw IllegalCharacterException(
-                        get_current_line(), get_current_column(), peek());
+                    throw make_exc<ScannerException>(get_pos())
+                        << "Illegal character: " << peek() << make_exc_end;
                 }
                 break;
             case pre_not_dec:
@@ -361,8 +360,8 @@ Token Scanner::scan_number_literal(int numeral_system) {
                     current_state = not_dec;
                     integer_part.push_back(buffer_peek());
                 } else {
-                    throw InvalidIntegerExpressionException(
-                        get_current_line(), get_current_column());
+                    throw make_exc<ScannerException>(get_pos())
+                        << "Invalid integer expression" << make_exc_end;
                 }
                 break;
             case not_dec:
@@ -417,7 +416,8 @@ void Scanner::skip_block_comment() {
         if (buffer_peek() == '}') {
             return;
         } else if (buffer_peek() == EOF) {
-            throw UnterminatedBlockCommentException(first_line, first_column);
+            throw make_exc<ScannerException>(first_pos)
+                << "Unterminated block comment" << make_exc_end;
         }
     }
 }
@@ -431,7 +431,8 @@ void Scanner::skip_block_comment_1() {
         if (buffer_peek() == '*' && try_consume(')')) {
             return;
         } else if (buffer_peek() == EOF) {
-            throw UnterminatedBlockCommentException(first_line, first_column);
+            throw make_exc<ScannerException>(first_pos)
+                << "Unterminated block comment" << make_exc_end;
         }
     }
 }
@@ -472,7 +473,8 @@ Integer Scanner::get_integer_value(std::string raw, int numeral_system) const {
             result += c - 'a' + 10;
         }
         if (INTEGER_MAX < result) {
-            throw IntegerOverflowException(first_line, first_column);
+            throw make_exc<ScannerException>(first_pos)
+                << "Integer overflow" << make_exc_end;
         }
     }
     return (Integer)result;
@@ -488,7 +490,7 @@ Double Scanner::get_double_value(const std::string& raw) {
 
 Token Scanner::prepare_token(TokenType type, const TokenValue& value,
                              const std::string& raw_value) const {
-    return {first_line, first_column, type, value, raw_value};
+    return {first_pos, type, value, raw_value};
 }
 
 }  // namespace scanner
