@@ -4,8 +4,6 @@
 #include <fstream>
 
 #include "../src/parser/parser.h"
-#include "../src/scanner/scanner.h"
-#include "../src/simple_parser/simple_parser.h"
 
 namespace tester {
 
@@ -106,15 +104,6 @@ std::string ScannerTester::get_answer(const std::string& path_in) {
         else
             answer << std::endl;
     }
-    return answer.str();
-}
-
-std::string SimpleParserTester::get_answer(const std::string& path_in) {
-    auto stream = std::ifstream(path_in);
-    scanner::Scanner scanner(stream);
-    simpleparser::SimpleParser parser(scanner);
-    std::stringstream answer;
-    parser.parse_expression()->draw(answer, 0);
     return answer.str();
 }
 
