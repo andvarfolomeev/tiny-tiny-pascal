@@ -201,10 +201,11 @@ void SemanticVisitor::visit(NodeBinOp *node) {
         default:
             break;
     }
-    std::ostringstream os;
-    os << "Operator is not overloaded " << left_st->to_str() << " "
-       << node->token.get_raw_value() << " " << right_st->to_str();
-    throw SemanticException(node->token, os.str());
+
+    throw make_exc<SemanticException>(node->token.get_pos())
+        << "Operator is not overloaded " << left_st->to_str() << " "
+        << node->token.get_raw_value() << " " << right_st->to_str()
+        << make_exc_end;
 }
 
 void SemanticVisitor::visit(NodeUnOp *node) {
@@ -234,10 +235,9 @@ void SemanticVisitor::visit(NodeUnOp *node) {
             return;
         }
     }
-    std::ostringstream os;
-    os << "Unary operator is not overloaded " << node->token.get_raw_value()
-       << " " << node->operand->get_sym_type()->to_str();
-    throw SemanticException(node->token, os.str());
+    throw make_exc<SemanticException>(node->token.get_pos())
+        << "Unary operator is not overloaded " << node->token.get_raw_value()
+        << " " << node->operand->get_sym_type()->to_str() << make_exc_end;
 }
 
 void SemanticVisitor::visit(NodeRelOp *node) {
@@ -255,10 +255,10 @@ void SemanticVisitor::visit(NodeRelOp *node) {
          (equivalent(left_st, right_st, {SYMBOL_STRING, SYMBOL_BOOLEAN}))))
         return;
 
-    std::ostringstream os;
-    os << "Operator is not overloaded " << left_st->to_str() << " "
-       << node->token.get_raw_value() << " " << right_st->to_str();
-    throw SemanticException(node->token, os.str());
+    throw make_exc<SemanticException>(node->token.get_pos())
+        << "Operator is not overloaded " << left_st->to_str() << " "
+        << node->token.get_raw_value() << " " << right_st->to_str()
+        << make_exc_end;
 }
 
 void SemanticVisitor::visit(NodeNumber *node) {
@@ -280,7 +280,8 @@ void SemanticVisitor::visit(NodeFuncCall *node) {
     auto sym_type = node->var_ref->get_sym_type();
     auto sym_type_casted = std::dynamic_pointer_cast<SymbolProcedure>(sym_type);
     if (sym_type_casted == nullptr) {
-        throw SemanticException("It's not callable");
+        throw make_exc<SemanticException>()
+            << "It's not callable" << make_exc_end;
     }
     if (sym_type_casted->is_function()) {
         node->sym_type = sym_type_casted->get_ret();
@@ -291,8 +292,8 @@ void SemanticVisitor::visit(NodeFuncCall *node) {
             if (!equivalent(param->get_sym_type(),
                             {SYMBOL_INTEGER, SYMBOL_BOOLEAN, SYMBOL_DOUBLE,
                              SYMBOL_STRING})) {
-                throw SemanticException(
-                    "it's cant use in standard io functions");
+                throw make_exc<SemanticException>()
+                    << "it's cant use in standard io functions" << make_exc_end;
             }
         }
     } else {
@@ -300,10 +301,10 @@ void SemanticVisitor::visit(NodeFuncCall *node) {
         auto ordered_names = table->get_ordered_names();
         auto count_of_params = sym_type_casted->get_count_of_params();
         if (count_of_params != node->params.size()) {
-            std::ostringstream os;
-            os << "Expected " << count_of_params
-               << " count of parameters, but taken " << node->params.size();
-            throw SemanticException(os.str());
+            throw make_exc<SemanticException>()
+                << "Expected " << count_of_params
+                << " count of parameters, but taken " << node->params.size()
+                << make_exc_end;
         }
         for (unsigned int i = 0; i < count_of_params; ++i) {
             auto sym = table->get(ordered_names[i]);
@@ -312,10 +313,10 @@ void SemanticVisitor::visit(NodeFuncCall *node) {
             solve_casting(sym_var->get_type(), node->params[i]);
             if (!sym_var->get_type()->equivalent_to(
                     node->params[i]->get_sym_type())) {
-                std::ostringstream os;
-                os << "Expected " << sym_var->get_type()->to_str()
-                   << " type, but taken " << node->params[i]->get_sym_type();
-                throw SemanticException(os.str());
+                throw make_exc<SemanticException>()
+                    << "Expected " << sym_var->get_type()->to_str()
+                    << " type, but taken " << node->params[i]->get_sym_type()
+                    << make_exc_end;
             }
         }
     }
@@ -330,10 +331,11 @@ void SemanticVisitor::visit(NodeArrayAccess *node) {
     auto sym_type_casted =
         std::dynamic_pointer_cast<SymbolArray>(node->var_ref->get_sym_type());
     if (sym_type_casted == nullptr) {
-        throw SemanticException("It's not array");
+        throw make_exc<SemanticException>() << "It's not array" << make_exc_end;
     }
     if (node->index->get_sym_type() != SYMBOL_INTEGER) {
-        throw SemanticException("Expected integer expression in array access");
+        throw make_exc<SemanticException>()
+            << "Expected integer expression in array access" << make_exc_end;
     }
     node->sym_type = sym_type_casted->get_inner_type();
     node->is_lvalue = node->var_ref->is_lvalue;
@@ -345,13 +347,15 @@ void SemanticVisitor::visit(NodeRecordAccess *node) {
     auto sym_type_casted =
         std::dynamic_pointer_cast<SymbolRecord>(node->var_ref->get_sym_type());
     if (sym_type_casted == nullptr) {
-        throw SemanticException("It's not record");
+        throw make_exc<SemanticException>()
+            << "It's not record" << make_exc_end;
     }
     auto fields = sym_type_casted->get_fields();
     auto field = std::dynamic_pointer_cast<SymbolVar>(
         fields->get(node->field->get_name()));
     if (field == nullptr) {
-        throw SemanticException("It's not field of record");
+        throw make_exc<SemanticException>()
+            << "It's not field of record" << make_exc_end;
     }
     node->sym_type = field->get_type();
     node->is_lvalue = node->var_ref->is_lvalue;
@@ -377,13 +381,15 @@ void SemanticVisitor::visit(NodeCompoundStatement *node) {
 void SemanticVisitor::visit(NodeForStatement *node) {
     node->param->accept(this);
     if (!node->param->is_lvalue) {
-        throw SemanticException(node->dir->token, "lvalue expected");
+        throw make_exc<SemanticException>(node->dir->token.get_pos())
+            << "lvalue expected" << make_exc_end;
     }
     node->start_exp->accept(this);
     node->end_exp->accept(this);
     if (!node->start_exp->get_sym_type()->equivalent_to(SYMBOL_INTEGER) ||
         !node->end_exp->get_sym_type()->equivalent_to(SYMBOL_INTEGER)) {
-        throw SemanticException("Ordinal expected in for range");
+        throw make_exc<SemanticException>(node->dir->token.get_pos())
+            << "Ordinal expected in for range" << make_exc_end;
     }
     node->stmt->accept(this);
 }
@@ -391,20 +397,23 @@ void SemanticVisitor::visit(NodeForStatement *node) {
 void SemanticVisitor::visit(NodeWhileStatement *node) {
     node->exp->accept(this);
     if (!node->exp->get_sym_type()->equivalent_to(SYMBOL_BOOLEAN))
-        throw SemanticException("Boolean expected");
+        throw make_exc<SemanticException>()
+            << "Boolean expected" << make_exc_end;
     node->stmt->accept(this);
 }
 
 void SemanticVisitor::visit(NodeIfStatement *node) {
     node->exp->accept(this);
     if (!node->exp->get_sym_type()->equivalent_to(SYMBOL_BOOLEAN))
-        throw SemanticException("Boolean expected");
+        throw make_exc<SemanticException>()
+            << "Boolean expected" << make_exc_end;
     node->stmt->accept(this);
 }
 void SemanticVisitor::visit(NodeAssigmentStatement *node) {
     node->var_ref->accept(this);
     if (!node->var_ref->is_lvalue) {
-        throw SemanticException("lvalue expected");
+        throw make_exc<SemanticException>()
+            << "lvalue expected" << make_exc_end;
     }
     node->exp->accept(this);
 
@@ -415,7 +424,8 @@ void SemanticVisitor::visit(NodeAssigmentStatement *node) {
         std::dynamic_pointer_cast<SymbolProcedure>(left_sym_type);
     if (left_sym_type_func != nullptr) {
         if (left_sym_type_func->is_procedure()) {
-            throw SemanticException("expression expected, but taken procedure");
+            throw make_exc<SemanticException>()
+                << "expression expected, but taken procedure" << make_exc_end;
         }
         left_sym_type = left_sym_type_func->get_ret();
     }
@@ -440,9 +450,8 @@ void SemanticVisitor::visit(NodeAssigmentStatement *node) {
         default:
             break;
     }
-    std::ostringstream os;
-    os << "Assigment statement is not overloaded";
-    throw SemanticException(node->op, os.str());
+    throw make_exc<SemanticException>(node->op.get_pos())
+        << "expression expected, but taken procedure" << make_exc_end;
 }
 void SemanticVisitor::visit([[maybe_unused]] NodeSimpleType *node) {}
 
@@ -453,7 +462,8 @@ void SemanticVisitor::visit(NodeRange *node) {
     end->accept(this);
     if (!beg->get_sym_type()->equivalent_to(SYMBOL_INTEGER) ||
         !end->get_sym_type()->equivalent_to(SYMBOL_INTEGER)) {
-        throw SemanticException("Ordinal expected in array type declaration");
+        throw make_exc<SemanticException>()
+            << "Ordinal expected in array type declaration" << make_exc_end;
     }
 }
 void SemanticVisitor::visit(NodeArrayType *node) {
@@ -481,8 +491,11 @@ std::shared_ptr<SymbolType> SemanticVisitor::get_symbol_type(
     // builtin primitive type or alias
     auto sym_type = sym_table_stack->get(
         std::dynamic_pointer_cast<NodeSimpleType>(type)->get_name());
-    if (sym_type == nullptr) throw SemanticException("Not found type");
-    if (!sym_type->is_type()) throw SemanticException("Found but is not type");
+    if (sym_type == nullptr)
+        throw make_exc<SemanticException>() << "Not found type" << make_exc_end;
+    if (!sym_type->is_type())
+        throw make_exc<SemanticException>()
+            << "Found but is not type" << make_exc_end;
     return std::dynamic_pointer_cast<SymbolType>(sym_type);
 }
 
@@ -553,13 +566,15 @@ void SemanticVisitor::solve_casting(std::shared_ptr<SymbolType> left_st,
 }
 void SemanticVisitor::check_id_duplicate(const std::shared_ptr<NodeId> &id) {
     if (sym_table_stack->get_in_scope(id->get_name()) != nullptr) {
-        throw SemanticException(id->token, "double declaration");
+        throw make_exc<SemanticException>(id->token.get_pos())
+            << "double declaration" << make_exc_end;
     }
 }
 void SemanticVisitor::check_type_exist(
     const std::shared_ptr<NodeExpression> &exp) {
     if (exp->get_sym_type() == nullptr) {
-        throw SemanticException("it's not return value");
+        throw make_exc<SemanticException>()
+            << "it's not return value" << make_exc_end;
     }
 }
 }  // namespace visitor
