@@ -1,1 +1,1 @@
-Line: 1; Column: 18; Expected: SEMICOLON; but found b
+(1, 18): Expected  SEMICOLON; but found b

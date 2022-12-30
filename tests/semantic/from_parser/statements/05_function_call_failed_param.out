@@ -1,1 +1,1 @@
-Line: 10; Column: 12; RPAREN found, but element expected
+(10, 12): RPAREN found, but element expected

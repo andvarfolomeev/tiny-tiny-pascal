@@ -1,1 +1,1 @@
-Line: 1; Column: 3; Expected: EQL; but found ;
+(1, 3): Expected  EQL; but found ;

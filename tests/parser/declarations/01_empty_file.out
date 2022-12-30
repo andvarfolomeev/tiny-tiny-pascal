@@ -1,1 +1,1 @@
-Line: 1; Column: 1; Expected: BEGIN; but found EOF
+(1, 1): Expected  BEGIN; but found EOF
