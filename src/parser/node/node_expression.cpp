@@ -6,6 +6,7 @@ void NodeId::draw(std::ostream& os, [[maybe_unused]] int depth) {
 }
 
 std::string NodeId::get_name() { return token.get_value<std::string>(); }
+Token NodeId::get_token() { return token; }
 
 void NodeBoolean::draw(std::ostream& os, [[maybe_unused]] int depth) {
     os << token.get_raw_value();

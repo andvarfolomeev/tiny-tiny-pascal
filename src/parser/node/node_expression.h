@@ -17,6 +17,7 @@ class NodeId : public NodeVarRef {
     explicit NodeId(Token token) : token(std::move(token)) {}
     void draw(std::ostream &os, int depth) override;
     std::string get_name();
+    Token get_token();
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
 
