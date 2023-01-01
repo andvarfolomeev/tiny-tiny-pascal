@@ -16,6 +16,11 @@ void SymbolTableStack::push(std::shared_ptr<SymbolTable> table) {
     data.push_back(table);
 }
 
+void SymbolTableStack::push(std::shared_ptr<parser::NodeId> id,
+                            std::shared_ptr<Symbol> symbol) {
+    data.back()->push(id, symbol);
+}
+
 void SymbolTableStack::pop() { data.pop_back(); }
 
 std::shared_ptr<Symbol> SymbolTableStack::get(std::string name) {

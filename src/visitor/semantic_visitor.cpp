@@ -16,9 +16,9 @@ void SemanticVisitor::visit(NodeBlock *node) {
 }
 void SemanticVisitor::visit(NodeVarDecl *node) {
     for (auto &id : node->ids) {
-        check_id_duplicate(id);
-        sym_table_stack->push(std::make_shared<SymbolVar>(
-            id->get_name(), get_symbol_type(node->type)));
+        sym_table_stack->push(
+            id, std::make_shared<SymbolVar>(id->get_name(),
+                                            get_symbol_type(node->type)));
     }
     node->type->accept(this);
 }
@@ -34,9 +34,8 @@ void SemanticVisitor::visit(NodeConstDecl *node) {
     }
     auto sym_type = (node->type != nullptr) ? get_symbol_type(node->type)
                                             : node->exp->get_sym_type();
-    check_id_duplicate(node->id);
     sym_table_stack->push(
-        std::make_shared<SymbolVar>(node->id->get_name(), sym_type));
+        node->id, std::make_shared<SymbolVar>(node->id->get_name(), sym_type));
 }
 
 void SemanticVisitor::visit(NodeConstDecls *node) {
@@ -44,10 +43,10 @@ void SemanticVisitor::visit(NodeConstDecls *node) {
 }
 
 void SemanticVisitor::visit(NodeTypeDecl *node) {
-    check_id_duplicate(node->id);
     node->type->accept(this);
-    sym_table_stack->push(std::make_shared<SymbolTypeAlias>(
-        node->id->get_name(), get_symbol_type(node->type)));
+    sym_table_stack->push(
+        node->id, std::make_shared<SymbolTypeAlias>(
+                      node->id->get_name(), get_symbol_type(node->type)));
 }
 
 void SemanticVisitor::visit(NodeTypeDecls *node) {
@@ -73,14 +72,12 @@ void SemanticVisitor::visit(NodeFormalParamSection *node) {
             symbol_param =
                 std::make_shared<SymbolParam>(id->get_name(), sym_type);
         }
-        check_id_duplicate(id);
         node->type->accept(this);
-        sym_table_stack->push(id->get_name(), symbol_param);
+        sym_table_stack->push(id, symbol_param);
     }
 }
 
 void SemanticVisitor::visit(NodeProcedureDecl *node) {
-    check_id_duplicate(node->id);
     auto local_table = std::make_shared<SymbolTable>();
     auto symbol_proc = std::make_shared<SymbolProcedure>(
         node->id->get_name(), local_table, node->block->compound_statement);
@@ -88,11 +85,10 @@ void SemanticVisitor::visit(NodeProcedureDecl *node) {
     for (auto &param : node->params) param->accept(this);
     node->block->accept(this);
     sym_table_stack->pop();
-    sym_table_stack->push(symbol_proc);
+    sym_table_stack->push(node->id, symbol_proc);
 }
 
 void SemanticVisitor::visit(NodeFunctionDecl *node) {
-    check_id_duplicate(node->id);
     auto local_table = std::make_shared<SymbolTable>();
     auto symbol_func = std::make_shared<SymbolFunction>(
         node->id->get_name(), local_table, node->block->compound_statement,
@@ -108,7 +104,7 @@ void SemanticVisitor::visit(NodeFunctionDecl *node) {
     node->block->accept(this);
     local_table->del(node->id->get_name());
     sym_table_stack->pop();
-    sym_table_stack->push(symbol_func);
+    sym_table_stack->push(node->id, symbol_func);
 }
 /**
  * call only in expressions
@@ -556,6 +552,7 @@ std::shared_ptr<SymbolType> SemanticVisitor::solve_casting(NodeBinOp *node) {
         return nullptr;
     }
 }
+
 void SemanticVisitor::solve_casting(std::shared_ptr<SymbolType> left_st,
                                     std::shared_ptr<NodeExpression> &right) {
     auto right_st = right->get_sym_type();
@@ -564,12 +561,7 @@ void SemanticVisitor::solve_casting(std::shared_ptr<SymbolType> left_st,
                 ? std::make_shared<NodeCast>(right, SYMBOL_DOUBLE)
                 : right;
 }
-void SemanticVisitor::check_id_duplicate(const std::shared_ptr<NodeId> &id) {
-    if (sym_table_stack->get_in_scope(id->get_name()) != nullptr) {
-        throw make_exc<SemanticException>(id->token.get_pos())
-            << "double declaration" << make_exc_end;
-    }
-}
+
 void SemanticVisitor::check_type_exist(
     const std::shared_ptr<NodeExpression> &exp) {
     if (exp->get_sym_type() == nullptr) {

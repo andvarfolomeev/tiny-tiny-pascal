@@ -9,6 +9,8 @@ class SymbolTableStack {
     void push(std::string name, std::shared_ptr<Symbol> value);
     void push(const std::shared_ptr<Symbol> &&value);
     void push(std::shared_ptr<SymbolTable> table);
+    void push(std::shared_ptr<parser::NodeId> id,
+              std::shared_ptr<Symbol> symbol);
     void pop();
     std::shared_ptr<Symbol> get(std::string name);
     std::shared_ptr<Symbol> get_in_scope(std::string name);

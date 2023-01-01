@@ -38,6 +38,15 @@ void SymbolTable::push(const std::shared_ptr<Symbol> symbol) {
     push(symbol->get_name(), symbol);
 }
 
+void SymbolTable::push(std::shared_ptr<parser::NodeId> id,
+                       std::shared_ptr<Symbol> symbol) {
+    if (data.contains(id->get_name())) {
+        throw make_exc<SemanticException>(id->get_token().get_pos())
+            << id->get_name() << " is already declarated" << make_exc_end;
+    }
+    push(symbol);
+}
+
 std::shared_ptr<SymbolTable> SymbolTable::get_with_builtin() {
     auto table = std::make_shared<SymbolTable>();
     table->push("boolean", SYMBOL_BOOLEAN);

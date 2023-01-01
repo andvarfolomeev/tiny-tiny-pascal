@@ -68,7 +68,6 @@ class SemanticVisitor : public BaseVisitor {
     static std::shared_ptr<SymbolType> solve_casting(NodeBinOp* node);
     static void solve_casting(std::shared_ptr<SymbolType> left_st,
                               std::shared_ptr<NodeExpression>& right);
-    void check_id_duplicate(const std::shared_ptr<NodeId>& id);
     static void check_type_exist(const std::shared_ptr<NodeExpression>& exp);
 
    protected:
