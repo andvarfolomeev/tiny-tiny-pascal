@@ -3,7 +3,6 @@
 
 #include "parser/parser.h"
 #include "scanner/scanner.h"
-#include "simple_parser/simple_parser.h"
 #include "visitor/semantic_visitor.h"
 
 int main(int argc, char* argv[]) {
@@ -12,10 +11,6 @@ int main(int argc, char* argv[]) {
     program.add_argument("file").help("path to source file");
     program.add_argument("--scanner")
         .help("run scanner")
-        .default_value(false)
-        .implicit_value(true);
-    program.add_argument("--simple-parser")
-        .help("run simple parser")
         .default_value(false)
         .implicit_value(true);
     program.add_argument("--parser")
@@ -66,21 +61,6 @@ int main(int argc, char* argv[]) {
         file.open(path_to_source);
     }
 
-    auto run_simple_parser = program.get<bool>("--simple-parser");
-    if (run_simple_parser) {
-        try {
-            scanner::Scanner scanner(file);
-            simpleparser::SimpleParser simple_parser(scanner);
-            simple_parser.parse_expression()->draw(std::cout, 0);
-        } catch (const simpleparser::SyntaxException& ex) {
-            std::cout << ex.what();
-            return EXIT_FAILURE;
-        } catch (const TinyPascalException& ex) {
-            std::cout << ex.what();
-            return EXIT_FAILURE;
-        }
-    }
-
     auto run_parser = program.get<bool>("--parser");
     auto run_semantic = program.get<bool>("--semantic");
     if (run_parser) {
@@ -103,9 +83,6 @@ int main(int argc, char* argv[]) {
                 head->draw(std::cout, 0);
                 std::cout << "\n";
             }
-        } catch (const simpleparser::SyntaxException& ex) {
-            std::cout << ex.what();
-            return EXIT_FAILURE;
         } catch (const TinyPascalException& ex) {
             std::cout << ex.what();
             return EXIT_FAILURE;
