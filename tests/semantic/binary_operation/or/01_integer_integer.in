@@ -1,0 +1,2 @@
+var a: integer; b: integer;
+begin writeln(a or b); end.

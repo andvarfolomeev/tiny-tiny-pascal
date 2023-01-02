@@ -1,0 +1,2 @@
+var a: double; b: string;
+begin writeln(a + b); end.

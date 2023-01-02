@@ -1,0 +1,4 @@
+type int = Integer;
+type int_int = int;
+var a: int_int;
+begin end.

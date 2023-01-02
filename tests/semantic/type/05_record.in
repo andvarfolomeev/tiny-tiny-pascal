@@ -1,0 +1,3 @@
+type point = record x: integer; y: integer; end;
+type vec_point = record data: array[0..1000] of integer; s, c: integer; end;
+begin end.

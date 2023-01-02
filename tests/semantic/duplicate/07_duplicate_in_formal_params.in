@@ -1,0 +1,2 @@
+function a(a: Integer; b: Integer; c: Integer): Integer; begin a := 10; end;
+begin end.

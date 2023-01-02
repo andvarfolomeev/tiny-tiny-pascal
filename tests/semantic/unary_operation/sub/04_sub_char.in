@@ -1,0 +1,2 @@
+var a: char;
+begin writeln(-a); end.

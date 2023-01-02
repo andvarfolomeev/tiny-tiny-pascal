@@ -1,0 +1,2 @@
+type Point = record x: integer; x: integer; end;
+begin end.

@@ -1,0 +1,4 @@
+type arr = array[0..100] of integer;
+type arr_of_arr = array[0..100] of array [-100..100] of integer;
+type arr_with_2_ranges = array[0..100, -100..100] of integer;
+begin end.
