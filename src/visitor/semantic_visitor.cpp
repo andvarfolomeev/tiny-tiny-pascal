@@ -173,17 +173,7 @@ void SemanticVisitor::visit(NodeBinOp *node) {
                     }
                     break;
                 case scanner::Operators::SUB:
-                    if (left_st->is_arithmetic() && right_st->is_arithmetic()) {
-                        node->sym_type = solve_casting(node);
-                        return;
-                    }
-                    break;
                 case scanner::Operators::QUO:
-                    if (left_st->is_arithmetic() && right_st->is_arithmetic()) {
-                        node->sym_type = solve_casting(node);
-                        return;
-                    }
-                    break;
                 case scanner::Operators::MUL:
                     if (left_st->is_arithmetic() && right_st->is_arithmetic()) {
                         node->sym_type = solve_casting(node);
