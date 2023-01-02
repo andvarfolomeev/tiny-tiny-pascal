@@ -238,7 +238,9 @@ void SemanticVisitor::visit(NodeRelOp *node) {
     node->sym_type = SYMBOL_BOOLEAN;
 
     if (((left_st->is_arithmetic() && right_st->is_arithmetic()) ||
-         (equivalent(left_st, right_st, {SYMBOL_STRING, SYMBOL_BOOLEAN}))))
+         (equivalent(left_st, right_st, {SYMBOL_STRING, SYMBOL_BOOLEAN}))) &&
+        node->token.is({Operators::EQL, Operators::LES, Operators::NEQ,
+                        Operators::LEQ, Operators::GTR, Operators::GEQ}))
         return;
 
     throw make_exc<SemanticException>(node->token.get_pos())
