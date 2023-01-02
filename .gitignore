@@ -1025,8 +1025,9 @@ _deps
 !tests/scanner/*.out
 !tests/simple_parser/*.out
 !tests/parser/*/*.out
-!tests/semantic/from_parser/*/*.out
 !tests/semantic/*.out
+!tests/semantic/*/*.out
+!tests/semantic/*/*/*.out
 
 # Debug files
 *.dSYM/
