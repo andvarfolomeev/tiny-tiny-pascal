@@ -494,7 +494,7 @@ std::shared_ptr<SymbolType> SemanticVisitor::get_symbol_type(
     for (auto &field : fields) {
         auto sym_type = get_symbol_type(field->get_type());
         for (auto &id : field->get_idents()) {
-            table->push(id->get_name(),
+            table->push(id,
                         std::make_shared<SymbolVar>(id->get_name(), sym_type));
         }
     }
