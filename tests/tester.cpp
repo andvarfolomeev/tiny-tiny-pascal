@@ -56,17 +56,26 @@ TestReport Tester::run_tests() {
     return report;
 }
 
-std::set<std::string> Tester::get_path_to_files() {
-    std::set<std::string> result;
-    for (const auto& file_path :
-         std::filesystem::recursive_directory_iterator(path_to_files)) {
-        std::string file_name = file_path.path().filename().string();
-        size_t index_of_separator = file_name.find_last_of('.');
-        std::string file_name_without_ext =
-            file_name.substr(0, index_of_separator);
-        result.insert(path_to_files + file_name_without_ext);
+void _get_path_to_files(const std::string& path_to_files,
+                        std::set<std::string>& res) {
+    for (const auto& entry :
+         std::filesystem::directory_iterator(path_to_files)) {
+        if (entry.is_directory()) {
+            _get_path_to_files(entry.path().string(), res);
+        } else {
+            auto filename = entry.path().string();
+            size_t index_of_separator = filename.find_last_of('.');
+            std::string file_name_without_ext =
+                filename.substr(0, index_of_separator);
+            res.insert(file_name_without_ext);
+        }
     }
-    return result;
+}
+
+std::set<std::string> Tester::get_path_to_files() {
+    std::set<std::string> res;
+    _get_path_to_files(path_to_files, res);
+    return res;
 }
 
 std::string Tester::read_file(const std::string& path) {
