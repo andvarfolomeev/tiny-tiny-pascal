@@ -440,7 +440,9 @@ void SemanticVisitor::visit(NodeAssigmentStatement *node) {
             break;
     }
     throw make_exc<SemanticException>(node->op.get_pos())
-        << "expression expected, but taken procedure" << make_exc_end;
+        << "Operator is not overloaded " << left_sym_type->to_str() << " "
+        << node->op.get_raw_value() << " " << right_sym_type->to_str()
+        << make_exc_end;
 }
 void SemanticVisitor::visit([[maybe_unused]] NodeSimpleType *node) {}
 
