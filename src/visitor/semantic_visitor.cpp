@@ -371,6 +371,13 @@ void SemanticVisitor::visit(NodeForStatement *node) {
         throw make_exc<SemanticException>(node->dir->token.get_pos())
             << "lvalue expected" << make_exc_end;
     }
+    auto param_type = node->param->get_sym_type();
+    if (!(param_type->equivalent_to(SYMBOL_INTEGER))) {
+        throw make_exc<SemanticException>(node->dir->token.get_pos())
+            << "Expected " << SYMBOL_INTEGER->to_str()
+            << " type in for statement, but taken " << param_type
+            << make_exc_end;
+    }
     node->start_exp->accept(this);
     node->end_exp->accept(this);
     if (!node->start_exp->get_sym_type()->equivalent_to(SYMBOL_INTEGER) ||
