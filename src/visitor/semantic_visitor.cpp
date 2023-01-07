@@ -276,6 +276,14 @@ void SemanticVisitor::visit(NodeFuncCall *node) {
     for (auto &param : node->params) param->accept(this);
     if (sym_type_casted->is_standard_io()) {
         for (auto &param : node->params) {
+            // check lvalue in read
+            if (sym_type_casted->is_read_proc()) {
+                if (!param->is_lvalue) {
+                    throw make_exc<SemanticException>()
+                        << "expected lvalue in read procedure call"
+                        << make_exc_end;
+                }
+            }
             if (!equivalent(param->get_sym_type(),
                             {SYMBOL_INTEGER, SYMBOL_BOOLEAN, SYMBOL_DOUBLE,
                              SYMBOL_CHAR, SYMBOL_STRING})) {

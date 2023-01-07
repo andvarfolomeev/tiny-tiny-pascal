@@ -20,6 +20,7 @@ class SymbolProcedure : public SymbolType {
     void draw_additional(std::ostream &os, int depth) override;
     bool is_standard_io();
     virtual bool is_procedure();
+    virtual bool is_read_proc();
     virtual bool is_function();
     std::shared_ptr<SymbolTable> get_locals();
     std::shared_ptr<SymbolType> get_ret();

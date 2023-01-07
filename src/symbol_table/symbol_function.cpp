@@ -35,6 +35,7 @@ unsigned int SymbolProcedure::get_count_of_params() {
     }
     return res;
 }
+bool SymbolProcedure::is_read_proc() { return equivalent_to(SYMBOL_READ); }
 
 void SymbolFunction::set_ret_type(std::shared_ptr<SymbolType> ret_) {
     ret = std::move(ret_);
