@@ -296,8 +296,14 @@ void SemanticVisitor::visit(NodeFuncCall *node) {
         for (unsigned int i = 0; i < count_of_params; ++i) {
             auto sym = table->get(ordered_names[i]);
             auto sym_var = std::dynamic_pointer_cast<SymbolVar>(sym);
-            // TODO: check var
-            solve_casting(sym_var->get_type(), node->params[i]);
+            if (std::dynamic_pointer_cast<SymbolVarParam>(sym) == nullptr) {
+                solve_casting(sym_var->get_type(), node->params[i]);
+            } else {
+                if (!node->params[i]->is_lvalue) {
+                    throw make_exc<SemanticException>()
+                        << "Expected lvalue" << make_exc_end;
+                }
+            }
             if (!sym_var->get_type()->equivalent_to(
                     node->params[i]->get_sym_type())) {
                 throw make_exc<SemanticException>()
