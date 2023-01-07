@@ -1,7 +1,6 @@
 #include "semantic_visitor.h"
 
 #include <ranges>
-#include <sstream>
 
 #include "../parser/node/nodes.h"
 #include "../symbol_table/symbol_function.h"
