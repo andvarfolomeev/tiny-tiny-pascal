@@ -279,7 +279,7 @@ void SemanticVisitor::visit(NodeFuncCall *node) {
         for (auto &param : node->params) {
             if (!equivalent(param->get_sym_type(),
                             {SYMBOL_INTEGER, SYMBOL_BOOLEAN, SYMBOL_DOUBLE,
-                             SYMBOL_STRING})) {
+                             SYMBOL_CHAR, SYMBOL_STRING})) {
                 throw make_exc<SemanticException>()
                     << "it's cant use in standard io functions" << make_exc_end;
             }
