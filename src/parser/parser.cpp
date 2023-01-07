@@ -325,6 +325,12 @@ std::shared_ptr<NodeExpression> Parser::factor() {
         next_token();
         return std::make_shared<NodeBoolean>(token);
     }
+    if (token.is({Keywords::WRITE, Keywords::READ})) {
+        auto res = std::make_shared<NodeId>(current_token);
+        next_token();
+        res->get_token().stringify_value();
+        return var_ref(res);
+    }
     if (token == TokenType::ID) {
         return var_ref(identifier());
     }
