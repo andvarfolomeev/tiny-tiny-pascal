@@ -235,7 +235,7 @@ std::shared_ptr<NodeStatement> Parser::simple_statement() {
 }
 
 std::shared_ptr<NodeForStatement> Parser::for_statement() {
-    auto id = identifier();
+    auto exp = expression();
     require(Operators::ASSIGN);
     auto start_exp = expression();
     require(Keywords::TO, Keywords::DOWNTO, false);
@@ -243,7 +243,7 @@ std::shared_ptr<NodeForStatement> Parser::for_statement() {
     auto end_exp = expression();
     require(Keywords::DO);
     auto op = statement();
-    return std::make_shared<NodeForStatement>(id, start_exp, dir, end_exp, op);
+    return std::make_shared<NodeForStatement>(exp, start_exp, dir, end_exp, op);
 }
 
 std::shared_ptr<NodeWhileStatement> Parser::while_statement() {

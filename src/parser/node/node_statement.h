@@ -37,7 +37,7 @@ class NodeCompoundStatement : public NodeStatement {
 
 class NodeForStatement : public NodeStatement {
    public:
-    NodeForStatement(std::shared_ptr<NodeId> param,
+    NodeForStatement(std::shared_ptr<NodeExpression> param,
                      std::shared_ptr<NodeExpression> start_exp,
                      std::shared_ptr<NodeKeyword> dir,
                      std::shared_ptr<NodeExpression> end_exp,
@@ -52,7 +52,7 @@ class NodeForStatement : public NodeStatement {
     friend class visitor::SemanticVisitor;
 
    private:
-    std::shared_ptr<NodeId> param;
+    std::shared_ptr<NodeExpression> param;
     std::shared_ptr<NodeExpression> start_exp;
     std::shared_ptr<NodeKeyword> dir;
     std::shared_ptr<NodeExpression> end_exp;
