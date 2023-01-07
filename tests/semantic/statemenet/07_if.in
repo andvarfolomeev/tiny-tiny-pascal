@@ -1,0 +1,7 @@
+var i: integer;
+begin
+i := 0;
+if (i < 10) then begin
+i += 1;
+end;
+end.

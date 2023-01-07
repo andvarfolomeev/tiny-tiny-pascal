@@ -1,0 +1,3 @@
+var a: integer;
+
+begin writeln(a.a); end.

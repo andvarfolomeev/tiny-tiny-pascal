@@ -1,0 +1,3 @@
+var a: record a: Integer; d: Double; b: Boolean; s: String; r: record field: Integer; end; end;
+
+begin writeln(a.a, a.d, a.b, a.s, a.r.field); end.

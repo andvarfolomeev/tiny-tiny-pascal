@@ -1,0 +1,8 @@
+var i: integer; d: double; b: boolean; c: char; s: string;
+point: record x, y: double; end;
+arr: array[0..100] of integer;
+begin
+writeln(i, d, b, c, s);
+read(i, d, b, c, s);
+writeln('Point: ', point.x, point.y, '; ', arr[0], arr[1]);
+end.

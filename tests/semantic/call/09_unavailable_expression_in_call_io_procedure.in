@@ -1,0 +1,4 @@
+var arr: array[0..100] of integer;
+begin
+writeln(arr);
+end.

@@ -1,0 +1,4 @@
+procedure p(a: Double; b: Double);
+begin end;
+
+begin p(10, 10.1); end.

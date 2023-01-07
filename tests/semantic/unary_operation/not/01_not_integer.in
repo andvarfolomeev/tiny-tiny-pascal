@@ -1,2 +1,2 @@
 var a: integer;
-begin writeln(nota); end.
+begin writeln(not a); end.

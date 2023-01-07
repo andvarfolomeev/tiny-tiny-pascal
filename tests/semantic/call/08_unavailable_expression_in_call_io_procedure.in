@@ -1,0 +1,4 @@
+var point: record x, y: double; end;
+begin
+writeln(point);
+end.

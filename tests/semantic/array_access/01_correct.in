@@ -1,0 +1,6 @@
+var a: array[0..10] of Integer;
+var a2d: array[0..10, 0..10] of integer;
+var a3d: array[0..10, 0..10, 0..10] of integer;
+var a2d_: array[0..10] of array[0..10] of integer;
+var a3d_: array[0..10] of array[0..10] of array[0..10] of integer;
+begin write(a[9], a2d[0][0], a3d[0][0][0], a2d_[0][0], a3d_[0][0][0], a[1 + 2 * 2]); end.

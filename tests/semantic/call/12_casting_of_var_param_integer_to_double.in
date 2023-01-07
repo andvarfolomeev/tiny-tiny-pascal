@@ -1,0 +1,4 @@
+procedure p(var a: Double; b: Double);
+begin end;
+var a: Integer = 10;
+begin p(a, 10.1); end.

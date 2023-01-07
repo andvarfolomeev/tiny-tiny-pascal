@@ -1,0 +1,3 @@
+procedure p(a: Integer; b: Double);
+begin end;
+begin p('hello', 10.1); end.
