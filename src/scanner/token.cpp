@@ -119,4 +119,12 @@ T Token::get_value() const {
 
 Position Token::get_pos() { return pos; }
 
+void Token::stringify_value(TokenType type) {
+    std::string buffer_in_lower = raw_value;
+    std::transform(buffer_in_lower.begin(), buffer_in_lower.end(),
+                   buffer_in_lower.begin(), ::tolower);
+    value = buffer_in_lower;
+    this->type = type;
+}
+
 }  // namespace scanner

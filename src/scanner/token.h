@@ -204,6 +204,8 @@ class Token {
 
     Position get_pos();
 
+    void stringify_value(TokenType type = TokenType::ID);
+
    private:
     Position pos;
     TokenType type;
