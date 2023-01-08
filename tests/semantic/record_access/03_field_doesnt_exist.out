@@ -1,1 +1,1 @@
-(3, 48): It's not field of record
+(3, 48): c is not a field of record a: integer; b: boolean; d: double; r: record field: integer; end; s: string; end

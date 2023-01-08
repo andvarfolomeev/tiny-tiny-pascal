@@ -64,7 +64,7 @@ class SemanticVisitor : public BaseVisitor {
         const std::shared_ptr<NodeRecordType>& type);
     std::shared_ptr<SymbolType> get_symbol_type(
         const std::shared_ptr<NodeArrayType>& array_type);
-    std::shared_ptr<SymbolType> get_symbol_type_by_id(const std::string&& name);
+    std::shared_ptr<SymbolType> get_symbol_type_by_id(NodeId* id);
     static std::shared_ptr<SymbolType> solve_casting(NodeBinOp* node);
     static void solve_casting(std::shared_ptr<SymbolType> left_st,
                               std::shared_ptr<NodeExpression>& right);

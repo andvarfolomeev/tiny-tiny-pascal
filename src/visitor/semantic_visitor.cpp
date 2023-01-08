@@ -110,8 +110,7 @@ void SemanticVisitor::visit(NodeFunctionDecl *node) {
  * @param node
  */
 void SemanticVisitor::visit(NodeId *node) {
-    node->sym_type =
-        get_symbol_type_by_id(node->get_name());  // maybe check functions
+    node->sym_type = get_symbol_type_by_id(node);  // maybe check functions
 }
 
 void SemanticVisitor::visit(NodeBoolean *node) {
@@ -268,7 +267,7 @@ void SemanticVisitor::visit(NodeFuncCall *node) {
     auto sym_type_casted = std::dynamic_pointer_cast<SymbolProcedure>(sym_type);
     if (sym_type_casted == nullptr) {
         throw make_exc<SemanticException>(node)
-            << "It's not callable" << make_exc_end;
+            << sym_type->to_str() << "is not callable" << make_exc_end;
     }
     if (sym_type_casted->is_function()) {
         node->sym_type = sym_type_casted->get_ret();
@@ -276,7 +275,6 @@ void SemanticVisitor::visit(NodeFuncCall *node) {
     for (auto &param : node->params) param->accept(this);
     if (sym_type_casted->is_standard_io()) {
         for (auto &param : node->params) {
-            // check lvalue in read
             if (sym_type_casted->is_read_proc()) {
                 if (!param->is_lvalue) {
                     throw make_exc<SemanticException>(node)
@@ -288,7 +286,8 @@ void SemanticVisitor::visit(NodeFuncCall *node) {
                             {SYMBOL_INTEGER, SYMBOL_BOOLEAN, SYMBOL_DOUBLE,
                              SYMBOL_CHAR, SYMBOL_STRING})) {
                 throw make_exc<SemanticException>(node)
-                    << "it's cant use in standard io functions" << make_exc_end;
+                    << param->get_sym_type()->to_str()
+                    << " is not readable or writable" << make_exc_end;
             }
         }
     } else {
@@ -334,7 +333,8 @@ void SemanticVisitor::visit(NodeArrayAccess *node) {
         std::dynamic_pointer_cast<SymbolArray>(node->var_ref->get_sym_type());
     if (sym_type_casted == nullptr) {
         throw make_exc<SemanticException>(node)
-            << "It's not array" << make_exc_end;
+            << node->var_ref->get_sym_type()->to_str()
+            << " does not allow to take the index" << make_exc_end;
     }
     if (node->index->get_sym_type() != SYMBOL_INTEGER) {
         throw make_exc<SemanticException>(node->index)
@@ -351,14 +351,16 @@ void SemanticVisitor::visit(NodeRecordAccess *node) {
         std::dynamic_pointer_cast<SymbolRecord>(node->var_ref->get_sym_type());
     if (sym_type_casted == nullptr) {
         throw make_exc<SemanticException>(node)
-            << "It's not record" << make_exc_end;
+            << node->var_ref->get_sym_type()->to_str()
+            << " does not allow to take the field" << make_exc_end;
     }
     auto fields = sym_type_casted->get_fields();
     auto field = std::dynamic_pointer_cast<SymbolVar>(
         fields->get(node->field->get_name()));
     if (field == nullptr) {
         throw make_exc<SemanticException>(node->field)
-            << "It's not field of record" << make_exc_end;
+            << node->field->get_name() << " is not a field of "
+            << node->var_ref->get_sym_type()->to_str() << make_exc_end;
     }
     node->sym_type = field->get_type();
     node->is_lvalue = node->var_ref->is_lvalue;
@@ -541,14 +543,14 @@ std::shared_ptr<SymbolType> SemanticVisitor::get_symbol_type(
     }
     return sym_type;
 }
-std::shared_ptr<SymbolType> SemanticVisitor::get_symbol_type_by_id(
-    const std::string &&name) {
-    auto sym = sym_table_stack->get(name);
+std::shared_ptr<SymbolType> SemanticVisitor::get_symbol_type_by_id(NodeId *id) {
+    auto sym = sym_table_stack->get(id->get_name());
     auto sym_var = std::dynamic_pointer_cast<SymbolVar>(sym);
     if (sym_var != nullptr) return sym_var->get_type();
     auto sym_proc = std::dynamic_pointer_cast<SymbolProcedure>(sym);
     if (sym_proc != nullptr) return sym_proc;
-    throw SemanticException("It's not symbol var");
+    throw make_exc<SemanticException>(id)
+        << id->get_name() << " is not var" << make_exc_end;
 }
 std::shared_ptr<SymbolType> SemanticVisitor::solve_casting(NodeBinOp *node) {
     auto left_st = node->left->get_sym_type();
