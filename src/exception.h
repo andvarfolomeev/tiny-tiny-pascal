@@ -83,8 +83,23 @@ ExceptionBuilder<Derived> make_exc() {
 }
 
 template <typename Derived>
-ExceptionBuilder<Derived> make_exc(Position &&pos) {
+ExceptionBuilder<Derived> make_exc(Position pos) {
     return ExceptionBuilder<Derived>(pos);
+}
+
+template <typename Derived, typename T>
+ExceptionBuilder<Derived> make_exc(std::shared_ptr<T> obj) {
+    return ExceptionBuilder<Derived>(obj->get_pos());
+}
+
+template <typename Derived, typename T>
+ExceptionBuilder<Derived> make_exc(T *obj) {
+    return ExceptionBuilder<Derived>(obj->get_pos());
+}
+
+template <typename Derived, typename T>
+ExceptionBuilder<Derived> make_exc(T obj) {
+    return ExceptionBuilder<Derived>(obj.get_pos());
 }
 
 #endif  // TINY_TINY_PASCAL_EXCEPTION_H
