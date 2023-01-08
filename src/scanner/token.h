@@ -7,6 +7,8 @@
 #include <variant>
 #include <vector>
 
+#include "../position.h"
+
 namespace scanner {
 using Integer = int;
 using Double = double;
@@ -171,8 +173,6 @@ enum class TokenType {
     SEPERATOR,
 };
 std::ostream &operator<<(std::ostream &os, const TokenType &type);
-
-using Position = std::pair<unsigned int, unsigned int>;
 
 class Token {
    public:
