@@ -18,6 +18,7 @@ class NodeId : public NodeVarRef {
     void draw(std::ostream &os, int depth) override;
     std::string get_name();
     Token &get_token();
+    Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
 
@@ -29,6 +30,7 @@ class NodeBoolean : public NodeExpression {
    public:
     explicit NodeBoolean(Token token) : token(std::move(token)) {}
     void draw(std::ostream &os, int depth) override;
+    Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
 
@@ -47,6 +49,7 @@ class NodeBinOp : public NodeExpression {
     std::shared_ptr<SymbolType> solve_casting();
     std::shared_ptr<NodeExpression> get_left();
     std::shared_ptr<NodeExpression> get_right();
+    Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
 
@@ -62,6 +65,7 @@ class NodeUnOp : public NodeExpression {
     NodeUnOp(Token token, std::shared_ptr<NodeExpression> operand)
         : token(std::move(token)), operand(std::move(operand)) {}
     void draw(std::ostream &os, int depth) override;
+    Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
 
@@ -78,6 +82,7 @@ class NodeRelOp : public NodeExpression {
           left(std::move(left)),
           right(std::move(right)) {}
     void draw(std::ostream &os, int depth) override;
+    Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
 
@@ -91,6 +96,7 @@ class NodeNumber : public NodeExpression {
    public:
     explicit NodeNumber(Token token) : token(std::move(token)) {}
     void draw(std::ostream &os, int depth) override;
+    Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
 
@@ -106,6 +112,7 @@ class NodeCast : public NodeExpression {
         this->sym_type = sym_type;
     }
     void draw(std::ostream &os, int depth) override;
+    Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     std::shared_ptr<NodeExpression> get_expression();
     friend class visitor::SemanticVisitor;
@@ -118,6 +125,7 @@ class NodeString : public NodeExpression {
    public:
     explicit NodeString(Token token) : token(std::move(token)) {}
     void draw(std::ostream &os, int depth) override;
+    Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
 
@@ -131,6 +139,7 @@ class NodeFuncCall : public NodeVarRef {
                  std::vector<std::shared_ptr<NodeExpression>> params)
         : var_ref(std::move(var_ref)), params(std::move(params)) {}
     void draw(std::ostream &os, int depth) override;
+    Position get_pos() override;
     std::shared_ptr<NodeVarRef> get_var_ref();
     std::vector<std::shared_ptr<NodeExpression>> get_params();
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
@@ -147,6 +156,7 @@ class NodeArrayAccess : public NodeVarRef {
                     std::shared_ptr<NodeExpression> index)
         : var_ref(std::move(var_ref)), index(std::move(index)) {}
     void draw(std::ostream &os, int depth) override;
+    Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
 
@@ -161,6 +171,7 @@ class NodeRecordAccess : public NodeVarRef {
                      std::shared_ptr<NodeId> field)
         : var_ref(std::move(var_ref)), field(std::move(field)) {}
     void draw(std::ostream &os, int depth) override;
+    Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
 
@@ -176,6 +187,7 @@ class NodeSetSimpleElement : public NodeSetElement {
     explicit NodeSetSimpleElement(std::shared_ptr<NodeExpression> exp)
         : exp(std::move(exp)) {}
     void draw(std::ostream &os, int depth) override;
+    Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
 
@@ -189,6 +201,7 @@ class NodeSetRangeElement : public NodeSetElement {
                         std::shared_ptr<NodeExpression> exp2)
         : exp1(std::move(exp1)), exp2(std::move(exp2)) {}
     void draw(std::ostream &os, int depth) override;
+    Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
 
@@ -203,6 +216,7 @@ class NodeSetConstructor : public NodeExpression {
         std::vector<std::shared_ptr<NodeSetElement>> elements)
         : elements(std::move(elements)) {}
     void draw(std::ostream &os, int depth) override;
+    Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
 

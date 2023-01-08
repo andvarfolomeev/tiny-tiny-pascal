@@ -7,10 +7,12 @@ void NodeId::draw(std::ostream& os, [[maybe_unused]] int depth) {
 
 std::string NodeId::get_name() { return token.get_value<std::string>(); }
 Token& NodeId::get_token() { return token; }
+Position NodeId::get_pos() { return token.get_pos(); }
 
 void NodeBoolean::draw(std::ostream& os, [[maybe_unused]] int depth) {
     os << token.get_raw_value();
 }
+Position NodeBoolean::get_pos() { return token.get_pos(); }
 
 void NodeBinOp::draw(std::ostream& os, int depth) {
     os << token.get_raw_value() << "\n";
@@ -47,12 +49,14 @@ std::shared_ptr<SymbolType> NodeBinOp::solve_casting() {
 
 std::shared_ptr<NodeExpression> NodeBinOp::get_left() { return left; }
 std::shared_ptr<NodeExpression> NodeBinOp::get_right() { return right; }
+Position NodeBinOp::get_pos() { return token.get_pos(); }
 
 void NodeUnOp::draw(std::ostream& os, int depth) {
     os << token.get_raw_value() << "\n";
     draw_path(os, depth + 1);
     operand->draw(os, depth + 1);
 }
+Position NodeUnOp::get_pos() { return token.get_pos(); }
 
 void NodeRelOp::draw(std::ostream& os, int depth) {
     os << token.get_raw_value() << "\n";
@@ -62,10 +66,12 @@ void NodeRelOp::draw(std::ostream& os, int depth) {
     draw_path(os, depth + 1);
     right->draw(os, depth + 1);
 }
+Position NodeRelOp::get_pos() { return token.get_pos(); }
 
 void NodeNumber::draw(std::ostream& os, [[maybe_unused]] int depth) {
     os << token.get_raw_value();
 }
+Position NodeNumber::get_pos() { return token.get_pos(); }
 
 void NodeCast::draw(std::ostream& os, [[maybe_unused]] int depth) {
     os << "cast\n";
@@ -76,6 +82,7 @@ void NodeCast::draw(std::ostream& os, [[maybe_unused]] int depth) {
 void NodeString::draw(std::ostream& os, [[maybe_unused]] int depth) {
     os << token.get_raw_value();
 }
+Position NodeString::get_pos() { return token.get_pos(); }
 
 void NodeFuncCall::draw(std::ostream& os, int depth) {
     var_ref->draw(os, depth);
@@ -87,6 +94,7 @@ std::shared_ptr<NodeVarRef> NodeFuncCall::get_var_ref() { return var_ref; }
 std::vector<std::shared_ptr<NodeExpression>> NodeFuncCall::get_params() {
     return params;
 }
+Position NodeFuncCall::get_pos() { return var_ref->get_pos(); }
 
 void NodeArrayAccess::draw(std::ostream& os, int depth) {
     var_ref->draw(os, depth);
@@ -94,6 +102,7 @@ void NodeArrayAccess::draw(std::ostream& os, int depth) {
     draw_path(os, depth + 2);
     index->draw(os, depth + 2);
 }
+Position NodeArrayAccess::get_pos() { return var_ref->get_pos(); }
 
 void NodeRecordAccess::draw(std::ostream& os, int depth) {
     var_ref->draw(os, depth);
@@ -101,19 +110,24 @@ void NodeRecordAccess::draw(std::ostream& os, int depth) {
     draw_path(os, depth + 1);
     field->draw(os, depth + 1);
 }
+Position NodeRecordAccess::get_pos() { return field->get_pos(); }
 
 void NodeSetSimpleElement::draw(std::ostream& os, int depth) {
     exp->draw(os, depth);
 }
+Position NodeSetSimpleElement::get_pos() { return exp->get_pos(); }
 
 void NodeSetRangeElement::draw(std::ostream& os, int depth) {
     exp1->draw(os, depth);
     os << "..";
     exp2->draw(os, depth);
 }
+Position NodeSetRangeElement::get_pos() { return exp1->get_pos(); }
 
 void NodeSetConstructor::draw(std::ostream& os, int depth) {
     draw_vector(os, depth, elements);
 }
+Position NodeSetConstructor::get_pos() { return {}; }
 std::shared_ptr<NodeExpression> NodeCast::get_expression() { return exp; }
+Position NodeCast::get_pos() { return exp->get_pos(); }
 };  // namespace parser
