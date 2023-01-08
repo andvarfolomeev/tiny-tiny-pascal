@@ -365,10 +365,6 @@ void SemanticVisitor::visit(NodeRecordAccess *node) {
     node->sym_type = field->get_type();
     node->is_lvalue = node->var_ref->is_lvalue;
 }
-// TODO: not necessary
-void SemanticVisitor::visit([[maybe_unused]] NodeSetElement *node) {}
-// TODO: not necessary
-void SemanticVisitor::visit([[maybe_unused]] NodeSetConstructor *node) {}
 
 void SemanticVisitor::visit(NodeProgram *node) {
     sym_table_stack->alloc();

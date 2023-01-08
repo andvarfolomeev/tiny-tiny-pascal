@@ -27,8 +27,6 @@ class NodeString;
 class NodeFuncCall;
 class NodeArrayAccess;
 class NodeRecordAccess;
-class NodeSetElement;
-class NodeSetConstructor;
 class NodeProgram;
 class NodeCallStatement;
 class NodeCompoundStatement;
@@ -70,8 +68,6 @@ class BaseVisitor {
     virtual void visit(NodeFuncCall* node) = 0;
     virtual void visit(NodeArrayAccess* node) = 0;
     virtual void visit(NodeRecordAccess* node) = 0;
-    virtual void visit(NodeSetElement* node) = 0;
-    virtual void visit(NodeSetConstructor* node) = 0;
     virtual void visit(NodeProgram* node) = 0;
     virtual void visit(NodeCallStatement* node) = 0;
     virtual void visit(NodeCompoundStatement* node) = 0;

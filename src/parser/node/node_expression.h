@@ -180,50 +180,6 @@ class NodeRecordAccess : public NodeVarRef {
     std::shared_ptr<NodeId> field;
 };
 
-class NodeSetElement : public NodeExpression {};
-
-class NodeSetSimpleElement : public NodeSetElement {
-   public:
-    explicit NodeSetSimpleElement(std::shared_ptr<NodeExpression> exp)
-        : exp(std::move(exp)) {}
-    void draw(std::ostream &os, int depth) override;
-    Position get_pos() override;
-    void accept(BaseVisitor *visitor) override { visitor->visit(this); }
-    friend class visitor::SemanticVisitor;
-
-   protected:
-    std::shared_ptr<NodeExpression> exp;
-};
-
-class NodeSetRangeElement : public NodeSetElement {
-   public:
-    NodeSetRangeElement(std::shared_ptr<NodeExpression> exp1,
-                        std::shared_ptr<NodeExpression> exp2)
-        : exp1(std::move(exp1)), exp2(std::move(exp2)) {}
-    void draw(std::ostream &os, int depth) override;
-    Position get_pos() override;
-    void accept(BaseVisitor *visitor) override { visitor->visit(this); }
-    friend class visitor::SemanticVisitor;
-
-   protected:
-    std::shared_ptr<NodeExpression> exp1;
-    std::shared_ptr<NodeExpression> exp2;
-};
-
-class NodeSetConstructor : public NodeExpression {
-   public:
-    explicit NodeSetConstructor(
-        std::vector<std::shared_ptr<NodeSetElement>> elements)
-        : elements(std::move(elements)) {}
-    void draw(std::ostream &os, int depth) override;
-    Position get_pos() override;
-    void accept(BaseVisitor *visitor) override { visitor->visit(this); }
-    friend class visitor::SemanticVisitor;
-
-   protected:
-    std::vector<std::shared_ptr<NodeSetElement>> elements;
-};
-
 }  // namespace parser
 
 #endif  // PARSER_NODE_EXPRESSION_H

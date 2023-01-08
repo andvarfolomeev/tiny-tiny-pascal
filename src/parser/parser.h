@@ -47,8 +47,6 @@ class Parser {
     std::shared_ptr<NodeExpression> factor();
     std::shared_ptr<NodeVarRef> var_ref(std::shared_ptr<NodeVarRef> i);
 
-    std::shared_ptr<NodeSetConstructor> set_constructor();
-    std::shared_ptr<NodeSetElement> set_element();
     std::shared_ptr<NodeId> identifier();
     std::shared_ptr<NodeKeyword> keyword();
 

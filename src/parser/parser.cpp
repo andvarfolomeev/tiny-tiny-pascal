@@ -340,12 +340,6 @@ std::shared_ptr<NodeExpression> Parser::factor() {
         require(Separators::RPAREN);
         return exp;
     }
-    if (token == Separators::LBRACK) {
-        next_token();
-        auto set_constr = set_constructor();
-        require(Separators::RBRACK);
-        return set_constr;
-    }
     throw make_exc<ParserException>(current_token.get_pos())
         << "factor expected" << make_exc_end;
 }
@@ -375,25 +369,6 @@ std::shared_ptr<NodeVarRef> Parser::var_ref(std::shared_ptr<NodeVarRef> i) {
         }
     }
     return left;
-}
-
-std::shared_ptr<NodeSetConstructor> Parser::set_constructor() {
-    auto elements = std::vector<std::shared_ptr<NodeSetElement>>();
-    elements.push_back(set_element());
-    while (current_token == Separators::COMMA) {
-        next_token();
-        elements.push_back(set_element());
-    }
-    return std::make_shared<NodeSetConstructor>(elements);
-}
-
-std::shared_ptr<NodeSetElement> Parser::set_element() {
-    auto exp = expression();
-    if (current_token == Separators::ELLIPSIS) {
-        next_token();
-        return std::make_shared<NodeSetRangeElement>(exp, expression());
-    }
-    return std::make_shared<NodeSetSimpleElement>(exp);
 }
 
 std::shared_ptr<NodeId> Parser::identifier() {

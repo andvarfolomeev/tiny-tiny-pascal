@@ -112,22 +112,6 @@ void NodeRecordAccess::draw(std::ostream& os, int depth) {
 }
 Position NodeRecordAccess::get_pos() { return field->get_pos(); }
 
-void NodeSetSimpleElement::draw(std::ostream& os, int depth) {
-    exp->draw(os, depth);
-}
-Position NodeSetSimpleElement::get_pos() { return exp->get_pos(); }
-
-void NodeSetRangeElement::draw(std::ostream& os, int depth) {
-    exp1->draw(os, depth);
-    os << "..";
-    exp2->draw(os, depth);
-}
-Position NodeSetRangeElement::get_pos() { return exp1->get_pos(); }
-
-void NodeSetConstructor::draw(std::ostream& os, int depth) {
-    draw_vector(os, depth, elements);
-}
-Position NodeSetConstructor::get_pos() { return {}; }
 std::shared_ptr<NodeExpression> NodeCast::get_expression() { return exp; }
 Position NodeCast::get_pos() { return exp->get_pos(); }
 };  // namespace parser

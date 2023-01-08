@@ -40,8 +40,6 @@ class SemanticVisitor : public BaseVisitor {
     void visit(NodeFuncCall* node) override;
     void visit(NodeArrayAccess* node) override;
     void visit(NodeRecordAccess* node) override;
-    void visit(NodeSetElement* node) override;
-    void visit(NodeSetConstructor* node) override;
     void visit(NodeProgram* node) override;
     void visit(NodeCallStatement* node) override;
     void visit(NodeCompoundStatement* node) override;
