@@ -20,6 +20,7 @@ class NodeSimpleType : public NodeType {
     NodeSimpleType(std::shared_ptr<NodeKeyword> id) : id(std::move(id)) {}
     void draw(std::ostream &os, int depth) override;
     std::string get_name();
+    Position get_pos();
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
 
@@ -33,6 +34,7 @@ class NodeRange : public NodeExpression {
               std::shared_ptr<NodeExpression> exp2)
         : exp1(std::move(exp1)), exp2(std::move(exp2)) {}
     void draw(std::ostream &os, int depth) override;
+    Position get_pos() override;
     std::shared_ptr<NodeExpression> get_beg_exp();
     std::shared_ptr<NodeExpression> get_end_exp();
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }

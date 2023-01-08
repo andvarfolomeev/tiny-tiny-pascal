@@ -19,6 +19,14 @@ std::string NodeSimpleType::get_name() {
     return std::dynamic_pointer_cast<NodeId>(id)->get_name();
 }
 
+Position NodeSimpleType::get_pos() {
+    auto keyword = std::dynamic_pointer_cast<NodeKeyword>(id);
+    if (keyword != nullptr) {
+        return keyword->get_token().get_pos();
+    }
+    return std::dynamic_pointer_cast<NodeId>(id)->get_pos();
+}
+
 void NodeRange::draw(std::ostream& os, int depth) {
     os << "range:\n";
     draw_path(os, depth + 1);
@@ -29,6 +37,7 @@ void NodeRange::draw(std::ostream& os, int depth) {
 }
 std::shared_ptr<NodeExpression> NodeRange::get_beg_exp() { return exp1; }
 std::shared_ptr<NodeExpression> NodeRange::get_end_exp() { return exp2; }
+Position NodeRange::get_pos() { return exp1->get_pos(); }
 
 void NodeArrayType::draw(std::ostream& os, int depth) {
     os << "array type\n";
