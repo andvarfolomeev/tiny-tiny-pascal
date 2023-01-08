@@ -1,1 +1,1 @@
-Expected integer type, but taken string
+(3, 9): Expected integer type, but taken string
