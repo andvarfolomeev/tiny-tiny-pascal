@@ -32,8 +32,6 @@ class NodeRange : public NodeExpression {
               std::shared_ptr<NodeExpression> exp2)
         : exp1(std::move(exp1)), exp2(std::move(exp2)) {}
     Position get_pos() override;
-    std::shared_ptr<NodeExpression> get_beg_exp();
-    std::shared_ptr<NodeExpression> get_end_exp();
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
     friend class visitor::PrinterVisitor;
@@ -48,8 +46,6 @@ class NodeArrayType : public NodeType {
     NodeArrayType(std::shared_ptr<NodeType> type,
                   std::vector<std::shared_ptr<NodeRange>> ranges)
         : type(std::move(type)), ranges(std::move(ranges)) {}
-    std::shared_ptr<NodeType> get_type();
-    std::vector<std::shared_ptr<NodeRange>> get_ranges();
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
     friend class visitor::PrinterVisitor;
@@ -64,8 +60,6 @@ class NodeFieldSelection : public SyntaxNode {
     NodeFieldSelection(std::vector<std::shared_ptr<NodeId>> idents,
                        std::shared_ptr<NodeType> type)
         : idents(std::move(idents)), type(std::move(type)) {}
-    std::vector<std::shared_ptr<NodeId>> get_idents();
-    std::shared_ptr<NodeType> get_type();
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
     friend class visitor::PrinterVisitor;
@@ -80,7 +74,6 @@ class NodeRecordType : public NodeType {
     explicit NodeRecordType(
         std::vector<std::shared_ptr<NodeFieldSelection>> fields)
         : fields(std::move(fields)) {}
-    std::vector<std::shared_ptr<NodeFieldSelection>> get_fields();
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
     friend class visitor::PrinterVisitor;

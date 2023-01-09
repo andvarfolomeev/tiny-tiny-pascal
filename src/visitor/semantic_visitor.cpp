@@ -59,7 +59,7 @@ void SemanticVisitor::visit(NodeFormalParamSection *node) {
     for (auto &id : node->get_ids()) {
         std::shared_ptr<SymbolVar> symbol_param;
         if (modifier != nullptr) {
-            auto token = modifier->get_token();
+            auto token = modifier->token;
             if (token == Keywords::CONST) {
                 symbol_param = std::make_shared<SymbolConstParam>(
                     id->get_name(), sym_type);
@@ -468,8 +468,8 @@ void SemanticVisitor::visit(NodeAssigmentStatement *node) {
 void SemanticVisitor::visit([[maybe_unused]] NodeSimpleType *node) {}
 
 void SemanticVisitor::visit(NodeRange *node) {
-    auto beg = node->get_beg_exp();
-    auto end = node->get_end_exp();
+    auto beg = node->exp1;
+    auto end = node->exp2;
     beg->accept(this);
     end->accept(this);
     if (!beg->get_sym_type()->equivalent_to(SYMBOL_INTEGER)) {
@@ -517,11 +517,11 @@ std::shared_ptr<SymbolType> SemanticVisitor::get_symbol_type(
 
 std::shared_ptr<SymbolType> SemanticVisitor::get_symbol_type(
     const std::shared_ptr<NodeRecordType> &type) {
-    auto fields = type->get_fields();
+    auto fields = type->fields;
     auto table = std::make_shared<SymbolTable>();
     for (auto &field : fields) {
-        auto sym_type = get_symbol_type(field->get_type());
-        for (auto &id : field->get_idents()) {
+        auto sym_type = get_symbol_type(field->type);
+        for (auto &id : field->idents) {
             table->push(id,
                         std::make_shared<SymbolVar>(id->get_name(), sym_type));
         }
@@ -531,11 +531,11 @@ std::shared_ptr<SymbolType> SemanticVisitor::get_symbol_type(
 
 std::shared_ptr<SymbolType> SemanticVisitor::get_symbol_type(
     const std::shared_ptr<NodeArrayType> &array_type) {
-    auto sym_type = get_symbol_type(array_type->get_type());
-    auto ranges_ = array_type->get_ranges();
+    auto sym_type = get_symbol_type(array_type->type);
+    auto ranges_ = array_type->ranges;
     for (auto &range : std::views::reverse(ranges_)) {
-        sym_type = std::make_shared<SymbolArray>(sym_type, range->get_beg_exp(),
-                                                 range->get_end_exp());
+        sym_type =
+            std::make_shared<SymbolArray>(sym_type, range->exp1, range->exp2);
     }
     return sym_type;
 }

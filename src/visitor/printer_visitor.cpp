@@ -4,12 +4,7 @@
 #include "magic_enum.hpp"
 
 namespace visitor {
-void PrinterVisitor::draw_path() {
-    //    for (auto i = 0; i < depth; i++) {
-    //        os << "   ";
-    //    }
-    os << std::string(depth * 3, ' ');
-}
+void PrinterVisitor::draw_path() { os << std::string(depth * 3, ' '); }
 void PrinterVisitor::pre_visit() { ++depth; }
 void PrinterVisitor::post_visit() { --depth; }
 template <typename T>

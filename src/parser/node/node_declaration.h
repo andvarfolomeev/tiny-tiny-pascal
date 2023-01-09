@@ -20,7 +20,6 @@ class NodeBlock : public NodeDecl {
               std::shared_ptr<NodeCompoundStatement> compound_statement)
         : declarations(std::move(declarations)),
           compound_statement(std::move(compound_statement)) {}
-    std::shared_ptr<NodeCompoundStatement> get_compound_statement();
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
     friend class visitor::PrinterVisitor;

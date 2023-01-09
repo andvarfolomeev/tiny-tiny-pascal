@@ -402,7 +402,7 @@ std::shared_ptr<NodeType> Parser::type() {
 
 std::shared_ptr<NodeType> Parser::simple_type() {
     if (current_token == Keywords::STRING) {
-        auto token = keyword()->get_token();
+        auto token = keyword()->token;
         token.stringify_value();
         return std::make_shared<NodeSimpleType>(
             std::make_shared<NodeId>(token));

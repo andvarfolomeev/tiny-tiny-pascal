@@ -12,6 +12,10 @@
 #include "../../visitor/semantic_visitor.h"
 
 namespace parser {
+class Parser;
+}
+
+namespace parser {
 using namespace scanner;
 using namespace visitor;
 
@@ -23,23 +27,17 @@ class SyntaxNode {
     friend class visitor::PrinterVisitor;
 };
 
-class NodeWithStringToken : public SyntaxNode {
+class NodeKeyword : public SyntaxNode {
    public:
-    explicit NodeWithStringToken(Token token) : token(std::move(token)) {}
-    virtual std::string get_name() = 0;
-    Token get_token();
-
-   protected:
-    Token token;
-};
-
-class NodeKeyword : public NodeWithStringToken {
-   public:
-    explicit NodeKeyword(Token token) : NodeWithStringToken(std::move(token)) {}
-    std::string get_name() override;
+    explicit NodeKeyword(Token token) : token(std::move(token)) {}
+    std::string get_name();
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
     friend class visitor::PrinterVisitor;
+    friend class parser::Parser;
+
+   protected:
+    Token token;
 };
 }  // namespace parser
 

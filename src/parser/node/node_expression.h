@@ -45,8 +45,6 @@ class NodeBinOp : public NodeExpression {
         : token(std::move(token)),
           left(std::move(left)),
           right(std::move(right)) {}
-    std::shared_ptr<NodeExpression> get_left();
-    std::shared_ptr<NodeExpression> get_right();
     Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
@@ -112,7 +110,6 @@ class NodeCast : public NodeExpression {
     }
     Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
-    std::shared_ptr<NodeExpression> get_expression();
     friend class visitor::SemanticVisitor;
     friend class visitor::PrinterVisitor;
 
@@ -138,8 +135,6 @@ class NodeFuncCall : public NodeVarRef {
                  std::vector<std::shared_ptr<NodeExpression>> params)
         : var_ref(std::move(var_ref)), params(std::move(params)) {}
     Position get_pos() override;
-    std::shared_ptr<NodeVarRef> get_var_ref();
-    std::vector<std::shared_ptr<NodeExpression>> get_params();
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
     friend class visitor::PrinterVisitor;
