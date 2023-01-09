@@ -45,7 +45,6 @@ class NodeBinOp : public NodeExpression {
         : token(std::move(token)),
           left(std::move(left)),
           right(std::move(right)) {}
-    std::shared_ptr<SymbolType> solve_casting();
     std::shared_ptr<NodeExpression> get_left();
     std::shared_ptr<NodeExpression> get_right();
     Position get_pos() override;
