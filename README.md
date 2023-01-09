@@ -20,9 +20,9 @@ Positional arguments:
 Optional arguments:
   -h, --help            shows help message and exits
   -v, --version         prints version information and exits
-  --scanner             run scanner (Лексический анализ)
-  --simple-parser       run simple parser (Простые выражения)
-  --parser              run parser (Синтаксический анализ)
+  --scanner             run scanner
+  --parser              run parser
+  --semantic            run semantic. must be combined with --parser
 ```
 
 # Run tests
@@ -36,9 +36,3 @@ From directory ```build``` execute: ```Debug\tiny_tiny_pascal_tests.exe```.
 Написан на языке программирования C++
 
 Разработчик: студент ДВФУ группы Б9120-09.03.03пикд Варфоломеев Андрей
-
-Проект содержит два таргета:
-
-- tiny_tiny_pascal
-- tiny_tiny_pascal_tests
-
