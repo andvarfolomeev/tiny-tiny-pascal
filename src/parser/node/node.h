@@ -18,20 +18,9 @@ using namespace visitor;
 class SyntaxNode {
    public:
     virtual ~SyntaxNode() = default;
-    void draw_path(std::ostream &os, int depth);
     virtual void accept(BaseVisitor *visitor) = 0;
     friend class visitor::SemanticVisitor;
     friend class visitor::PrinterVisitor;
-
-    template <typename T>
-    void draw_vector(std::ostream &os, int depth,
-                     const std::vector<std::shared_ptr<T>> &vec) {
-        for (auto &item : vec) {
-            os << "\n";
-            draw_path(os, depth);
-            item->draw(os, depth);
-        }
-    }
 };
 
 class NodeWithStringToken : public SyntaxNode {
