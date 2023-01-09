@@ -18,6 +18,7 @@ class NodeCallStatement : public NodeStatement {
     void draw(std::ostream &os, int depth) override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
+    friend class visitor::PrinterVisitor;
 
    protected:
     std::shared_ptr<NodeFuncCall> func_call;
@@ -30,6 +31,7 @@ class NodeCompoundStatement : public NodeStatement {
     void draw(std::ostream &os, int depth) override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
+    friend class visitor::PrinterVisitor;
 
    private:
     std::vector<std::shared_ptr<NodeStatement>> stmts;
@@ -50,6 +52,7 @@ class NodeForStatement : public NodeStatement {
     void draw(std::ostream &os, int depth) override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
+    friend class visitor::PrinterVisitor;
 
    private:
     std::shared_ptr<NodeExpression> param;
@@ -67,6 +70,7 @@ class NodeWhileStatement : public NodeStatement {
     void draw(std::ostream &os, int depth) override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
+    friend class visitor::PrinterVisitor;
 
    private:
     std::shared_ptr<NodeExpression> exp;
@@ -84,6 +88,7 @@ class NodeIfStatement : public NodeStatement {
     void draw(std::ostream &os, int depth) override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
+    friend class visitor::PrinterVisitor;
 
    private:
     std::shared_ptr<NodeExpression> exp;
@@ -99,6 +104,7 @@ class NodeAssigmentStatement : public NodeStatement {
     void draw(std::ostream &os, int depth) override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
+    friend class visitor::PrinterVisitor;
 
    private:
     Token op;

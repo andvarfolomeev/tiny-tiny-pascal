@@ -84,6 +84,8 @@ set(
         src/visitor/base_visitor.cpp
         src/visitor/semantic_visitor.h
         src/visitor/semantic_visitor.cpp
+        src/visitor/printer_visitor.h
+        src/visitor/printer_visitor.cpp
 
         src/pascal_types.h
 )

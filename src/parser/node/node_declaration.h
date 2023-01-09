@@ -24,6 +24,7 @@ class NodeBlock : public NodeDecl {
     std::shared_ptr<NodeCompoundStatement> get_compound_statement();
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
+    friend class visitor::PrinterVisitor;
 
    protected:
     std::vector<std::shared_ptr<NodeDecl>> declarations;
@@ -39,6 +40,7 @@ class NodeVarDecl : public NodeDecl {
     void draw(std::ostream &os, int depth) override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
+    friend class visitor::PrinterVisitor;
 
    protected:
     std::vector<std::shared_ptr<NodeId>> ids;
@@ -53,6 +55,7 @@ class NodeVarDecls : public NodeDecl {
     void draw(std::ostream &os, int depth) override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
+    friend class visitor::PrinterVisitor;
 
    protected:
     std::vector<std::shared_ptr<NodeVarDecl>> vars;
@@ -66,6 +69,7 @@ class NodeConstDecl : public NodeDecl {
     void draw(std::ostream &os, int depth) override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
+    friend class visitor::PrinterVisitor;
 
    protected:
     std::shared_ptr<NodeId> id;
@@ -80,6 +84,7 @@ class NodeConstDecls : public NodeDecl {
     void draw(std::ostream &os, int depth) override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
+    friend class visitor::PrinterVisitor;
 
    protected:
     std::vector<std::shared_ptr<NodeConstDecl>> consts;
@@ -92,6 +97,7 @@ class NodeTypeDecl : public NodeDecl {
     void draw(std::ostream &os, int depth) override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
+    friend class visitor::PrinterVisitor;
 
    protected:
     std::shared_ptr<NodeId> id;
@@ -105,6 +111,7 @@ class NodeTypeDecls : public NodeDecl {
     void draw(std::ostream &os, int depth) override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
+    friend class visitor::PrinterVisitor;
 
    protected:
     std::vector<std::shared_ptr<NodeTypeDecl>> types;
@@ -124,6 +131,7 @@ class NodeFormalParamSection : public NodeDecl {
     std::shared_ptr<NodeType> get_type() { return type; };
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
+    friend class visitor::PrinterVisitor;
 
    protected:
     std::shared_ptr<NodeKeyword> modifier;
@@ -143,6 +151,7 @@ class NodeProcedureDecl : public NodeDecl {
     void draw(std::ostream &os, int depth) override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
+    friend class visitor::PrinterVisitor;
 
    protected:
     std::shared_ptr<NodeId> id;
@@ -160,6 +169,7 @@ class NodeFunctionDecl : public NodeProcedureDecl {
     void draw(std::ostream &os, int depth) override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
+    friend class visitor::PrinterVisitor;
 
    protected:
     std::shared_ptr<NodeType> type;

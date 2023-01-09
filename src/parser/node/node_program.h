@@ -17,6 +17,7 @@ class NodeProgram : SyntaxNode {
     void draw(std::ostream &os, int depth) override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;
+    friend class visitor::PrinterVisitor;
 
    private:
     std::shared_ptr<NodeId> name;
