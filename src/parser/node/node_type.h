@@ -16,7 +16,6 @@ class NodeType : public SyntaxNode {
 class NodeSimpleType : public NodeType {
    public:
     NodeSimpleType(std::shared_ptr<NodeId> id) : id(std::move(id)) {}
-    NodeSimpleType(std::shared_ptr<NodeKeyword> id) : id(std::move(id)) {}
     std::string get_name();
     Position get_pos();
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
@@ -24,7 +23,7 @@ class NodeSimpleType : public NodeType {
     friend class visitor::PrinterVisitor;
 
    private:
-    std::shared_ptr<SyntaxNode> id;
+    std::shared_ptr<NodeId> id;
 };
 
 class NodeRange : public NodeExpression {

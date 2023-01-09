@@ -2,13 +2,7 @@
 
 namespace parser {
 
-std::string NodeSimpleType::get_name() {
-    auto keyword = std::dynamic_pointer_cast<NodeKeyword>(id);
-    if (keyword != nullptr) {
-        return keyword->get_name();
-    }
-    return std::dynamic_pointer_cast<NodeId>(id)->get_name();
-}
+std::string NodeSimpleType::get_name() { return id->get_name(); }
 
 Position NodeSimpleType::get_pos() {
     auto keyword = std::dynamic_pointer_cast<NodeKeyword>(id);
