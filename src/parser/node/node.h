@@ -18,7 +18,6 @@ using namespace visitor;
 class SyntaxNode {
    public:
     virtual ~SyntaxNode() = default;
-    virtual void draw(std::ostream &os, int depth) = 0;
     void draw_path(std::ostream &os, int depth);
     virtual void accept(BaseVisitor *visitor) = 0;
     friend class visitor::SemanticVisitor;
@@ -38,7 +37,6 @@ class SyntaxNode {
 class NodeWithStringToken : public SyntaxNode {
    public:
     explicit NodeWithStringToken(Token token) : token(std::move(token)) {}
-    virtual void draw(std::ostream &os, int depth) = 0;
     virtual std::string get_name() = 0;
     Token get_token();
 
@@ -49,7 +47,6 @@ class NodeWithStringToken : public SyntaxNode {
 class NodeKeyword : public NodeWithStringToken {
    public:
     explicit NodeKeyword(Token token) : NodeWithStringToken(std::move(token)) {}
-    void draw(std::ostream &os, int depth) override;
     std::string get_name() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
     friend class visitor::SemanticVisitor;

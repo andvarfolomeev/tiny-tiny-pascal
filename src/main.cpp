@@ -72,16 +72,18 @@ int main(int argc, char* argv[]) {
                 auto semantic_visitor =
                     std::make_shared<visitor::SemanticVisitor>();
                 semantic_visitor->visit(head.get());
-                head->draw(std::cout, 0);
+                auto printer_visitor =
+                    std::make_shared<visitor::PrinterVisitor>(std::cout);
+                printer_visitor->visit(head.get());
                 std::cout << "\n";
                 semantic_visitor->get_sym_table_stack()->draw(std::cout);
-                std::cout << "\n";
             } else {
                 scanner::Scanner scanner(file);
                 parser::Parser p(scanner);
                 auto head = p.program();
-                head->draw(std::cout, 0);
-                std::cout << "\n";
+                auto printer_visitor =
+                    std::make_shared<visitor::PrinterVisitor>(std::cout);
+                printer_visitor->visit(head.get());
             }
         } catch (const TinyPascalException& ex) {
             std::cout << ex.what();
