@@ -150,8 +150,9 @@ void PrinterVisitor::visit(NodeNumber* node) {
 void PrinterVisitor::visit(NodeCast* node) {
     pre_visit();
     draw_string("cast");
-    draw_path();
-    os << node->sym_type->to_str() << "\n";
+    pre_visit();
+    draw_string(node->sym_type->to_str());
+    post_visit();
     node->exp->accept(this);
     post_visit();
 }
