@@ -1,9 +1,9 @@
 #include "token.h"
 
+#include <algorithm>
 #include <iomanip>
+#include <magic_enum.hpp>
 #include <sstream>
-
-#include "magic_enum.hpp"
 
 namespace scanner {
 std::ostream &operator<<(std::ostream &os, const Operators &op) {
@@ -111,6 +111,19 @@ std::string Token::to_str() const {
 TokenType Token::get_type() { return type; }
 
 std::string Token::get_raw_value() { return raw_value; }
+
+std::string Token::get_string_value() {
+    if (*this == TokenType::KEYWORD) {
+        auto buffer_in_lower = get_raw_value();
+        std::transform(buffer_in_lower.begin(), buffer_in_lower.end(),
+                       buffer_in_lower.begin(), ::tolower);
+        return buffer_in_lower;
+    }
+    if (*this == TokenType::ID) {
+        return get_value<std::string>();
+    }
+    return raw_value;
+}
 
 template <typename T>
 T Token::get_value() const {

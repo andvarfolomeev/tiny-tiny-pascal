@@ -18,7 +18,7 @@ void PrinterVisitor::draw_string(std::string&& str) {
     os << str << "\n";
 }
 void PrinterVisitor::draw_token(scanner::Token token) {
-    draw_string(token.get_raw_value());
+    draw_string(token.get_string_value());
 }
 void PrinterVisitor::visit(NodeKeyword* node) {
     pre_visit();

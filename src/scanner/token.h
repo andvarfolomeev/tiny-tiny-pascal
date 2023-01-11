@@ -200,6 +200,8 @@ class Token {
     T get_value() const;
     std::string get_raw_value();
 
+    std::string get_string_value();
+
     TokenType get_type();
 
     Position get_pos();
