@@ -1,277 +1,317 @@
 main
-   program name:
-      without name
-   decls:
+   without name
+   decls
       function decl
-         super_function 
-         type:
-            Integer 
-         decls:
-         block:
+         super_function
+         type
+            integer
+         decls
+         block
             compounds statements
                :=
-                  super_function 
+                  super_function
                   10
       function decl
-         super_function1 
-         type:
-            Integer 
+         super_function1
+         type
+            integer
          param
             const
-            a 
-            b 
-            c 
-            type:
-               Integer 
-         decls:
-         block:
+            a
+            b
+            c
+            type
+               integer
+         decls
+         block
             compounds statements
                :=
-                  super_function 
+                  super_function
                   *
                      *
-                        a 
-                        b 
-                     c 
-      vars:
+                        a
+                        b
+                     c
+      vars
          var
-            a 
-            type:
-               Double 
+            a
+            type
+               double
             10
          var
-            b 
-            type:
-               Double 
+            b
+            type
+               double
             11
          var
-            c 
-            type:
-               Double 
+            c
+            type
+               double
             12
          var
-            d 
-            type:
-               Double 
+            d
+            type
+               double
             13
-      vars:
+      vars
          var
-            ai 
-            type:
-               Integer 
+            ai
+            type
+               integer
             10
          var
-            bi 
-            type:
-               integer 
+            bi
+            type
+               integer
             11
          var
-            ci 
-            type:
-               integer 
+            ci
+            type
+               integer
             12
-   block:
+   block
       compounds statements
-         writeln 
-            +
-               *
-                  +
-                     3
-                  super_function 
-               *
-                  4
-                  -
-                     -
-                        -
-                           super_function1 
-                              1
-                              2
-                              3
-         writeln 
-            +
-               3
-         writeln 
-            -
-               3
-         writeln 
-            -
+         call
+            writeln
                +
-                  -
+                  *
+                     +
+                        3
+                     call
+                        super_function
+                  *
+                     4
                      -
                         -
-                           +
+                           -
+                              call
+                                 super_function1
+                                    1
+                                    2
+                                    3
+         call
+            writeln
+               +
+                  3
+         call
+            writeln
+               -
+                  3
+         call
+            writeln
+               -
+                  +
+                     -
+                        -
+                           -
                               +
-                                 -
+                                 +
                                     -
-                                       3
-         writeln 
-            +
-               2
+                                       -
+                                          3
+         call
+            writeln
                +
+                  2
                   +
                      +
                         +
-                           3
-         writeln 
-            -
-               2
-               +
+                           +
+                              3
+         call
+            writeln
+               -
+                  2
                   +
                      +
                         +
-                           3
-         writeln 
-            +
-               2
-               3
-         writeln 
-            -
-               2
-               3
-         writeln 
-            *
-               2
-               3
-         writeln 
-            /
-               2
-               3
-         writeln 
-            +
-               a 
-               cast
+                           +
+                              3
+         call
+            writeln
+               +
+                  2
                   3
-         writeln 
-            -
-               a 
-               cast
+         call
+            writeln
+               -
+                  2
                   3
-         writeln 
-            *
-               a 
-               cast
+         call
+            writeln
+               *
+                  2
                   3
-         writeln 
-            /
-               a 
-               cast
+         call
+            writeln
+               /
+                  2
                   3
-         writeln 
-            +
-               a 
-               a 
-         writeln 
-            -
-               a 
-               a 
-         writeln 
-            *
-               a 
-               a 
-         writeln 
-            /
-               a 
-               a 
-         writeln 
-            +
+         call
+            writeln
+               +
+                  a
+                  cast
+                     double
+                     3
+         call
+            writeln
+               -
+                  a
+                  cast
+                     double
+                     3
+         call
+            writeln
+               *
+                  a
+                  cast
+                     double
+                     3
+         call
+            writeln
+               /
+                  a
+                  cast
+                     double
+                     3
+         call
+            writeln
+               +
+                  a
+                  a
+         call
+            writeln
+               -
+                  a
+                  a
+         call
+            writeln
+               *
+                  a
+                  a
+         call
+            writeln
+               /
+                  a
+                  a
+         call
+            writeln
                +
                   +
-                     a 
-                     b 
-                  c 
-               d 
-         writeln 
-            +
+                     +
+                        a
+                        b
+                     c
+                  d
+         call
+            writeln
                +
                   +
-                     a 
-                     b 
-                  c 
-               *
-                  d 
-                  a 
-         writeln 
-            -
+                     +
+                        a
+                        b
+                     c
+                  *
+                     d
+                     a
+         call
+            writeln
                -
                   -
-                     a 
-                     b 
-                  c 
-               d 
-         writeln 
-            -
+                     -
+                        a
+                        b
+                     c
+                  d
+         call
+            writeln
                -
                   -
-                     a 
-                     b 
-                  c 
+                     -
+                        a
+                        b
+                     c
+                  *
+                     d
+                     a
+         call
+            writeln
                *
-                  d 
-                  a 
-         writeln 
-            *
-               b 
-               +
-                  a 
-                  b 
-         writeln 
-            /
-               *
-                  /
-                     a 
-                     b 
-                  c 
-               b 
-         writeln 
-            div
-               ai 
-               bi 
-         writeln 
-            mod
-               ai 
-               bi 
-         writeln 
-            +
-               ai 
+                  b
+                  +
+                     a
+                     b
+         call
+            writeln
+               /
+                  *
+                     /
+                        a
+                        b
+                     c
+                  b
+         call
+            writeln
                div
-                  bi 
-                  ci 
-         writeln 
-            +
-               ai 
+                  ai
+                  bi
+         call
+            writeln
                mod
-                  bi 
-                  ci 
-         writeln 
-            xor
-               ai 
-               bi 
-         writeln 
-            shr
-               ai 
-               bi 
-         writeln 
-            shl
-               ai 
-               bi 
-         writeln 
-            xor
+                  ai
+                  bi
+         call
+            writeln
                +
-                  ai 
-                  bi 
-               ci 
-         writeln 
-            +
-               ai 
+                  ai
+                  div
+                     bi
+                     ci
+         call
+            writeln
+               +
+                  ai
+                  mod
+                     bi
+                     ci
+         call
+            writeln
+               xor
+                  ai
+                  bi
+         call
+            writeln
                shr
-                  bi 
-                  ci 
-         writeln 
-            +
-               ai 
+                  ai
+                  bi
+         call
+            writeln
                shl
-                  bi 
-                  ci 
+                  ai
+                  bi
+         call
+            writeln
+               xor
+                  +
+                     ai
+                     bi
+                  ci
+         call
+            writeln
+               +
+                  ai
+                  shr
+                     bi
+                     ci
+         call
+            writeln
+               +
+                  ai
+                  shl
+                     bi
+                     ci
+
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 | id                          | type of object              | ret type                                                                               |
 ------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -311,4 +351,3 @@ main
 | bi                          | var                         | integer                                                                                |
 | ci                          | var                         | integer                                                                                |
 ------------------------------------------------------------------------------------------------------------------------------------------------------
-

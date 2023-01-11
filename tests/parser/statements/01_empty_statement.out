@@ -1,6 +1,5 @@
 main
-   program name:
-      without name
-   decls:
-   block:
+   without name
+   decls
+   block
       compounds statements

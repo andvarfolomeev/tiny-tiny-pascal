@@ -1,20 +1,19 @@
 main
-   program name:
-      without name
-   decls:
-      def types:
+   without name
+   decls
+      def types
          type def
-            i 
-            type:
-               Integer 
-      def types:
+            i
+            type
+               integer
+      def types
          type def
-            r 
-            type:
-               Real 
+            r
+            type
+               real
          type def
-            s 
-            type:
-               String
-   block:
+            s
+            type
+               string
+   block
       compounds statements

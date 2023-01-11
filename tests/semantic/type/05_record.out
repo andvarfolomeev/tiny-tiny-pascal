@@ -1,38 +1,38 @@
 main
-   program name:
-      without name
-   decls:
-      def types:
+   without name
+   decls
+      def types
          type def
-            point 
+            point
             record
                fields
-                  type:
-                     integer 
-                  x 
+                  type
+                     integer
+                  x
                fields
-                  type:
-                     integer 
-                  y 
-      def types:
+                  type
+                     integer
+                  y
+      def types
          type def
-            vec_point 
+            vec_point
             record
                fields
                   array type
-                     type:
-                        integer                      
-                     range:
+                     type
+                        integer
+                     range
                         0
                         1000
-                  data 
+                  data
                fields
-                  type:
-                     integer 
-                  s 
-                  c 
-   block:
+                  type
+                     integer
+                  s
+                  c
+   block
       compounds statements
+
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 | id                          | type of object              | ret type                                                                               |
 ------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -58,4 +58,3 @@ main
 | point                       | type alias                  | record x: integer; y: integer; end                                                     |
 | vec_point                   | type alias                  | record c: integer; data: array of integer; s: integer; end                             |
 ------------------------------------------------------------------------------------------------------------------------------------------------------
-

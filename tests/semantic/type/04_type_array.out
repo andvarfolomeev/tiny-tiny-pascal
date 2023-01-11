@@ -1,45 +1,45 @@
 main
-   program name:
-      without name
-   decls:
-      def types:
+   without name
+   decls
+      def types
          type def
-            arr 
+            arr
             array type
-               type:
-                  integer                
-               range:
+               type
+                  integer
+               range
                   0
                   100
-      def types:
+      def types
          type def
-            arr_of_arr 
+            arr_of_arr
             array type
                array type
-                  type:
-                     integer                   
-                  range:
+                  type
+                     integer
+                  range
                      -
                         100
-                     100               
-               range:
+                     100
+               range
                   0
                   100
-      def types:
+      def types
          type def
-            arr_with_2_ranges 
+            arr_with_2_ranges
             array type
-               type:
-                  integer                
-               range:
+               type
+                  integer
+               range
                   0
                   100
-               range:
+               range
                   -
                      100
                   100
-   block:
+   block
       compounds statements
+
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 | id                          | type of object              | ret type                                                                               |
 ------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -66,4 +66,3 @@ main
 | arr_of_arr                  | type alias                  | array of array of integer                                                              |
 | arr_with_2_ranges           | type alias                  | array of array of integer                                                              |
 ------------------------------------------------------------------------------------------------------------------------------------------------------
-

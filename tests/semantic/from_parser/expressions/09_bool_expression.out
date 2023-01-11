@@ -1,88 +1,98 @@
 main
-   program name:
-      without name
-   decls:
-      vars:
+   without name
+   decls
+      vars
          var
-            a 
-            type:
-               Double 
+            a
+            type
+               double
             10
          var
-            b 
-            type:
-               Double 
+            b
+            type
+               double
             11
          var
-            c 
-            type:
-               Double 
+            c
+            type
+               double
             12
          var
-            d 
-            type:
-               Double 
+            d
+            type
+               double
             13
-   block:
+   block
       compounds statements
-         writeln 
-            <>
-               2
-               3
-         writeln 
-            <
-               2
-               3
-         writeln 
-            <=
-               2
-               3
-         writeln 
-            >=
-               2
-               3
-         writeln 
-            >
-               2
-               3
-         writeln 
-            =
-               2
-               3
-         writeln 
-            or
-               2
-               3
-         writeln 
-            or
+         call
+            writeln
+               <>
+                  2
+                  3
+         call
+            writeln
+               <
+                  2
+                  3
+         call
+            writeln
+               <=
+                  2
+                  3
+         call
+            writeln
+               >=
+                  2
+                  3
+         call
+            writeln
+               >
+                  2
+                  3
+         call
+            writeln
+               =
+                  2
+                  3
+         call
+            writeln
+               or
+                  2
+                  3
+         call
+            writeln
                or
                   or
                      or
-                        2
-                        3
-                     4
-                  5
-               6
-         writeln 
-            or
-               and
-                  2
-                  3
-               and
-                  4
-                  5
-         writeln 
-            or
-               and
-                  not
-                     2
-                  not
-                     3
-               and
-                  not
-                     4
-                  not
+                        or
+                           2
+                           3
+                        4
                      5
+                  6
+         call
+            writeln
+               or
+                  and
+                     2
+                     3
+                  and
+                     4
+                     5
+         call
+            writeln
+               or
+                  and
+                     not
+                        2
+                     not
+                        3
+                  and
+                     not
+                        4
+                     not
+                        5
+
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 | id                          | type of object              | ret type                                                                               |
 ------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -110,4 +120,3 @@ main
 | c                           | var                         | double                                                                                 |
 | d                           | var                         | double                                                                                 |
 ------------------------------------------------------------------------------------------------------------------------------------------------------
-

@@ -1,22 +1,21 @@
 main
-   program name:
-      without name
-   decls:
-      vars:
+   without name
+   decls
+      vars
          var
-            a 
-            type:
-               Integer 
-            without exp
+            a
+            type
+               integer
+         without exp
          var
-            b 
-            type:
-               Real 
-            without exp
+            b
+            type
+               real
+         without exp
          var
-            s 
-            type:
-               String
-            without exp
-   block:
+            s
+            type
+               string
+         without exp
+   block
       compounds statements

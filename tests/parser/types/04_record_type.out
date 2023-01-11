@@ -1,20 +1,19 @@
 main
-   program name:
-      without name
-   decls:
-      vars:
+   without name
+   decls
+      vars
          var
-            point 
+            point
             record
                fields
-                  type:
-                     Real 
-                  x 
-                  y 
+                  type
+                     real
+                  x
+                  y
                fields
-                  type:
-                     Real 
-                  size 
-            without exp
-   block:
+                  type
+                     real
+                  size
+         without exp
+   block
       compounds statements

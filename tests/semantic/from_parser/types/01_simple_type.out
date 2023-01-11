@@ -1,25 +1,25 @@
 main
-   program name:
-      without name
-   decls:
-      vars:
+   without name
+   decls
+      vars
          var
-            a 
-            type:
-               Integer 
-            without exp
+            a
+            type
+               integer
+         without exp
          var
-            b 
-            type:
-               Double 
-            without exp
+            b
+            type
+               double
+         without exp
          var
-            s 
-            type:
+            s
+            type
                string
-            without exp
-   block:
+         without exp
+   block
       compounds statements
+
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 | id                          | type of object              | ret type                                                                               |
 ------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -46,4 +46,3 @@ main
 | b                           | var                         | double                                                                                 |
 | s                           | var                         | string                                                                                 |
 ------------------------------------------------------------------------------------------------------------------------------------------------------
-

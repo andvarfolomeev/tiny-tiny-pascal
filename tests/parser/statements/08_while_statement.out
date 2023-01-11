@@ -1,22 +1,22 @@
 main
-   program name:
-      without name
-   decls:
-      vars:
+   without name
+   decls
+      vars
          var
-            i 
-            type:
-               integer 
+            i
+            type
+               integer
             0
-   block:
+   block
       compounds statements
          while
             <
-               i 
+               i
                10
             compounds statements
                +=
-                  i 
+                  i
                   1
-               writeln 
-                  i 
+               call
+                  writeln
+                     i

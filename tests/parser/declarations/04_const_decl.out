@@ -1,29 +1,28 @@
 main
-   program name:
-      without name
-   decls:
-      consts:
+   without name
+   decls
+      consts
          const
-            a 
-            without type
+            a
+         without type
             123
-      consts:
+      consts
          const
-            b 
-            type:
-               Integer 
+            b
+            type
+               integer
             123
          const
-            c 
-            without type
+            c
+         without type
             *
                +
                   2
                   3
                10
          const
-            d 
-            without type
+            d
+         without type
             'Hello, world'
-   block:
+   block
       compounds statements

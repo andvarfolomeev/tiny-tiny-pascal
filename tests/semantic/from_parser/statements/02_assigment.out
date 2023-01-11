@@ -1,73 +1,76 @@
 main
-   program name:
-      without name
-   decls:
-      vars:
+   without name
+   decls
+      vars
          var
-            a 
-            b 
-            type:
-               Integer 
-            without exp
+            a
+            b
+            type
+               integer
+         without exp
       function decl
-         max 
-         type:
-            integer 
+         max
+         type
+            integer
          param
-            without modifier
-            num1 
-            num2 
-            type:
-               integer 
-         decls:
-            vars:
+         without modifier
+            num1
+            num2
+            type
+               integer
+         decls
+            vars
                var
-                  result 
-                  type:
-                     integer 
-                  without exp
-         block:
+                  result
+                  type
+                     integer
+               without exp
+         block
             compounds statements
                if
                   >
-                     num1 
-                     num2 
+                     num1
+                     num2
                   :=
-                     result 
-                     num1 
-                  else:
-                     :=
-                     result 
-                     num2 
+                     result
+                     num1
+               else
+                  :=
+                     result
+                     num2
                :=
-                  max 
-                  result 
-   block:
+                  max
+                  result
+   block
       compounds statements
          :=
-            a 
+            a
             10
          +=
-            a 
+            a
             1
          -=
-            a 
+            a
             2
          *=
-            a 
+            a
             3
          /=
-            a 
+            a
             4
          :=
-            b 
-            max 
-               max 
-                  max 
-                     0
-                     10
-                  20
-               30
+            b
+            call
+               max
+                  call
+                     max
+                        call
+                           max
+                              0
+                              10
+                        20
+                  30
+
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 | id                          | type of object              | ret type                                                                               |
 ------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -99,4 +102,3 @@ main
 | result                      | var                         | integer                                                                                |
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ------------------------------------------------------------------------------------------------------------------------------------------------------
-

@@ -1,25 +1,25 @@
 main
-   program name:
-      without name
-   decls:
-      def types:
+   without name
+   decls
+      def types
          type def
-            int 
-            type:
-               Integer 
-      def types:
+            int
+            type
+               integer
+      def types
          type def
-            int_int 
-            type:
-               int 
-      vars:
+            int_int
+            type
+               int
+      vars
          var
-            a 
-            type:
-               int_int 
-            without exp
-   block:
+            a
+            type
+               int_int
+         without exp
+   block
       compounds statements
+
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 | id                          | type of object              | ret type                                                                               |
 ------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -46,4 +46,3 @@ main
 | int_int                     | type alias                  | integer                                                                                |
 | a                           | var                         | integer                                                                                |
 ------------------------------------------------------------------------------------------------------------------------------------------------------
-

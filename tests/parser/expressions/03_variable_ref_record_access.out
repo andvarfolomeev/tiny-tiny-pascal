@@ -1,29 +1,33 @@
 main
-   program name:
-      without name
-   decls:
-      vars:
+   without name
+   decls
+      vars
          var
-            p 
+            p
             record
                fields
-                  type:
-                     Real 
-                  x 
-                  y 
-            without exp
-   block:
+                  type
+                     real
+                  x
+                  y
+         without exp
+   block
       compounds statements
          :=
-            p 
-               x 
+            field access
+               p
+               x
             20
          :=
-            p 
-               y 
+            field access
+               p
+               y
             10
-         writeln 
-            p 
-               x 
-            p 
-               y 
+         call
+            writeln
+               field access
+                  p
+                  x
+               field access
+                  p
+                  y

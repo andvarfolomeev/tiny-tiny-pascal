@@ -1,56 +1,58 @@
 main
-   program name:
-      without name
-   decls:
+   without name
+   decls
       function decl
-         max 
-         type:
-            integer 
+         max
+         type
+            integer
          param
-            without modifier
-            num1 
-            num2 
-            type:
-               integer 
-         decls:
-            vars:
+         without modifier
+            num1
+            num2
+            type
+               integer
+         decls
+            vars
                var
-                  result 
-                  type:
-                     integer 
-                  without exp
-         block:
+                  result
+                  type
+                     integer
+               without exp
+         block
             compounds statements
                if
                   >
-                     num1 
-                     num2 
+                     num1
+                     num2
                   :=
-                     result 
-                     num1 
-                  else:
-                     :=
-                     result 
-                     num2 
+                     result
+                     num1
+               else
+                  :=
+                     result
+                     num2
                :=
-                  max 
-                  result 
+                  max
+                  result
       function decl
-         a 
-         type:
-            Integer 
-         decls:
-         block:
+         a
+         type
+            integer
+         decls
+         block
             compounds statements
                :=
-                  a 
+                  a
                   30
-   block:
+   block
       compounds statements
-         writeln 
-            10
-            ' '
-            30
-         writeln 
-            a 
-         a 
+         call
+            writeln
+               10
+               ' '
+               30
+         call
+            writeln
+               a
+         call
+            a

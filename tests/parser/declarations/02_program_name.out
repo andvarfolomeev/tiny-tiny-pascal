@@ -1,6 +1,5 @@
 main
-   program name:
-      hello 
-   decls:
-   block:
+   hello
+   decls
+   block
       compounds statements

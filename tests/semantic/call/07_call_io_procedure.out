@@ -1,76 +1,83 @@
 main
-   program name:
-      without name
-   decls:
-      vars:
+   without name
+   decls
+      vars
          var
-            i 
-            type:
-               integer 
-            without exp
+            i
+            type
+               integer
+         without exp
          var
-            d 
-            type:
-               double 
-            without exp
+            d
+            type
+               double
+         without exp
          var
-            b 
-            type:
-               boolean 
-            without exp
+            b
+            type
+               boolean
+         without exp
          var
-            c 
-            type:
-               char 
-            without exp
+            c
+            type
+               char
+         without exp
          var
-            s 
-            type:
+            s
+            type
                string
-            without exp
+         without exp
          var
-            point 
+            point
             record
                fields
-                  type:
-                     double 
-                  x 
-                  y 
-            without exp
+                  type
+                     double
+                  x
+                  y
+         without exp
          var
-            arr 
+            arr
             array type
-               type:
-                  integer                
-               range:
+               type
+                  integer
+               range
                   0
                   100
-            without exp
-   block:
+         without exp
+   block
       compounds statements
-         writeln 
-            i 
-            d 
-            b 
-            c 
-            s 
-         read 
-            i 
-            d 
-            b 
-            c 
-            s 
-         writeln 
-            'Point: '
-            point 
-               x 
-            point 
-               y 
-            '; '
-            arr 
+         call
+            writeln
+               i
+               d
+               b
+               c
+               s
+         call
+            read
+               i
+               d
+               b
+               c
+               s
+         call
+            writeln
+               'Point: '
+               field access
+                  point
+                  x
+               field access
+                  point
+                  y
+               '; '
+               array access
+                  arr
                   0
-            arr 
+               array access
+                  arr
                   1
+
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 | id                          | type of object              | ret type                                                                               |
 ------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -101,4 +108,3 @@ main
 | point                       | var                         | record x: double; y: double; end                                                       |
 | arr                         | var                         | array of integer                                                                       |
 ------------------------------------------------------------------------------------------------------------------------------------------------------
-

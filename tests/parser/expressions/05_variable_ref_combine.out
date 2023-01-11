@@ -1,113 +1,123 @@
 main
-   program name:
-      without name
-   decls:
-      consts:
+   without name
+   decls
+      consts
          const
-            MAX_VECTOR_SIZE 
-            without type
+            max_vector_size
+         without type
             100000
-      def types:
+      def types
          type def
-            vector 
+            vector
             record
                fields
                   array type
-                     type:
-                        integer                      
-                     range:
+                     type
+                        integer
+                     range
                         0
-                        MAX_VECTOR_SIZE 
-                  data 
+                        max_vector_size
+                  data
                fields
-                  type:
-                     Integer 
-                  size 
+                  type
+                     integer
+                  size
       function decl
-         create_vector 
-         type:
-            vector 
+         create_vector
+         type
+            vector
          param
-            without modifier
-            n 
-            type:
-               integer 
-         decls:
-            vars:
+         without modifier
+            n
+            type
+               integer
+         decls
+            vars
                var
-                  res 
-                  type:
-                     vector 
-                  without exp
-         block:
+                  res
+                  type
+                     vector
+               without exp
+         block
             compounds statements
                :=
-                  res 
-                     size 
-                  n 
+                  field access
+                     res
+                     size
+                  n
                :=
-                  create_vector 
-                  res 
-      def types:
+                  create_vector
+                  res
+      def types
          type def
-            point 
+            point
             record
                fields
-                  type:
-                     real 
-                  x 
-                  y 
-      def types:
+                  type
+                     real
+                  x
+                  y
+      def types
          type def
-            point_vector 
+            point_vector
             record
                fields
                   array type
-                     type:
-                        point                      
-                     range:
+                     type
+                        point
+                     range
                         0
-                        MAX_VECTOR_SIZE 
-                  data 
+                        max_vector_size
+                  data
                fields
-                  type:
-                     integer 
-                  size 
+                  type
+                     integer
+                  size
       function decl
-         create_point_vector 
-         type:
-            point_vector 
+         create_point_vector
+         type
+            point_vector
          param
-            without modifier
-            n 
-            type:
-               integer 
-         decls:
-            vars:
+         without modifier
+            n
+            type
+               integer
+         decls
+            vars
                var
-                  res 
-                  type:
-                     point_vector 
-                  without exp
-         block:
+                  res
+                  type
+                     point_vector
+               without exp
+         block
             compounds statements
                :=
-                  res 
-                     size 
-                  n 
+                  field access
+                     res
+                     size
+                  n
                :=
-                  create_point_vector 
-                  res 
-   block:
+                  create_point_vector
+                  res
+   block
       compounds statements
-         writeln 
-            create_vector 
-               10
-               data 
+         call
+            writeln
+               array access
+                  field access
+                     call
+                        create_vector
+                           10
+                     data
                   9
-         writeln 
-            create_point_vector 
-               10
-               data 
-                  0
-               x 
+         call
+            writeln
+               field access
+                  array access
+                     field access
+                        call
+                           create_point_vector
+                              10
+                        data
+                     0
+                  x

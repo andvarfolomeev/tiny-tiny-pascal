@@ -1,40 +1,46 @@
 main
-   program name:
-      without name
-   decls:
-      vars:
+   without name
+   decls
+      vars
          var
-            a 
+            a
             array type
-               type:
-                  Integer                
-               range:
+               type
+                  integer
+               range
                   0
                   25
-            without exp
+         without exp
          var
-            b 
+            b
             array type
-               type:
-                  Integer                
-               range:
+               type
+                  integer
+               range
                   0
                   25
-               range:
+               range
                   0
                   25
-            without exp
-   block:
+         without exp
+   block
       compounds statements
-         writeln 
-            a 
+         call
+            writeln
+               array access
+                  a
                   0
-            b 
+               array access
+                  array access
+                     b
+                     0
                   0
+               array access
+                  array access
+                     b
+                     0
                   0
-            b 
-                  0
-                  0
+
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 | id                          | type of object              | ret type                                                                               |
 ------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -60,4 +66,3 @@ main
 | a                           | var                         | array of integer                                                                       |
 | b                           | var                         | array of array of integer                                                              |
 ------------------------------------------------------------------------------------------------------------------------------------------------------
-

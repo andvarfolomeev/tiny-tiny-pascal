@@ -1,49 +1,56 @@
 main
-   program name:
-      without name
-   decls:
-      vars:
+   without name
+   decls
+      vars
          var
-            a 
+            a
             record
                fields
-                  type:
-                     Integer 
-                  a 
+                  type
+                     integer
+                  a
                fields
-                  type:
-                     Double 
-                  d 
+                  type
+                     double
+                  d
                fields
-                  type:
-                     Boolean 
-                  b 
+                  type
+                     boolean
+                  b
                fields
-                  type:
-                     String
-                  s 
+                  type
+                     string
+                  s
                fields
                   record
                      fields
-                        type:
-                           Integer 
-                        field 
-                  r 
-            without exp
-   block:
+                        type
+                           integer
+                        field
+                  r
+         without exp
+   block
       compounds statements
-         writeln 
-            a 
-               a 
-            a 
-               d 
-            a 
-               b 
-            a 
-               s 
-            a 
-               r 
-               field 
+         call
+            writeln
+               field access
+                  a
+                  a
+               field access
+                  a
+                  d
+               field access
+                  a
+                  b
+               field access
+                  a
+                  s
+               field access
+                  field access
+                     a
+                     r
+                  field
+
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 | id                          | type of object              | ret type                                                                               |
 ------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -68,4 +75,3 @@ main
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 | a                           | var                         | record a: integer; b: boolean; d: double; r: record field: integer; end; s: string; end|
 ------------------------------------------------------------------------------------------------------------------------------------------------------
-

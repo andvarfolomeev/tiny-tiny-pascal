@@ -1,103 +1,116 @@
 main
-   program name:
-      without name
-   decls:
-      vars:
+   without name
+   decls
+      vars
          var
-            a 
+            a
             array type
-               type:
-                  Integer                
-               range:
+               type
+                  integer
+               range
                   0
                   10
-            without exp
-      vars:
+         without exp
+      vars
          var
-            a2d 
+            a2d
             array type
-               type:
-                  integer                
-               range:
+               type
+                  integer
+               range
                   0
                   10
-               range:
+               range
                   0
                   10
-            without exp
-      vars:
+         without exp
+      vars
          var
-            a3d 
+            a3d
             array type
-               type:
-                  integer                
-               range:
+               type
+                  integer
+               range
                   0
                   10
-               range:
+               range
                   0
                   10
-               range:
+               range
                   0
                   10
-            without exp
-      vars:
+         without exp
+      vars
          var
-            a2d_ 
+            a2d_
             array type
                array type
-                  type:
-                     integer                   
-                  range:
+                  type
+                     integer
+                  range
                      0
-                     10               
-               range:
+                     10
+               range
                   0
                   10
-            without exp
-      vars:
+         without exp
+      vars
          var
-            a3d_ 
+            a3d_
             array type
                array type
                   array type
-                     type:
-                        integer                      
-                     range:
+                     type
+                        integer
+                     range
                         0
-                        10                  
-                  range:
+                        10
+                  range
                      0
-                     10               
-               range:
+                     10
+               range
                   0
                   10
-            without exp
-   block:
+         without exp
+   block
       compounds statements
-         write 
-            a 
+         call
+            write
+               array access
+                  a
                   9
-            a2d 
+               array access
+                  array access
+                     a2d
+                     0
                   0
+               array access
+                  array access
+                     array access
+                        a3d
+                        0
+                     0
                   0
-            a3d 
+               array access
+                  array access
+                     a2d_
+                     0
                   0
+               array access
+                  array access
+                     array access
+                        a3d_
+                        0
+                     0
                   0
-                  0
-            a2d_ 
-                  0
-                  0
-            a3d_ 
-                  0
-                  0
-                  0
-            a 
+               array access
+                  a
                   +
                      1
                      *
                         2
                         2
+
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 | id                          | type of object              | ret type                                                                               |
 ------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -126,4 +139,3 @@ main
 | a2d_                        | var                         | array of array of integer                                                              |
 | a3d_                        | var                         | array of array of array of integer                                                     |
 ------------------------------------------------------------------------------------------------------------------------------------------------------
-

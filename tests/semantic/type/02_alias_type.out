@@ -1,20 +1,20 @@
 main
-   program name:
-      without name
-   decls:
-      def types:
+   without name
+   decls
+      def types
          type def
-            int 
-            type:
-               Integer 
-      vars:
+            int
+            type
+               integer
+      vars
          var
-            a 
-            type:
-               int 
-            without exp
-   block:
+            a
+            type
+               int
+         without exp
+   block
       compounds statements
+
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 | id                          | type of object              | ret type                                                                               |
 ------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -40,4 +40,3 @@ main
 | int                         | type alias                  | integer                                                                                |
 | a                           | var                         | integer                                                                                |
 ------------------------------------------------------------------------------------------------------------------------------------------------------
-

@@ -1,28 +1,30 @@
 main
-   program name:
-      without name
-   decls:
+   without name
+   decls
       procedure decl
-         p 
+         p
          param
-            without modifier
-            a 
-            type:
-               Double 
+         without modifier
+            a
+            type
+               double
          param
-            without modifier
-            b 
-            type:
-               Double 
-         decls:
-         block:
+         without modifier
+            b
+            type
+               double
+         decls
+         block
             compounds statements
-   block:
+   block
       compounds statements
-         p 
-            cast
-               10
-            10.1
+         call
+            p
+               cast
+                  double
+                  10
+               10.1
+
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 | id                          | type of object              | ret type                                                                               |
 ------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -51,4 +53,3 @@ main
 | b                           | param                       | double                                                                                 |
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ------------------------------------------------------------------------------------------------------------------------------------------------------
-

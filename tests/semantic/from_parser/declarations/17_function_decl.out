@@ -1,122 +1,132 @@
 main
-   program name:
-      without name
-   decls:
+   without name
+   decls
       function decl
-         max 
-         type:
-            integer 
+         max
+         type
+            integer
          param
-            without modifier
-            num1 
-            num2 
-            type:
-               integer 
-         decls:
-            vars:
+         without modifier
+            num1
+            num2
+            type
+               integer
+         decls
+            vars
                var
-                  result 
-                  type:
-                     integer 
-                  without exp
-         block:
+                  result
+                  type
+                     integer
+               without exp
+         block
             compounds statements
                if
                   >
-                     num1 
-                     num2 
+                     num1
+                     num2
                   :=
-                     result 
-                     num1 
-                  else:
-                     :=
-                     result 
-                     num2 
+                     result
+                     num1
+               else
+                  :=
+                     result
+                     num2
                :=
-                  max 
-                  result 
+                  max
+                  result
       function decl
-         pi_calc 
-         type:
-            Double 
+         pi_calc
+         type
+            double
          param
             const
-            total 
-            type:
-               Integer 
-         decls:
-            vars:
+            total
+            type
+               integer
+         decls
+            vars
                var
-                  inside 
-                  type:
-                     Integer 
+                  inside
+                  type
+                     integer
                   0
                var
-                  i 
-                  type:
-                     Integer 
-                  without exp
+                  i
+                  type
+                     integer
+               without exp
                var
-                  point 
+                  point
                   record
                      fields
-                        type:
-                           Double 
-                        x 
-                        y 
-                  without exp
+                        type
+                           double
+                        x
+                        y
+               without exp
                var
-                  x 
-                  y 
-                  type:
-                     Double 
-                  without exp
-         block:
+                  x
+                  y
+                  type
+                     double
+               without exp
+         block
             compounds statements
                for
-                  i 
+                  i
                   0
                   to
-                  total 
+                  total
                   compounds statements
                      :=
-                        point 
-                           x 
-                        random 
+                        field access
+                           point
+                           x
+                        call
+                           random
                      :=
-                        point 
-                           y 
-                        random 
+                        field access
+                           point
+                           y
+                        call
+                           random
                      if
                         <
-                           sqrt 
-                              +
-                                 *
-                                    point 
-                                       x 
-                                    point 
-                                       x 
-                                 *
-                                    point 
-                                       y 
-                                    point 
-                                       y 
+                           call
+                              sqrt
+                                 +
+                                    *
+                                       field access
+                                          point
+                                          x
+                                       field access
+                                          point
+                                          x
+                                    *
+                                       field access
+                                          point
+                                          y
+                                       field access
+                                          point
+                                          y
                            1
                         +=
-                           inside 
+                           inside
                            1
-                        else:
-                           empty
+                     else
+                        empty
                :=
-                  pi_calc 
+                  pi_calc
                   cast
+                     double
                      *
                         /
-                           inside 
-                           total 
+                           inside
+                           total
                         4
-   block:
+   block
       compounds statements
+
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 | id                          | type of object              | ret type                                                                               |
 ------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -155,4 +165,3 @@ main
 | y                           | var                         | double                                                                                 |
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ------------------------------------------------------------------------------------------------------------------------------------------------------
-

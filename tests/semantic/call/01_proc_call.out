@@ -1,46 +1,48 @@
 main
-   program name:
-      without name
-   decls:
+   without name
+   decls
       procedure decl
-         f 
+         f
          param
-            without modifier
-            i 
-            type:
-               Integer 
+         without modifier
+            i
+            type
+               integer
          param
-            without modifier
-            c 
-            type:
-               Double 
+         without modifier
+            c
+            type
+               double
          param
-            without modifier
-            c_cast 
-            type:
-               Double 
+         without modifier
+            c_cast
+            type
+               double
          param
-            without modifier
-            b 
-            type:
-               Boolean 
+         without modifier
+            b
+            type
+               boolean
          param
-            without modifier
-            s 
-            type:
+         without modifier
+            s
+            type
                string
-         decls:
-         block:
+         decls
+         block
             compounds statements
-   block:
+   block
       compounds statements
-         f 
-            100
-            20.3
-            cast
-               10
-            True
-            'hello, world'
+         call
+            f
+               100
+               20.3
+               cast
+                  double
+                  10
+               true
+               'hello, world'
+
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 | id                          | type of object              | ret type                                                                               |
 ------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -72,4 +74,3 @@ main
 | s                           | param                       | string                                                                                 |
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ------------------------------------------------------------------------------------------------------------------------------------------------------
-

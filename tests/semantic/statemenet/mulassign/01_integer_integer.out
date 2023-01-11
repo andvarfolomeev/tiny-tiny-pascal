@@ -1,23 +1,23 @@
 main
-   program name:
-      without name
-   decls:
-      vars:
+   without name
+   decls
+      vars
          var
-            a 
-            type:
-               integer 
-            without exp
+            a
+            type
+               integer
+         without exp
          var
-            b 
-            type:
-               integer 
-            without exp
-   block:
+            b
+            type
+               integer
+         without exp
+   block
       compounds statements
          *=
-            a 
-            b 
+            a
+            b
+
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 | id                          | type of object              | ret type                                                                               |
 ------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -43,4 +43,3 @@ main
 | a                           | var                         | integer                                                                                |
 | b                           | var                         | integer                                                                                |
 ------------------------------------------------------------------------------------------------------------------------------------------------------
-

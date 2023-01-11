@@ -1,69 +1,71 @@
 main
-   program name:
-      without name
-   decls:
+   without name
+   decls
       procedure decl
-         a 
+         a
          param
             var
-            b 
-            type:
-               Integer 
+            b
+            type
+               integer
          param
             const
-            c 
-            type:
-               Real 
+            c
+            type
+               real
          param
-            without modifier
-            d 
-            type:
-               String
-         decls:
-         block:
+         without modifier
+            d
+            type
+               string
+         decls
+         block
             compounds statements
-               writeln 
-                  b 
-                  c 
-                  d 
+               call
+                  writeln
+                     b
+                     c
+                     d
       procedure decl
-         hello 
-         decls:
-         block:
+         hello
+         decls
+         block
             compounds statements
-               writeln 
-                  'Hello, world'
+               call
+                  writeln
+                     'Hello, world'
       procedure decl
-         procedure_with_other_decls 
-         decls:
-            vars:
+         procedure_with_other_decls
+         decls
+            vars
                var
-                  b 
-                  type:
-                     Integer 
-                  without exp
+                  b
+                  type
+                     integer
+               without exp
                var
-                  c 
-                  type:
-                     Integer 
+                  c
+                  type
+                     integer
                   +
                      1
                      *
                         3
                         4
-            consts:
+            consts
                const
-                  message 
-                  without type
+                  message
+               without type
                   'Hello, world'
                const
-                  d 
-                  type:
-                     Integer 
+                  d
+                  type
+                     integer
                   10
-         block:
+         block
             compounds statements
-               writeln 
-                  message 
-   block:
+               call
+                  writeln
+                     message
+   block
       compounds statements

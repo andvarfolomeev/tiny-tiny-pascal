@@ -1,24 +1,25 @@
 main
-   program name:
-      without name
-   decls:
-      vars:
+   without name
+   decls
+      vars
          var
-            a 
-            type:
-               boolean 
-            without exp
+            a
+            type
+               boolean
+         without exp
          var
-            b 
-            type:
-               boolean 
-            without exp
-   block:
+            b
+            type
+               boolean
+         without exp
+   block
       compounds statements
-         writeln 
-            >=
-               a 
-               b 
+         call
+            writeln
+               >=
+                  a
+                  b
+
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 | id                          | type of object              | ret type                                                                               |
 ------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -44,4 +45,3 @@ main
 | a                           | var                         | boolean                                                                                |
 | b                           | var                         | boolean                                                                                |
 ------------------------------------------------------------------------------------------------------------------------------------------------------
-
