@@ -44,6 +44,18 @@ std::string Operand::to_string() {
     if (has_flag(OperandFlag::FUNCTION)) {
         result = "func_" + result;
     }
+    if (has_flag(OperandFlag::QUOTED)) {
+        result = "\"" + result + "\"";
+    }
+    if (offset != 0) {
+        // save sign when offset is positive
+        std::string number_with_sign =
+            ((offset >= 0) ? "+" : "") + std::to_string(offset);
+        result += number_with_sign;
+    }
+    if (has_flag(OperandFlag::INDIRECT)) {
+        result = "[" + result + "]";
+    }
     if (has_flag(OperandFlag::BYTE)) {
         result = "byte " + result;
     }
@@ -58,18 +70,6 @@ std::string Operand::to_string() {
     }
     if (has_flag(OperandFlag::TWORD)) {
         result = "tword " + result;
-    }
-    if (has_flag(OperandFlag::QUOTED)) {
-        result = "\"" + result + "\"";
-    }
-    if (offset != 0) {
-        // save sign when offset is positive
-        std::string number_with_sign =
-            ((offset >= 0) ? "+" : "") + std::to_string(offset);
-        result += number_with_sign;
-    }
-    if (has_flag(OperandFlag::INDIRECT)) {
-        result = "[" + result + "]";
     }
     return result;
 }
