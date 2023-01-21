@@ -91,6 +91,7 @@ void GeneratorVisitor::visit(NodeBinOp* node) {
         g.gen(
             Instruction::MOVSD,
             {Register::XMM0, Register::ESP + 0 & OperandFlag::QWORD});  // right
+        g.gen(Instruction::ADD, {Register::ESP, 16});
         switch (node->token.get_value<Operators>()) {
             case scanner::Operators::ADD:
                 g.gen(Instruction::ADDSD, {Register::XMM1, Register::XMM0});
@@ -127,6 +128,8 @@ void GeneratorVisitor::visit(NodeUnOp* node) {
                     g.gen(Instruction::NOT, {Register::EAX});
                     g.gen(Instruction::ADD, {Register::EAX, 1});
                     break;
+                default:
+                    break;
             }
         } else {  // keyword not
             g.gen(Instruction::NOT, {Register::EAX});
@@ -143,38 +146,71 @@ void GeneratorVisitor::visit(NodeUnOp* node) {
                        g.get(DefaultConstant::DOUBLE_MINUS_ONE) &
                            OperandFlag::INDIRECT & OperandFlag::QWORD});
                 break;
+            default:
+                break;
         }
         g.gen_push_double(Register::XMM0);
     }
 }
 
-// TODO:
+// TODO: float
 void GeneratorVisitor::visit(NodeRelOp* node) {
     node->left->accept(this);
     node->right->accept(this);
-    g.gen(Instruction::POP, {Register::EBX});
-    g.gen(Instruction::POP, {Register::EAX});
-    switch (node->token.get_value<Operators>()) {
-        case Operators::EQL:
-            g.gen_int_cmp(Instruction::SETE);
-            break;
-        case Operators::LES:
-            g.gen_int_cmp(Instruction::SETL);
-            break;
-        case Operators::NEQ:
-            g.gen_int_cmp(Instruction::SETNE);
-            break;
-        case Operators::LEQ:
-            g.gen_int_cmp(Instruction::SETLE);
-            break;
-        case Operators::GTR:
-            g.gen_int_cmp(Instruction::SETG);
-            break;
-        case Operators::GEQ:
-            g.gen_int_cmp(Instruction::SETGE);
-            break;
+    if (node->left->sym_type->equivalent_to(SYMBOL_INTEGER)) {
+        g.gen(Instruction::POP, {Register::EBX});
+        g.gen(Instruction::POP, {Register::EAX});
+        switch (node->token.get_value<Operators>()) {
+            case Operators::EQL:
+                g.gen_int_cmp(Instruction::SETE);
+                break;
+            case Operators::LES:
+                g.gen_int_cmp(Instruction::SETL);
+                break;
+            case Operators::NEQ:
+                g.gen_int_cmp(Instruction::SETNE);
+                break;
+            case Operators::LEQ:
+                g.gen_int_cmp(Instruction::SETLE);
+                break;
+            case Operators::GTR:
+                g.gen_int_cmp(Instruction::SETG);
+                break;
+            case Operators::GEQ:
+                g.gen_int_cmp(Instruction::SETGE);
+                break;
+        }
+        g.gen(Instruction::PUSH, {Register::EAX});
+    } else {  // double
+        g.gen(
+            Instruction::MOVSD,
+            {Register::XMM1, Register::ESP + 8 & OperandFlag::QWORD});  // left
+        g.gen(
+            Instruction::MOVSD,
+            {Register::XMM0, Register::ESP + 0 & OperandFlag::QWORD});  // right
+        g.gen(Instruction::ADD, {Register::ESP, 16});
+        switch (node->token.get_value<Operators>()) {
+            case Operators::EQL:
+                g.gen_double_cmp(Instruction::SETE);
+                break;
+            case Operators::LES:
+                g.gen_double_cmp(Instruction::SETA);
+                break;
+            case Operators::NEQ:
+                g.gen_double_cmp(Instruction::SETNE);
+                break;
+            case Operators::LEQ:
+                g.gen_double_cmp(Instruction::SETAE);
+                break;
+            case Operators::GTR:
+                g.gen_double_cmp(Instruction::SETB);
+                break;
+            case Operators::GEQ:
+                g.gen_double_cmp(Instruction::SETBE);
+                break;
+        }
+        g.gen(Instruction::PUSH, {Register::EAX});
     }
-    g.gen(Instruction::PUSH, {Register::EAX});
 }
 // ok
 void GeneratorVisitor::visit(NodeBoolean* node) {
@@ -195,6 +231,8 @@ void GeneratorVisitor::visit(NodeNumber* node) {
               {Register::ESP + 0 & OperandFlag::QWORD, Register::XMM0});
     }
 }
+
+// ok
 void GeneratorVisitor::visit(NodeCast* node) {
     node->exp->accept(this);
     // cast int to double
@@ -204,6 +242,7 @@ void GeneratorVisitor::visit(NodeCast* node) {
     g.gen(Instruction::CVTSI2SD, {Register::XMM0, Register::EAX});
     g.gen_push_double(Register::XMM0);
 }
+
 // ok
 void GeneratorVisitor::visit(NodeString* node) {
     g.gen(Instruction::PUSH,
@@ -234,6 +273,7 @@ void GeneratorVisitor::visit(NodeProgram* node) {
 void GeneratorVisitor::visit(NodeCallStatement* node) {
     node->func_call->accept(this);
 }
+
 // ok
 void GeneratorVisitor::visit(NodeCompoundStatement* node) {
     for (auto& statement : node->stmts) statement->accept(this);

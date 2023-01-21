@@ -163,6 +163,13 @@ void Generator::gen_int_cmp(Instruction instruction) {
     gen(Instruction::MOV, {Register::EAX, Register::ECX});
 }
 
+void Generator::gen_double_cmp(Instruction instruction) {
+    gen(Instruction::XOR, {Register::ECX, Register::ECX});
+    gen(Instruction::COMISD, {Register::XMM0, Register::XMM1});
+    gen(instruction, {Register::CL});
+    gen(Instruction::MOV, {Register::EAX, Register::ECX});
+}
+
 void Generator::gen_push_double(Register reg) {
     gen(Instruction::SUB, {Register::ESP, 8});
     gen(Instruction::MOVSD,

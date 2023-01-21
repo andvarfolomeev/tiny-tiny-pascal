@@ -54,6 +54,13 @@ enum class Instruction {
     OR,
     XOR,
 
+    COMISD,
+
+    SETB,
+    SETA,
+    SETBE,
+    SETAE,
+
     CMP,
     SETL,
     SETG,
@@ -145,6 +152,7 @@ class Generator {
              std::initializer_list<std::variant<Operand, OperandValue>> args);
 
     void gen_int_cmp(Instruction instruction);
+    void gen_double_cmp(Instruction instruction);
 
     void gen_push_double(Register reg);
     void gen_pop_double(Register reg);
