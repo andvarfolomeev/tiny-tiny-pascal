@@ -5,6 +5,7 @@
 #include "symbol.h"
 #include "symbol_table.h"
 #include "symbol_type.h"
+#include "symbol_var.h"
 
 class SymbolProcedure : public SymbolType {
    public:
@@ -21,6 +22,8 @@ class SymbolProcedure : public SymbolType {
     bool is_standard_io();
     virtual bool is_procedure();
     virtual bool is_read_proc();
+    virtual bool is_write_proc();
+    virtual bool is_writeln_proc();
     virtual bool is_function();
     std::shared_ptr<SymbolTable> get_locals();
     std::shared_ptr<SymbolType> get_ret();
