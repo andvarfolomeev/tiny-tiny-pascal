@@ -16,10 +16,6 @@ class NodeCallStatement : public NodeStatement {
         : func_call(std::move(func_call)) {}
 
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
-    friend class visitor::SemanticVisitor;
-    friend class visitor::PrinterVisitor;
-
-   protected:
     std::shared_ptr<NodeFuncCall> func_call;
 };
 
@@ -28,10 +24,6 @@ class NodeCompoundStatement : public NodeStatement {
     NodeCompoundStatement(std::vector<std::shared_ptr<NodeStatement>> stmts)
         : stmts(std::move(stmts)) {}
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
-    friend class visitor::SemanticVisitor;
-    friend class visitor::PrinterVisitor;
-
-   private:
     std::vector<std::shared_ptr<NodeStatement>> stmts;
 };
 
@@ -48,10 +40,6 @@ class NodeForStatement : public NodeStatement {
           end_exp(std::move(end_exp)),
           stmt(std::move(stmt)) {}
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
-    friend class visitor::SemanticVisitor;
-    friend class visitor::PrinterVisitor;
-
-   private:
     std::shared_ptr<NodeExpression> param;
     std::shared_ptr<NodeExpression> start_exp;
     std::shared_ptr<NodeKeyword> dir;
@@ -65,10 +53,6 @@ class NodeWhileStatement : public NodeStatement {
                        std::shared_ptr<NodeStatement> stmt)
         : exp(std::move(exp)), stmt(std::move(stmt)) {}
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
-    friend class visitor::SemanticVisitor;
-    friend class visitor::PrinterVisitor;
-
-   private:
     std::shared_ptr<NodeExpression> exp;
     std::shared_ptr<NodeStatement> stmt;
 };
@@ -82,10 +66,6 @@ class NodeIfStatement : public NodeStatement {
           stmt(std::move(stmt)),
           else_stmt(std::move(else_stmt)) {}
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
-    friend class visitor::SemanticVisitor;
-    friend class visitor::PrinterVisitor;
-
-   private:
     std::shared_ptr<NodeExpression> exp;
     std::shared_ptr<NodeStatement> stmt;
     std::shared_ptr<NodeStatement> else_stmt;
@@ -97,10 +77,6 @@ class NodeAssigmentStatement : public NodeStatement {
                            std::shared_ptr<NodeExpression> exp)
         : op(std::move(op)), var_ref(std::move(var_ref)), exp(std::move(exp)) {}
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
-    friend class visitor::SemanticVisitor;
-    friend class visitor::PrinterVisitor;
-
-   private:
     Token op;
     std::shared_ptr<NodeVarRef> var_ref;
     std::shared_ptr<NodeExpression> exp;

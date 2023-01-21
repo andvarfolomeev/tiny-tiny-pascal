@@ -19,10 +19,6 @@ class NodeId : public NodeVarRef {
     Token &get_token();
     Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
-    friend class visitor::SemanticVisitor;
-    friend class visitor::PrinterVisitor;
-
-   protected:
     Token token;
 };
 
@@ -31,10 +27,6 @@ class NodeBoolean : public NodeExpression {
     explicit NodeBoolean(Token token) : token(std::move(token)) {}
     Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
-    friend class visitor::SemanticVisitor;
-    friend class visitor::PrinterVisitor;
-
-   protected:
     Token token;
 };
 
@@ -47,10 +39,6 @@ class NodeBinOp : public NodeExpression {
           right(std::move(right)) {}
     Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
-    friend class visitor::SemanticVisitor;
-    friend class visitor::PrinterVisitor;
-
-   protected:
     Token token;
     std::shared_ptr<NodeExpression> left;
     std::shared_ptr<NodeExpression> right;
@@ -63,10 +51,6 @@ class NodeUnOp : public NodeExpression {
         : token(std::move(token)), operand(std::move(operand)) {}
     Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
-    friend class visitor::SemanticVisitor;
-    friend class visitor::PrinterVisitor;
-
-   protected:
     Token token;
     std::shared_ptr<NodeExpression> operand;
 };
@@ -80,10 +64,6 @@ class NodeRelOp : public NodeExpression {
           right(std::move(right)) {}
     Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
-    friend class visitor::SemanticVisitor;
-    friend class visitor::PrinterVisitor;
-
-   protected:
     Token token;
     std::shared_ptr<NodeExpression> left;
     std::shared_ptr<NodeExpression> right;
@@ -94,10 +74,6 @@ class NodeNumber : public NodeExpression {
     explicit NodeNumber(Token token) : token(std::move(token)) {}
     Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
-    friend class visitor::SemanticVisitor;
-    friend class visitor::PrinterVisitor;
-
-   protected:
     Token token;
 };
 
@@ -110,10 +86,6 @@ class NodeCast : public NodeExpression {
     }
     Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
-    friend class visitor::SemanticVisitor;
-    friend class visitor::PrinterVisitor;
-
-   protected:
     std::shared_ptr<NodeExpression> exp;
 };
 
@@ -122,10 +94,6 @@ class NodeString : public NodeExpression {
     explicit NodeString(Token token) : token(std::move(token)) {}
     Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
-    friend class visitor::SemanticVisitor;
-    friend class visitor::PrinterVisitor;
-
-   protected:
     Token token;
 };
 
@@ -136,10 +104,6 @@ class NodeFuncCall : public NodeVarRef {
         : var_ref(std::move(var_ref)), params(std::move(params)) {}
     Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
-    friend class visitor::SemanticVisitor;
-    friend class visitor::PrinterVisitor;
-
-   protected:
     std::shared_ptr<NodeVarRef> var_ref;
     std::vector<std::shared_ptr<NodeExpression>> params;
 };
@@ -151,10 +115,6 @@ class NodeArrayAccess : public NodeVarRef {
         : var_ref(std::move(var_ref)), index(std::move(index)) {}
     Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
-    friend class visitor::SemanticVisitor;
-    friend class visitor::PrinterVisitor;
-
-   protected:
     std::shared_ptr<NodeVarRef> var_ref;
     std::shared_ptr<NodeExpression> index;
 };
@@ -166,10 +126,6 @@ class NodeRecordAccess : public NodeVarRef {
         : var_ref(std::move(var_ref)), field(std::move(field)) {}
     Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
-    friend class visitor::SemanticVisitor;
-    friend class visitor::PrinterVisitor;
-
-   protected:
     std::shared_ptr<NodeVarRef> var_ref;
     std::shared_ptr<NodeId> field;
 };

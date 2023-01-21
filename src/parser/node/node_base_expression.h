@@ -13,8 +13,6 @@ class NodeExpression : public SyntaxNode {
     virtual std::shared_ptr<SymbolType> get_sym_type() { return sym_type; }
     bool is_lvalue = true;
     virtual Position get_pos() = 0;
-
-   protected:
     std::shared_ptr<SymbolType> sym_type = nullptr;
 };
 }  // namespace parser
