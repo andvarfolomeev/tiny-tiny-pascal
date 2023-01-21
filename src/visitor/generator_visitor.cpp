@@ -146,7 +146,6 @@ void GeneratorVisitor::visit(NodeUnOp* node) {
         }
         g.gen_push_double(Register::XMM0);
     }
-    g.gen(Instruction::PUSH, {Register::EAX});
 }
 
 // TODO:
