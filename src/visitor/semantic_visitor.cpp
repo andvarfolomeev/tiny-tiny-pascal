@@ -170,8 +170,19 @@ void SemanticVisitor::visit(NodeBinOp *node) {
                         return;
                     }
                     break;
-                case scanner::Operators::SUB:
                 case scanner::Operators::QUO:
+                    if (equivalent(SYMBOL_INTEGER, left_st, right_st)) {
+                        node->left = std::make_shared<NodeCast>(node->left,
+                                                                SYMBOL_DOUBLE);
+                        node->right = std::make_shared<NodeCast>(node->right,
+                                                                 SYMBOL_DOUBLE);
+                        node->sym_type = left_st = right_st = SYMBOL_DOUBLE;
+                    }
+                    if (equivalent(SYMBOL_DOUBLE, left_st, right_st)) {
+                        node->sym_type = SYMBOL_DOUBLE;
+                        return;
+                    }
+                case scanner::Operators::SUB:
                 case scanner::Operators::MUL:
                     if (left_st->is_arithmetic() && right_st->is_arithmetic()) {
                         node->sym_type = solve_casting(node);
