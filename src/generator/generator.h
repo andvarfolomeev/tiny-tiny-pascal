@@ -29,7 +29,7 @@ enum class Register {
     XMM1,
     XMM2,
     XMM3,
-    DB
+    ST0
 };
 
 enum class Instruction {
@@ -147,6 +147,7 @@ class Generator {
     void gen_int_cmp(Instruction instruction);
 
     void gen_push_double(Register reg);
+    void gen_pop_double(Register reg);
 
     void set_section(Section section);
 

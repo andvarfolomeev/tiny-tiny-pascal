@@ -117,19 +117,34 @@ void GeneratorVisitor::visit(NodeBinOp* node) {
 
 void GeneratorVisitor::visit(NodeUnOp* node) {
     node->operand->accept(this);
-    g.gen(Instruction::POP, {Register::EAX});
-    if (node->token.is({TokenType::OPER})) {
+    if (equivalent(node->sym_type, SYMBOL_INTEGER, SYMBOL_BOOLEAN)) {
+        g.gen(Instruction::POP, {Register::EAX});
+        if (node->token.is({TokenType::OPER})) {
+            switch (node->token.get_value<Operators>()) {
+                case Operators::ADD:
+                    break;
+                case Operators::SUB:
+                    g.gen(Instruction::NOT, {Register::EAX});
+                    g.gen(Instruction::ADD, {Register::EAX, 1});
+                    break;
+            }
+        } else {  // keyword not
+            g.gen(Instruction::NOT, {Register::EAX});
+        }
+        g.gen(Instruction::PUSH, {Register::EAX});
+    } else {  // double
+        g.gen_pop_double(Register::XMM0);
         switch (node->token.get_value<Operators>()) {
             case Operators::ADD:
-                // TODO: just skip????
                 break;
             case Operators::SUB:
-                g.gen(Instruction::NOT, {Register::EAX});
-                g.gen(Instruction::ADD, {Register::EAX, 1});
+                g.gen(Instruction::MULSD,
+                      {Register::XMM0,
+                       g.get(DefaultConstant::DOUBLE_MINUS_ONE) &
+                           OperandFlag::INDIRECT & OperandFlag::QWORD});
                 break;
         }
-    } else {  // keyword not
-        g.gen(Instruction::NOT, {Register::EAX});
+        g.gen_push_double(Register::XMM0);
     }
     g.gen(Instruction::PUSH, {Register::EAX});
 }

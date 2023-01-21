@@ -169,6 +169,11 @@ void Generator::gen_push_double(Register reg) {
         {Register::ESP & OperandFlag::INDIRECT & OperandFlag::QWORD, reg});
 }
 
+void Generator::gen_pop_double(Register reg) {
+    gen(Instruction::MOVSD, {reg, Register::ESP + 0 & OperandFlag::QWORD});
+    gen(Instruction::ADD, {Register::ESP, 8});
+}
+
 void Generator::set_section(Section section) { current_section = section; }
 void Generator::set_label(std::string label) { current_label = label; }
 
