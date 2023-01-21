@@ -141,8 +141,18 @@ void GeneratorVisitor::visit(NodeBoolean* node) {
 }
 // ok
 void GeneratorVisitor::visit(NodeNumber* node) {
-    int result = node->token.get_value<int>();
-    g.gen(Instruction::PUSH, {result & OperandFlag::DWORD});
+    if (node->token == TokenType::LITERAL_INTEGER) {
+        int result = node->token.get_value<int>();
+        g.gen(Instruction::PUSH, {result & OperandFlag::DWORD});
+    } else {  // double
+        auto label = g.add_constant(node->token.get_value<double>());
+        g.gen(Instruction::MOVSD,
+              {Register::XMM0,
+               label & OperandFlag::INDIRECT & OperandFlag::QWORD});
+        g.gen(Instruction::SUB, {Register::ESP, 8});
+        g.gen(Instruction::MOVSD,
+              {Register::ESP + 0 & OperandFlag::QWORD, Register::XMM0});
+    }
 }
 void GeneratorVisitor::visit(NodeCast* node) {
     // TODO:

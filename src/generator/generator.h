@@ -61,9 +61,14 @@ enum class Instruction {
 
     CDQ,
 
+    MOV,
+    MOVSD,
+
+    CVTTSD2SI,
+    CVTSI2SD,
+
     PUSH,
     POP,
-    MOV,
     CALL,
     RET,
     GLOBAL,
@@ -135,6 +140,8 @@ class Generator {
              std::initializer_list<std::variant<Operand, OperandValue>> args);
 
     void gen_int_cmp(Instruction instruction);
+
+    void gen_push_double(Register reg);
 
     void set_section(Section section);
 

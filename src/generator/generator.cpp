@@ -163,6 +163,12 @@ void Generator::gen_int_cmp(Instruction instruction) {
     gen(Instruction::MOV, {Register::EAX, Register::ECX});
 }
 
+void Generator::gen_push_double(Register reg) {
+    gen(Instruction::SUB, {Register::ESP, 8});
+    gen(Instruction::MOVSD,
+        {Register::ESP & OperandFlag::INDIRECT & OperandFlag::QWORD, reg});
+}
+
 void Generator::set_section(Section section) { current_section = section; }
 void Generator::set_label(std::string label) { current_label = label; }
 
