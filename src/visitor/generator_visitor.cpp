@@ -155,7 +155,13 @@ void GeneratorVisitor::visit(NodeNumber* node) {
     }
 }
 void GeneratorVisitor::visit(NodeCast* node) {
-    // TODO:
+    node->exp->accept(this);
+    // cast int to double
+    // SemanticVisitor only adds an integer to double cast, so there are no
+    // extra checks
+    g.gen(Instruction::POP, {Register::EAX});
+    g.gen(Instruction::CVTSI2SD, {Register::XMM0, Register::EAX});
+    g.gen_push_double(Register::XMM0);
 }
 // ok
 void GeneratorVisitor::visit(NodeString* node) {
