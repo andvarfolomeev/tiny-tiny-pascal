@@ -1,8 +1,11 @@
 #include <argparse/argparse.hpp>
 #include <iostream>
 
+#include "generator/generator.h"
 #include "parser/parser.h"
 #include "scanner/scanner.h"
+#include "visitor/generator_visitor.h"
+#include "visitor/printer_visitor.h"
 #include "visitor/semantic_visitor.h"
 
 int main(int argc, char* argv[]) {
@@ -21,6 +24,16 @@ int main(int argc, char* argv[]) {
         .help("run semantic")
         .default_value(false)
         .implicit_value(true);
+    program.add_argument("--generation")
+        .help("run generator")
+        .default_value(false)
+        .implicit_value(true);
+    program.add_argument("--out")
+        .help("path to outfile")
+        .default_value(std::string{"a.out"})
+        .required()
+        .nargs(1)
+        .metavar("PATH");
 
     try {
         program.parse_args(argc, argv);
@@ -85,6 +98,28 @@ int main(int argc, char* argv[]) {
                     std::make_shared<visitor::PrinterVisitor>(std::cout);
                 printer_visitor->visit(head.get());
             }
+        } catch (const TinyPascalException& ex) {
+            std::cout << ex.what();
+            return EXIT_FAILURE;
+        }
+    }
+
+    auto out_file_path = program.get<std::string>("--out");
+    auto run_generation = program.get<bool>("--generation");
+    if (run_generation) {
+        try {
+            scanner::Scanner scanner(file);
+            parser::Parser p(scanner);
+            auto head = p.program();
+            auto semantic_visitor =
+                std::make_shared<visitor::SemanticVisitor>();
+            semantic_visitor->visit(head.get());
+            Generator g;
+            auto generation_visitor =
+                std::make_shared<visitor::GeneratorVisitor>(g);
+            generation_visitor->visit(head.get());
+            std::ofstream out_file(out_file_path);
+            g.write(out_file);
         } catch (const TinyPascalException& ex) {
             std::cout << ex.what();
             return EXIT_FAILURE;
