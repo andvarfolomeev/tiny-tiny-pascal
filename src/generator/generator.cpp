@@ -179,6 +179,14 @@ std::string Generator::add_constant(int value) {
     return label_name;
 }
 
+std::string Generator::add_constant(double value) {
+    constant_counter++;
+    std::string label_name =
+        "constant_value_" + std::to_string(constant_counter);
+    gen(Section::DATA, label_name, Instruction::DQ, {std::to_string(value)});
+    return label_name;
+}
+
 std::string Generator::add_constant(std::string value, bool newline) {
     constant_counter++;
     std::string label_name =

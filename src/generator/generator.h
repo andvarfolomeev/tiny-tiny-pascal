@@ -35,6 +35,7 @@ enum class Register {
 enum class Instruction {
     DB,
     DD,
+    DQ,
 
     ADD,
     SUB,
@@ -142,6 +143,7 @@ class Generator {
     void set(Section section, std::string label);
 
     std::string add_constant(int value);
+    std::string add_constant(double value);
 
     std::string add_constant(std::string value, bool newline = false);
     std::string add_constant(
