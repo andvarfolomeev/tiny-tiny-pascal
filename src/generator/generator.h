@@ -42,6 +42,11 @@ enum class Instruction {
     IMUL,
     IDIV,
 
+    ADDSD,
+    SUBSD,
+    MULSD,
+    DIVSD,
+
     SHL,
     SHR,
 

@@ -28,60 +28,89 @@ void GeneratorVisitor::visit(NodeId* node) {}
 void GeneratorVisitor::visit(NodeBinOp* node) {
     node->left->accept(this);
     node->right->accept(this);
-    g.gen(Instruction::POP, {Register::EBX});  // right
-    g.gen(Instruction::POP, {Register::EAX});  // left
-    // TODO FLOAT
-    switch (node->token.get_type()) {
-        case TokenType::KEYWORD:
-            switch (node->token.get_value<Keywords>()) {
-                case scanner::Keywords::OR:
-                    g.gen(Instruction::OR, {Register::EAX, Register::EBX});
-                    break;
-                case scanner::Keywords::AND:
-                    g.gen(Instruction::AND, {Register::EAX, Register::EBX});
-                    break;
-                case scanner::Keywords::DIV:
-                    g.gen(Instruction::CDQ, {});
-                    g.gen(Instruction::IDIV, {Register::EBX});
-                    break;
-                case scanner::Keywords::MOD:
-                    g.gen(Instruction::CDQ, {});
-                    g.gen(Instruction::IDIV, {Register::EBX});
-                    g.gen(Instruction::MOV, {Register::EAX, Register::EDX});
-                    break;
-                case scanner::Keywords::XOR:
-                    g.gen(Instruction::XOR, {Register::EAX, Register::EBX});
-                    break;
-                case scanner::Keywords::SHR:
-                    g.gen(Instruction::MOV, {Register::ECX, Register::EBX});
-                    g.gen(Instruction::SHR, {Register::EAX, Register::CL});
-                    break;
-                case scanner::Keywords::SHL:
-                    g.gen(Instruction::MOV, {Register::ECX, Register::EBX});
-                    g.gen(Instruction::SHL, {Register::EAX, Register::CL});
-                    break;
-                default:
-                    break;
-            }
-            break;
-        case TokenType::OPER:
-            switch (node->token.get_value<Operators>()) {
-                case scanner::Operators::ADD:
-                    g.gen(Instruction::ADD, {Register::EAX, Register::EBX});
-                    break;
-                case scanner::Operators::SUB:
-                    g.gen(Instruction::SUB, {Register::EAX, Register::EBX});
-                    break;
-                case scanner::Operators::QUO:
-                case scanner::Operators::MUL:
-                    g.gen(Instruction::IMUL, {Register::EAX, Register::EBX});
-                    break;
-                default:
-                    break;
-            }
-            break;
-        default:
-            break;
+    if (node->sym_type->equivalent_to(SYMBOL_INTEGER)) {
+        g.gen(Instruction::POP, {Register::EBX});  // right
+        g.gen(Instruction::POP, {Register::EAX});  // left
+        switch (node->token.get_type()) {
+            case TokenType::KEYWORD:
+                switch (node->token.get_value<Keywords>()) {
+                    case scanner::Keywords::OR:
+                        g.gen(Instruction::OR, {Register::EAX, Register::EBX});
+                        break;
+                    case scanner::Keywords::AND:
+                        g.gen(Instruction::AND, {Register::EAX, Register::EBX});
+                        break;
+                    case scanner::Keywords::DIV:
+                        g.gen(Instruction::CDQ, {});
+                        g.gen(Instruction::IDIV, {Register::EBX});
+                        break;
+                    case scanner::Keywords::MOD:
+                        g.gen(Instruction::CDQ, {});
+                        g.gen(Instruction::IDIV, {Register::EBX});
+                        g.gen(Instruction::MOV, {Register::EAX, Register::EDX});
+                        break;
+                    case scanner::Keywords::XOR:
+                        g.gen(Instruction::XOR, {Register::EAX, Register::EBX});
+                        break;
+                    case scanner::Keywords::SHR:
+                        g.gen(Instruction::MOV, {Register::ECX, Register::EBX});
+                        g.gen(Instruction::SHR, {Register::EAX, Register::CL});
+                        break;
+                    case scanner::Keywords::SHL:
+                        g.gen(Instruction::MOV, {Register::ECX, Register::EBX});
+                        g.gen(Instruction::SHL, {Register::EAX, Register::CL});
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            case TokenType::OPER:
+                switch (node->token.get_value<Operators>()) {
+                    case scanner::Operators::ADD:
+                        g.gen(Instruction::ADD, {Register::EAX, Register::EBX});
+                        break;
+                    case scanner::Operators::SUB:
+                        g.gen(Instruction::SUB, {Register::EAX, Register::EBX});
+                        break;
+                    case scanner::Operators::QUO:
+                    case scanner::Operators::MUL:
+                        g.gen(Instruction::IMUL,
+                              {Register::EAX, Register::EBX});
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            default:
+                break;
+        }
+    } else {
+        g.gen(
+            Instruction::MOVSD,
+            {Register::XMM1, Register::ESP + 8 & OperandFlag::QWORD});  // left
+        g.gen(
+            Instruction::MOVSD,
+            {Register::XMM0, Register::ESP + 0 & OperandFlag::QWORD});  // right
+        switch (node->token.get_value<Operators>()) {
+            case scanner::Operators::ADD:
+                g.gen(Instruction::ADDSD, {Register::XMM1, Register::XMM0});
+                break;
+            case scanner::Operators::SUB:
+                g.gen(Instruction::SUBSD, {Register::XMM1, Register::XMM0});
+                break;
+            case scanner::Operators::QUO:
+                g.gen(Instruction::DIVSD, {Register::XMM1, Register::XMM0});
+                break;
+            case scanner::Operators::MUL:
+                g.gen(Instruction::MULSD, {Register::XMM1, Register::XMM0});
+                break;
+            default:
+                break;
+        }
+        g.gen(Instruction::SUB, {Register::ESP, 8});
+        g.gen(Instruction::MOVSD,
+              {Register::ESP + 0 & OperandFlag::QWORD, Register::XMM1});
+        return;
     }
     g.gen(Instruction::PUSH, {Register::EAX});
 }
