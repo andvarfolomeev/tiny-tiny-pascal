@@ -3,7 +3,11 @@
 #include <filesystem>
 #include <fstream>
 
+#include "../src/generator/generator.h"
 #include "../src/parser/parser.h"
+#include "../src/visitor/generator_visitor.h"
+#include "../src/visitor/printer_visitor.h"
+#include "../src/visitor/semantic_visitor.h"
 
 namespace tester {
 
@@ -138,6 +142,21 @@ std::string SemanticTester::get_answer(const std::string& path_in) {
     printer_visitor->visit(head.get());
     answer << "\n";
     semantic_visitor->get_sym_table_stack()->draw(answer);
+    return answer.str();
+}
+
+std::string GeneratorTester::get_answer(const std::string& path_in) {
+    auto file = std::ifstream(path_in);
+    std::stringstream answer;
+    scanner::Scanner scanner(file);
+    parser::Parser p(scanner);
+    auto head = p.program();
+    auto semantic_visitor = std::make_shared<visitor::SemanticVisitor>();
+    semantic_visitor->visit(head.get());
+    Generator g;
+    auto generation_visitor = std::make_shared<visitor::GeneratorVisitor>(g);
+    generation_visitor->visit(head.get());
+    g.write(answer);
     return answer.str();
 }
 }  // namespace tester

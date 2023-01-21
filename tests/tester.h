@@ -44,9 +44,19 @@ class ParserTester : public Tester {
    protected:
     std::string get_answer(const std::string &path_in) override;
 };
+
 class SemanticTester : public Tester {
    public:
     explicit SemanticTester(std::string path_to_files)
+        : Tester(std::move(path_to_files)) {}
+
+   protected:
+    std::string get_answer(const std::string &path_in) override;
+};
+
+class GeneratorTester : public Tester {
+   public:
+    explicit GeneratorTester(std::string path_to_files)
         : Tester(std::move(path_to_files)) {}
 
    protected:
