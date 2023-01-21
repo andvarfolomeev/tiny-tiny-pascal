@@ -179,9 +179,7 @@ void GeneratorVisitor::visit(NodeRelOp* node) {
 }
 // ok
 void GeneratorVisitor::visit(NodeBoolean* node) {
-    g.gen(Instruction::PUSH,
-          {node->token == Keywords::TRUE ? g.get(DefaultConstant::TRUE)
-                                         : g.get(DefaultConstant::FALSE)});
+    g.gen(Instruction::PUSH, {node->token == Keywords::TRUE});
 }
 // ok
 void GeneratorVisitor::visit(NodeNumber* node) {
