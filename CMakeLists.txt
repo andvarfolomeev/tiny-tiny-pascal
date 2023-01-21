@@ -80,10 +80,15 @@ set(
         src/symbol_table/symbol_var.h
         src/symbol_table/symbol_var.cpp
 
+        src/generator/generator.h
+        src/generator/generator.cpp
+
         src/visitor/base_visitor.h
         src/visitor/base_visitor.cpp
         src/visitor/semantic_visitor.h
         src/visitor/semantic_visitor.cpp
+        src/visitor/generator_visitor.h
+        src/visitor/generator_visitor.cpp
         src/visitor/printer_visitor.h
         src/visitor/printer_visitor.cpp
 
