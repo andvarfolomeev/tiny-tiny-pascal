@@ -12,7 +12,7 @@ class Symbol {
     virtual std::string get_type_of_object_str();
     virtual std::string get_ret_type_str();
     virtual void draw_additional(std::ostream &os, int depth);
-    std::string get_name();
+    std::string get_name() const;
     virtual ~Symbol() {}
     virtual bool is_type() { return false; }
 
