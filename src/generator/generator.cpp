@@ -193,6 +193,18 @@ std::string Generator::add_constant(double value) {
     return label_name;
 }
 
+std::string Generator::add_constant(DefaultConstant dc, int value) {
+    std::string label_name = std::string(magic_enum::enum_name(dc));
+    gen(Section::DATA, label_name, Instruction::DD, {std::to_string(value)});
+    return label_name;
+}
+
+std::string Generator::add_constant(DefaultConstant dc, double value) {
+    std::string label_name = std::string(magic_enum::enum_name(dc));
+    gen(Section::DATA, label_name, Instruction::DQ, {std::to_string(value)});
+    return label_name;
+}
+
 std::string Generator::add_constant(std::string value, bool newline) {
     constant_counter++;
     std::string label_name =
@@ -231,6 +243,10 @@ std::string Generator::add_constant(
     return add_constant(value.str(), newline);
 }
 
+std::string Generator::get(DefaultConstant c) {
+    return std::string(magic_enum::enum_name(c));
+}
+
 void Generator::write(std::ostream &os, std::vector<Command> commands) {
     for (auto &command : commands) os << command.to_string() << "\n";
 }
@@ -251,6 +267,8 @@ Generator::Generator()
     prolog.push_back(Command(Instruction::GLOBAL, {"_main"}));
     prolog.push_back(Command(Instruction::EXTERN, {"_printf"}));
     prolog.push_back(Command(Instruction::EXTERN, {"_scanf"}));
-    default_constants.insert({DefaultConstant::TRUE, 1 & OperandFlag::DWORD});
-    default_constants.insert({DefaultConstant::FALSE, 0 & OperandFlag::DWORD});
+
+    add_constant(DefaultConstant::TRUE, 1);
+    add_constant(DefaultConstant::FALSE, 0);
+    add_constant(DefaultConstant::DOUBLE_MINUS_ONE, -1.0);
 }

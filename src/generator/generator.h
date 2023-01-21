@@ -11,7 +11,7 @@
 #include "../parser/node/node_base_expression.h"
 #include "../symbol_table/symbol_var.h"
 
-enum class DefaultConstant { TRUE, FALSE };
+enum class DefaultConstant { TRUE, FALSE, DOUBLE_MINUS_ONE };
 
 enum class Section { TEXT, DATA };
 
@@ -156,13 +156,15 @@ class Generator {
 
     std::string add_constant(int value);
     std::string add_constant(double value);
+    std::string add_constant(DefaultConstant dc, int value);
+    std::string add_constant(DefaultConstant dc, double value);
 
     std::string add_constant(std::string value, bool newline = false);
     std::string add_constant(
         const std::vector<std::shared_ptr<parser::NodeExpression>> &params,
         bool newline = false);
 
-    Operand get(DefaultConstant c) { return default_constants.at(c); }
+    std::string get(DefaultConstant c);
 
     void write(std::ostream &os, std::vector<Command> commands);
     void write(std::ostream &os);
