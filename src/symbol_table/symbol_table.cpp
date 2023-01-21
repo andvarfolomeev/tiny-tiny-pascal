@@ -5,6 +5,7 @@
 #include <numeric>
 #include <stdexcept>
 
+#include "../exception.h"
 #include "symbol_function.h"
 #include "symbol_type.h"
 
