@@ -117,12 +117,16 @@ main
                         empty
                :=
                   pi_calc
-                  cast
-                     double
-                     *
-                        /
+                  *
+                     /
+                        cast
+                           double
                            inside
+                        cast
+                           double
                            total
+                     cast
+                        double
                         4
    block
       compounds statements
@@ -153,15 +157,15 @@ main
 ======================================================================================================================================================
 | num1                        | param                       | integer                                                                                |
 | num2                        | param                       | integer                                                                                |
-| result                      | var                         | integer                                                                                |
+| result                      | local var                   | integer                                                                                |
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 | pi_calc                     | function                    | double                                                                                 |
 ======================================================================================================================================================
 | total                       | const param                 | integer                                                                                |
-| inside                      | var                         | integer                                                                                |
-| i                           | var                         | integer                                                                                |
-| point                       | var                         | record x: double; y: double; end                                                       |
-| x                           | var                         | double                                                                                 |
-| y                           | var                         | double                                                                                 |
+| inside                      | local var                   | integer                                                                                |
+| i                           | local var                   | integer                                                                                |
+| point                       | local var                   | record x: double; y: double; end                                                       |
+| x                           | local var                   | double                                                                                 |
+| y                           | local var                   | double                                                                                 |
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ------------------------------------------------------------------------------------------------------------------------------------------------------

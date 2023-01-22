@@ -145,8 +145,12 @@ main
          call
             writeln
                /
-                  2
-                  3
+                  cast
+                     double
+                     2
+                  cast
+                     double
+                     3
          call
             writeln
                +
@@ -343,11 +347,11 @@ main
 | b                           | const param                 | integer                                                                                |
 | c                           | const param                 | integer                                                                                |
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-| a                           | var                         | double                                                                                 |
-| b                           | var                         | double                                                                                 |
-| c                           | var                         | double                                                                                 |
-| d                           | var                         | double                                                                                 |
-| ai                          | var                         | integer                                                                                |
-| bi                          | var                         | integer                                                                                |
-| ci                          | var                         | integer                                                                                |
+| a                           | local var                   | double                                                                                 |
+| b                           | local var                   | double                                                                                 |
+| c                           | local var                   | double                                                                                 |
+| d                           | local var                   | double                                                                                 |
+| ai                          | local var                   | integer                                                                                |
+| bi                          | local var                   | integer                                                                                |
+| ci                          | local var                   | integer                                                                                |
 ------------------------------------------------------------------------------------------------------------------------------------------------------

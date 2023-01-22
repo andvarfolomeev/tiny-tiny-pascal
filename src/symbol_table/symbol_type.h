@@ -19,29 +19,29 @@ class SymbolType : public Symbol {
 
 class SymbolBoolean : public SymbolType {
    public:
-    SymbolBoolean() : SymbolType("boolean") {}
+    SymbolBoolean() : SymbolType("boolean") { offset = 4; }
 };
 
 class SymbolInteger : public SymbolType {
    public:
-    SymbolInteger() : SymbolType("integer") {}
+    SymbolInteger() : SymbolType("integer") { offset = 4; }
     bool is_arithmetic() override;
 };
 
 class SymbolDouble : public SymbolType {
    public:
-    SymbolDouble() : SymbolType("double") {}
+    SymbolDouble() : SymbolType("double") { offset = 8; }
     bool is_arithmetic() override;
 };
 
 class SymbolChar : public SymbolType {
    public:
-    SymbolChar() : SymbolType("char") {}
+    SymbolChar() : SymbolType("char") { offset = 4; }
 };
 
 class SymbolString : public SymbolType {
    public:
-    SymbolString() : SymbolType("string") {}
+    SymbolString() : SymbolType("string") { offset = 4; }
 };
 
 const auto SYMBOL_BOOLEAN = std::make_shared<SymbolBoolean>();
@@ -66,7 +66,9 @@ class SymbolRecord : public SymbolType {
 class SymbolTypeAlias : public SymbolType {
    public:
     SymbolTypeAlias(std::string name, std::shared_ptr<SymbolType> original)
-        : SymbolType(std::move(name)), original(std::move(original)) {}
+        : SymbolType(std::move(name)), original(std::move(original)) {
+        offset = resolve_alias()->offset;
+    }
     std::string get_type_of_object_str() override;
     SymbolType* resolve_alias() override;
     std::string to_str() override;

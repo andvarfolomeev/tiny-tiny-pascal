@@ -36,6 +36,20 @@ unsigned int SymbolProcedure::get_count_of_params() {
     return res;
 }
 
+int SymbolProcedure::get_offset_of_params() {
+    int res = 0;
+    for (auto& name : locals->get_ordered_names()) {
+        auto sym = locals->get(name);
+        auto sym_var = std::dynamic_pointer_cast<SymbolParam>(sym);
+        if (sym_var == nullptr) return res;
+        if (!sym_var->is_param()) {
+            break;
+        }
+        res += sym_var->offset;
+    }
+    return res;
+}
+
 bool SymbolProcedure::is_read_proc() { return equivalent_to(SYMBOL_READ); }
 bool SymbolProcedure::is_write_proc() { return equivalent_to(SYMBOL_WRITE); }
 bool SymbolProcedure::is_writeln_proc() {

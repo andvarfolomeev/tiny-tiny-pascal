@@ -16,6 +16,7 @@ class SymbolTableStack {
     std::shared_ptr<Symbol> get_in_scope(std::string name);
     void alloc();
     void alloc_with_builtin();
+    int size();
     void draw(std::ostream &os);
 
    private:

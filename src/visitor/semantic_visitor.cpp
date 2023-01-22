@@ -15,9 +15,15 @@ void SemanticVisitor::visit(NodeBlock *node) {
 }
 void SemanticVisitor::visit(NodeVarDecl *node) {
     for (auto &id : node->ids) {
-        sym_table_stack->push(
-            id, std::make_shared<SymbolVar>(id->get_name(),
-                                            get_symbol_type(node->type)));
+        if (sym_table_stack->size() > 1) {
+            sym_table_stack->push(
+                id, std::make_shared<SymbolVarLocal>(
+                        id->get_name(), get_symbol_type(node->type)));
+        } else {
+            sym_table_stack->push(
+                id, std::make_shared<SymbolVarGlobal>(
+                        id->get_name(), get_symbol_type(node->type)));
+        }
     }
     node->type->accept(this);
 }
@@ -33,8 +39,13 @@ void SemanticVisitor::visit(NodeConstDecl *node) {
     }
     auto sym_type = (node->type != nullptr) ? get_symbol_type(node->type)
                                             : node->exp->get_sym_type();
-    sym_table_stack->push(
-        node->id, std::make_shared<SymbolVar>(node->id->get_name(), sym_type));
+    if (sym_table_stack->size() > 1) {
+        sym_table_stack->push(node->id, std::make_shared<SymbolConstGlobal>(
+                                            node->id->get_name(), sym_type));
+    } else {
+        sym_table_stack->push(node->id, std::make_shared<SymbolConstLocal>(
+                                            node->id->get_name(), sym_type));
+    }
 }
 
 void SemanticVisitor::visit(NodeConstDecls *node) {

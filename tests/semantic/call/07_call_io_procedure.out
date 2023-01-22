@@ -100,11 +100,11 @@ main
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 | id                          | type of object              | ret type                                                                               |
 ------------------------------------------------------------------------------------------------------------------------------------------------------
-| i                           | var                         | integer                                                                                |
-| d                           | var                         | double                                                                                 |
-| b                           | var                         | boolean                                                                                |
-| c                           | var                         | char                                                                                   |
-| s                           | var                         | string                                                                                 |
-| point                       | var                         | record x: double; y: double; end                                                       |
-| arr                         | var                         | array of integer                                                                       |
+| i                           | local var                   | integer                                                                                |
+| d                           | local var                   | double                                                                                 |
+| b                           | local var                   | boolean                                                                                |
+| c                           | local var                   | char                                                                                   |
+| s                           | local var                   | string                                                                                 |
+| point                       | local var                   | record x: double; y: double; end                                                       |
+| arr                         | local var                   | array of integer                                                                       |
 ------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -14,7 +14,9 @@ class SymbolProcedure : public SymbolType {
         : SymbolType(name),
           locals(std::move(locals)),
           body(std::move(body)),
-          ret(nullptr) {}
+          ret(nullptr) {
+        offset = 0;  // TODO:
+    }
 
     void set_body(std::shared_ptr<parser::NodeCompoundStatement> body_);
     std::string get_type_of_object_str() override;
@@ -28,6 +30,7 @@ class SymbolProcedure : public SymbolType {
     std::shared_ptr<SymbolTable> get_locals();
     std::shared_ptr<SymbolType> get_ret();
     unsigned int get_count_of_params();
+    int get_offset_of_params();
 
    protected:
     std::shared_ptr<SymbolTable> locals;

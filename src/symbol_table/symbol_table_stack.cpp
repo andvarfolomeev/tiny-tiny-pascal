@@ -44,6 +44,9 @@ void SymbolTableStack::alloc() {
 void SymbolTableStack::alloc_with_builtin() {
     data.push_back(SymbolTable::get_with_builtin());
 }
+
+int SymbolTableStack::size() { return data.size(); }
+
 void SymbolTableStack::draw(std::ostream &os) {
     for (auto table : data) {
         table->draw(os);
