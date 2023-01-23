@@ -123,6 +123,9 @@ int main(int argc, char* argv[]) {
         } catch (const TinyPascalException& ex) {
             std::cout << ex.what();
             return EXIT_FAILURE;
+        } catch (const std::exception& ex) {
+            std::cout << ex.what();
+            return EXIT_FAILURE;
         }
     }
 
