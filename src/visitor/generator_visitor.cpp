@@ -484,17 +484,60 @@ void GeneratorVisitor::visit(NodeAssigmentStatement* node, bool result) {
     node->var_ref->accept(this, false);
     node->exp->accept(this, true);
     if (node->var_ref->sym_type->equivalent_to(SYMBOL_DOUBLE)) {
+        node->var_ref->accept(this, true);
         g.gen_pop_double(Register::XMM0);
+        g.gen_pop_double(Register::XMM1);
+
+        switch (node->op.get_value<Operators>()) {
+            case Operators::ASSIGN:
+                g.gen(Instruction::MOVSD, {Register::XMM0, Register::XMM1});
+                break;
+            case Operators::ADDASSIGN:
+                g.gen(Instruction::ADDSD, {Register::XMM0, Register::XMM1});
+                break;
+            case Operators::SUBASSIGN:
+                g.gen(Instruction::SUBSD, {Register::XMM0, Register::XMM1});
+                break;
+            case Operators::MULASSIGN:
+                g.gen(Instruction::MULSD, {Register::XMM0, Register::XMM1});
+                break;
+            case Operators::QUOASSIGN:
+                g.gen(Instruction::DIVSD, {Register::XMM0, Register::XMM1});
+                break;
+        }
         g.gen(Instruction::POP, {Register::EAX});
         g.gen(Instruction::MOVSD,
               {Register::EAX & OperandFlag::QWORD & OperandFlag::INDIRECT,
                Register::XMM0});
         return;
     }
-    g.gen(Instruction::POP, {Register::EAX});
+
+    g.gen(Instruction::POP, {Register::ECX});
     g.gen(Instruction::POP, {Register::EBX});
-    g.gen(Instruction::MOV,
-          {Register::EBX & OperandFlag::INDIRECT, Register::EAX});
+
+    switch (node->op.get_value<Operators>()) {
+        case Operators::ASSIGN:
+            g.gen(Instruction::MOV,
+                  {Register::EBX & OperandFlag::INDIRECT, Register::ECX});
+            break;
+        case Operators::ADDASSIGN:
+            g.gen(Instruction::ADD,
+                  {Register::EBX & OperandFlag::INDIRECT, Register::ECX});
+            break;
+        case Operators::SUBASSIGN:
+            g.gen(Instruction::SUB,
+                  {Register::EBX & OperandFlag::INDIRECT, Register::ECX});
+            break;
+        case Operators::MULASSIGN:
+            g.gen(Instruction::MOV,
+                  {Register::EAX, Register::EBX & OperandFlag::INDIRECT});
+            g.gen(Instruction::IMUL, {Register::ECX});
+            g.gen(Instruction::MOV,
+                  {Register::EBX & OperandFlag::INDIRECT, Register::EAX});
+            break;
+        default:
+            break;
+    }
 }
 void GeneratorVisitor::visit(NodeSimpleType* node, bool result) {}
 void GeneratorVisitor::visit(NodeRange* node, bool result) {}
