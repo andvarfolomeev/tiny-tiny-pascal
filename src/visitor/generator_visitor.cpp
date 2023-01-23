@@ -2,8 +2,10 @@
 
 #include <ranges>
 
+#include "../parser/node/node_base_expression.h"
 #include "../parser/node/nodes.h"
 #include "../symbol_table/symbol_function.h"
+#include "../symbol_table/symbol_type_array.h"
 
 namespace visitor {
 void GeneratorVisitor::visit(NodeKeyword* node, bool result) {}
@@ -28,6 +30,23 @@ void GeneratorVisitor::visit(SymbolVarLocal* sym, bool result) {
 void GeneratorVisitor::visit(SymbolVarGlobal* sym, bool result) {
     g.gen(Instruction::COMMENT, {"SymbolVarGlobal"});
     auto label = g.add_global_variable(sym);
+
+    // alloc array
+    // the first two values in the array are allocated to store the array bounds
+    if (auto arr = std::dynamic_pointer_cast<SymbolArray>(sym->get_type())) {
+        auto [low, high] = arr->get_bounds();
+        low->accept(this, true);
+        high->accept(this, true);
+        g.gen(Instruction::POP, {Register::EBX});
+        g.gen(Instruction::POP, {Register::ECX});
+        g.gen(Instruction::MOV, {Register::EAX, Register::EBX});
+        g.gen(Instruction::IMUL, {Register::EAX, arr->get_inner_type()->size &
+                                                     OperandFlag::DWORD});
+        g.gen(Instruction::PUSH, {Register::EAX});
+        g.gen(Instruction::CALL, {"_malloc"});
+        g.gen(Instruction::ADD, {Register::ESP, 4});
+        g.gen(Instruction::MOV, {label & OperandFlag::INDIRECT, Register::EAX});
+    }
 }
 
 // ok
@@ -111,6 +130,7 @@ void GeneratorVisitor::visit(NodeId* node, bool result) {
         } else {
             g.gen(Instruction::PUSH, {var});
         }
+        return;
     }
 
     if (node->sym_type->equivalent_to(SYMBOL_INTEGER)) {
@@ -120,7 +140,10 @@ void GeneratorVisitor::visit(NodeId* node, bool result) {
         } else {
             g.gen(Instruction::PUSH, {var});
         }
+        return;
     }
+
+    g.gen(Instruction::PUSH, {var});
 }
 
 // ok
@@ -381,7 +404,21 @@ void GeneratorVisitor::visit(NodeFuncCall* node, bool result) {
         return;
     }
 }
-void GeneratorVisitor::visit(NodeArrayAccess* node, bool result) {}
+void GeneratorVisitor::visit(NodeArrayAccess* node, bool result) {
+    g.gen(Instruction::COMMENT, {"START NodeArrayAccess"});
+    node->var_ref->accept(this, false);
+    node->index->accept(this, true);
+    g.gen(Instruction::POP, {Register::EBX});  // index
+    g.gen(Instruction::POP, {Register::EAX});  // lvalue
+    g.gen(Instruction::IMUL, {Register::EBX, 4 & OperandFlag::DWORD});
+    g.gen(Instruction::ADD, {Register::EAX, Register::EBX});
+    if (result) {
+        g.gen(Instruction::PUSH,
+              {Register::EAX & OperandFlag::INDIRECT & OperandFlag::DWORD});
+    } else {
+        g.gen(Instruction::PUSH, {Register::EAX});
+    }
+}
 void GeneratorVisitor::visit(NodeRecordAccess* node, bool result) {}
 
 // ok

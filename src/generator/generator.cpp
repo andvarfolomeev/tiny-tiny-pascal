@@ -4,6 +4,8 @@
 #include <numeric>
 #include <sstream>
 
+#include "../symbol_table/symbol_type_array.h"
+
 Operand::Operand(OperandValue value)
     : value(std::move(value)), flags(0), offset(0) {
     if (get_if<SymbolVar>(&value)) set_flag(OperandFlag::VAR);
@@ -293,15 +295,14 @@ std::string Generator::add_constant(
 
 std::string Generator::add_global_variable(SymbolVar *var) {
     std::string label_name = "var_" + var->get_name();
-    if (var->get_type()->equivalent_to(SYMBOL_STRING)) {
-        auto instruction = Instruction::RESB;
-        gen(Section::BSS, label_name, instruction, {"4"});
+    if (std::dynamic_pointer_cast<SymbolArray>(var->get_type()) != nullptr) {
+        gen(Section::BSS, label_name, Instruction::RESB, {"4"});
+    } else if (var->get_type()->equivalent_to(SYMBOL_STRING)) {
+        gen(Section::BSS, label_name, Instruction::RESB, {"4"});
     } else if (var->get_type()->equivalent_to(SYMBOL_DOUBLE)) {
-        auto instruction = Instruction::RESQ;
-        gen(Section::BSS, label_name, instruction, {"1"});
+        gen(Section::BSS, label_name, Instruction::RESQ, {"1"});
     } else {
-        auto instruction = Instruction::RESD;
-        gen(Section::BSS, label_name, instruction, {"1"});
+        gen(Section::BSS, label_name, Instruction::RESD, {"1"});
     }
     return label_name;
 }
@@ -333,6 +334,7 @@ Generator::Generator()
     prolog.push_back(Command(Instruction::GLOBAL, {"_main"}));
     prolog.push_back(Command(Instruction::EXTERN, {"_printf"}));
     prolog.push_back(Command(Instruction::EXTERN, {"_scanf"}));
+    prolog.push_back(Command(Instruction::EXTERN, {"_malloc"}));
 
     add_constant(DefaultConstant::TRUE, 1);
     add_constant(DefaultConstant::FALSE, 0);
