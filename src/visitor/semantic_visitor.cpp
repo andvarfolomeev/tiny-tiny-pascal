@@ -486,9 +486,11 @@ void SemanticVisitor::visit(NodeAssigmentStatement *node) {
         case Operators::ADDASSIGN:
         case Operators::SUBASSIGN:
         case Operators::MULASSIGN:
-        case Operators::QUOASSIGN:
             if (equivalent(left_sym_type, right_sym_type, SYMBOL_INTEGER) ||
                 equivalent(left_sym_type, right_sym_type, SYMBOL_DOUBLE))
+                return;
+        case Operators::QUOASSIGN:
+            if (equivalent(left_sym_type, right_sym_type, SYMBOL_DOUBLE))
                 return;
             break;
         default:
