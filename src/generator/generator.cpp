@@ -291,6 +291,21 @@ std::string Generator::add_constant(
     return add_constant(value.str(), newline);
 }
 
+std::string Generator::add_global_variable(SymbolVar *var) {
+    std::string label_name = "var_" + var->get_name();
+    if (var->get_type()->equivalent_to(SYMBOL_STRING)) {
+        auto instruction = Instruction::RESB;
+        gen(Section::BSS, label_name, instruction, {"4"});
+    } else if (var->get_type()->equivalent_to(SYMBOL_DOUBLE)) {
+        auto instruction = Instruction::RESQ;
+        gen(Section::BSS, label_name, instruction, {"1"});
+    } else {
+        auto instruction = Instruction::RESD;
+        gen(Section::BSS, label_name, instruction, {"1"});
+    }
+    return label_name;
+}
+
 std::string Generator::get(DefaultConstant c) {
     return std::string(magic_enum::enum_name(c));
 }

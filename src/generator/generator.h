@@ -42,7 +42,9 @@ enum class Instruction {
     DD,
     DQ,
 
+    RESB,
     RESD,
+    RESQ,
 
     ADD,
     SUB,
@@ -190,12 +192,7 @@ class Generator {
         const std::vector<std::shared_ptr<parser::NodeExpression>> &params,
         bool newline = false);
 
-    std::string add_global_variable(SymbolVar *var) {
-        std::string label_name = "var_" + var->get_name();
-        auto instruction = Instruction::RESD;
-        gen(Section::BSS, label_name, instruction, {0});
-        return label_name;
-    }
+    std::string add_global_variable(SymbolVar *var);
 
     std::string get(DefaultConstant c);
 
