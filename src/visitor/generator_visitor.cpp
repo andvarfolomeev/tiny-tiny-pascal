@@ -76,19 +76,16 @@ void GeneratorVisitor::visit(NodeId* node, bool result) {
             g.gen_push_double(Register::XMM0);
         } else {
             g.gen(Instruction::PUSH, {Register::EAX});
-            // g.gen(Instruction::LEA, {Register::EAX, var});
         }
         return;
     }
 
-    // always return char*
     if (node->sym_type->equivalent_to(SYMBOL_STRING)) {
         if (result) {
             g.gen(Instruction::PUSH, {var & OperandFlag::INDIRECT &
                                       get_size_flag(node->sym_type->size)});
         } else {
-            g.gen(Instruction::LEA, {Register::EAX, var});
-            g.gen(Instruction::PUSH, {Register::EAX});
+            g.gen(Instruction::PUSH, {var});
         }
     }
 
@@ -98,7 +95,6 @@ void GeneratorVisitor::visit(NodeId* node, bool result) {
                                       get_size_flag(node->sym_type->size)});
         } else {
             g.gen(Instruction::PUSH, {var});
-            g.gen(Instruction::LEA, {Register::EAX, var});
         }
     }
 }
