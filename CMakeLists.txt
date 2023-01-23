@@ -33,6 +33,11 @@ CPMAddPackage(
         GITHUB_REPOSITORY p-ranav/argparse
         GIT_TAG v2.9
 )
+CPMAddPackage(
+        NAME ordered_map
+        GITHUB_REPOSITORY Tessil/ordered-map
+        GIT_TAG v1.1.0
+)
 
 set(
         SOURCE
@@ -116,5 +121,6 @@ add_executable(tiny_tiny_pascal_tests ${SOURCE_TEST_EXE})
 
 target_link_libraries(tiny_tiny_pascal PRIVATE magic_enum)
 target_link_libraries(tiny_tiny_pascal PRIVATE argparse)
+target_link_libraries(tiny_tiny_pascal PRIVATE ordered_map)
 target_link_libraries(tiny_tiny_pascal_tests PRIVATE magic_enum)
-target_link_libraries(tiny_tiny_pascal_tests PRIVATE argparse)
+target_link_libraries(tiny_tiny_pascal_tests PRIVATE ordered_map)
