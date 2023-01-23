@@ -10,6 +10,7 @@ void GeneratorVisitor::visit(NodeKeyword* node, bool result) {}
 
 // ok
 void GeneratorVisitor::visit(NodeBlock* node, bool result) {
+    g.gen(Instruction::COMMENT, {"START NodeBlock"});
     for (auto& decl : node->declarations) {
         decl->accept(this, false);
     }
@@ -18,15 +19,18 @@ void GeneratorVisitor::visit(NodeBlock* node, bool result) {
 
 void GeneratorVisitor::visit(SymbolVar* sym, bool result) {}
 void GeneratorVisitor::visit(SymbolVarLocal* sym, bool result) {
+    g.gen(Instruction::COMMENT, {"START SymbolVarLocal"});
     auto label = g.add_global_variable(sym);
     // TODO: expression
 }
 void GeneratorVisitor::visit(SymbolVarGlobal* sym, bool result) {
+    g.gen(Instruction::COMMENT, {"SymbolVarGlobal"});
     auto label = g.add_global_variable(sym);
     // TODO: expression
 }
 
 void GeneratorVisitor::visit(NodeVarDecl* node, bool result) {
+    g.gen(Instruction::COMMENT, {"START NodeVarDecl"});
     for (auto& sym : node->syms) {
         sym->accept(this, false);
     }
@@ -45,14 +49,17 @@ void GeneratorVisitor::visit(NodeVarDecl* node, bool result) {
     }
 }
 void GeneratorVisitor::visit(NodeVarDecls* node, bool result) {
+    g.gen(Instruction::COMMENT, {"START NodeVarDecls"});
     for (auto& var : node->vars) {
         var->accept(this, false);
     }
 }
 void GeneratorVisitor::visit(NodeConstDecl* node, bool result) {
+    g.gen(Instruction::COMMENT, {"START NodeConstDecl"});
     node->sym->accept(this, false);
 }
 void GeneratorVisitor::visit(NodeConstDecls* node, bool result) {
+    g.gen(Instruction::COMMENT, {"START NodeConstDecls"});
     for (auto& var : node->consts) {
         var->accept(this, false);
     }
@@ -65,7 +72,7 @@ void GeneratorVisitor::visit(NodeFunctionDecl* node, bool result) {}
 
 // ok
 void GeneratorVisitor::visit(NodeId* node, bool result) {
-    g.gen(Instruction::COMMENT, {"NodeId"});
+    g.gen(Instruction::COMMENT, {"START NodeId"});
     auto var = node->get_name() & OperandFlag::VAR;
 
     if (node->sym_type->equivalent_to(SYMBOL_DOUBLE)) {
@@ -101,6 +108,7 @@ void GeneratorVisitor::visit(NodeId* node, bool result) {
 
 // ok
 void GeneratorVisitor::visit(NodeBinOp* node, bool result) {
+    g.gen(Instruction::COMMENT, {"START NodeBinOp"});
     node->left->accept(this, true);
     node->right->accept(this, true);
     if (node->sym_type->equivalent_to(SYMBOL_INTEGER)) {
@@ -195,6 +203,7 @@ void GeneratorVisitor::visit(NodeBinOp* node, bool result) {
 
 // ok
 void GeneratorVisitor::visit(NodeUnOp* node, bool result) {
+    g.gen(Instruction::COMMENT, {"START NodeUnOp"});
     node->operand->accept(this, true);
     if (node->sym_type->equivalent_to(SYMBOL_INTEGER) ||
         node->sym_type->equivalent_to(SYMBOL_BOOLEAN)) {
@@ -234,6 +243,7 @@ void GeneratorVisitor::visit(NodeUnOp* node, bool result) {
 
 // ok
 void GeneratorVisitor::visit(NodeRelOp* node, bool result) {
+    g.gen(Instruction::COMMENT, {"START NodeRelOp"});
     node->left->accept(this, true);
     node->right->accept(this, true);
     if (node->left->sym_type->equivalent_to(SYMBOL_INTEGER)) {
@@ -294,11 +304,13 @@ void GeneratorVisitor::visit(NodeRelOp* node, bool result) {
 
 // ok
 void GeneratorVisitor::visit(NodeBoolean* node, bool result) {
+    g.gen(Instruction::COMMENT, {"START NodeBoolean"});
     g.gen(Instruction::PUSH, {node->token == Keywords::TRUE});
 }
 
 // ok
 void GeneratorVisitor::visit(NodeNumber* node, bool result) {
+    g.gen(Instruction::COMMENT, {"START NodeNumber"});
     if (node->token == TokenType::LITERAL_INTEGER) {
         int result = node->token.get_value<int>();
         g.gen(Instruction::PUSH, {result & OperandFlag::DWORD});
@@ -316,6 +328,7 @@ void GeneratorVisitor::visit(NodeNumber* node, bool result) {
 
 // ok
 void GeneratorVisitor::visit(NodeCast* node, bool result) {
+    g.gen(Instruction::COMMENT, {"START NodeCast"});
     node->exp->accept(this, true);
     // cast int to double
     // SemanticVisitor only adds an integer to double cast, so there are no
@@ -327,6 +340,7 @@ void GeneratorVisitor::visit(NodeCast* node, bool result) {
 
 // ok
 void GeneratorVisitor::visit(NodeString* node, bool result) {
+    g.gen(Instruction::COMMENT, {"START NodeString"});
     g.gen(Instruction::PUSH,
           {g.add_constant(node->token.get_value<std::string>())});
 }
@@ -357,6 +371,7 @@ void GeneratorVisitor::visit(NodeRecordAccess* node, bool result) {}
 
 // ok
 void GeneratorVisitor::visit(NodeProgram* node, bool result) {
+    g.gen(Instruction::COMMENT, {"START NodeProgram"});
     node->block->accept(this, result);
     g.gen(Instruction::MOV, {Register::EAX, 0});
     g.gen(Instruction::RET, {});
@@ -364,14 +379,19 @@ void GeneratorVisitor::visit(NodeProgram* node, bool result) {
 
 // ok
 void GeneratorVisitor::visit(NodeCallStatement* node, bool result) {
+    g.gen(Instruction::COMMENT, {"START NodeCallStatement"});
     node->func_call->accept(this, result);
 }
 
 // ok
 void GeneratorVisitor::visit(NodeCompoundStatement* node, bool result) {
+    g.gen(Instruction::COMMENT, {"START NodeCompoundStatement"});
     for (auto& statement : node->stmts) statement->accept(this, result);
 }
+
+// ok
 void GeneratorVisitor::visit(NodeForStatement* node, bool result) {
+    g.gen(Instruction::COMMENT, {"START NodeForStatement"});
     auto label_for_start = g.add_label("for_start");
     auto label_for_end = g.add_label("for_end");
 
@@ -417,7 +437,10 @@ void GeneratorVisitor::visit(NodeForStatement* node, bool result) {
     g.gen(Instruction::JMP, {label_for_start});
     g.set_label(label_for_end);
 }
+
+// ok
 void GeneratorVisitor::visit(NodeWhileStatement* node, bool result) {
+    g.gen(Instruction::COMMENT, {"START NodeWhileStatement"});
     auto label_while_start = g.add_label("while_start");
     auto label_while_end = g.add_label("while_end");
     g.set_label(label_while_start);
@@ -431,7 +454,10 @@ void GeneratorVisitor::visit(NodeWhileStatement* node, bool result) {
     g.gen(Instruction::JMP, {label_while_start});
     g.set_label(label_while_end);
 }
+
+// ok
 void GeneratorVisitor::visit(NodeIfStatement* node, bool result) {
+    g.gen(Instruction::COMMENT, {"START NodeIfStatement"});
     node->exp->accept(this, true);
     auto label_if = g.add_label("if");
     auto label_else = g.add_label("else");
@@ -451,8 +477,10 @@ void GeneratorVisitor::visit(NodeIfStatement* node, bool result) {
     }
     g.set_label(label_if_end);
 }
+
+// ok
 void GeneratorVisitor::visit(NodeAssigmentStatement* node, bool result) {
-    g.gen(Instruction::COMMENT, {"Assigment"});
+    g.gen(Instruction::COMMENT, {"START NodeAssigmentStatement"});
     node->var_ref->accept(this, false);
     node->exp->accept(this, true);
     if (node->var_ref->sym_type->equivalent_to(SYMBOL_DOUBLE)) {
