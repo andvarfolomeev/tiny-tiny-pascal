@@ -196,9 +196,7 @@ void GeneratorVisitor::visit(NodeBinOp* node, bool result) {
               {Register::ESP + 0 & OperandFlag::QWORD, Register::XMM1});
         return;
     }
-    if (result) {
-        g.gen(Instruction::PUSH, {Register::EAX});
-    }
+    g.gen(Instruction::PUSH, {Register::EAX});
 }
 
 // ok
