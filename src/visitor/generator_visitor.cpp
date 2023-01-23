@@ -6,28 +6,107 @@
 #include "../symbol_table/symbol_function.h"
 
 namespace visitor {
-void GeneratorVisitor::visit(NodeKeyword* node) {}
+void GeneratorVisitor::visit(NodeKeyword* node, bool result) {}
 
 // ok
-void GeneratorVisitor::visit(NodeBlock* node) {
+void GeneratorVisitor::visit(NodeBlock* node, bool result) {
     for (auto& decl : node->declarations) {
-        decl->accept(this);
+        decl->accept(this, false);
     }
-    node->compound_statement->accept(this);
+    node->compound_statement->accept(this, false);
 }
-void GeneratorVisitor::visit(NodeVarDecl* node) {}
-void GeneratorVisitor::visit(NodeVarDecls* node) {}
-void GeneratorVisitor::visit(NodeConstDecl* node) {}
-void GeneratorVisitor::visit(NodeConstDecls* node) {}
-void GeneratorVisitor::visit(NodeTypeDecl* node) {}
-void GeneratorVisitor::visit(NodeTypeDecls* node) {}
-void GeneratorVisitor::visit(NodeFormalParamSection* node) {}
-void GeneratorVisitor::visit(NodeProcedureDecl* node) {}
-void GeneratorVisitor::visit(NodeFunctionDecl* node) {}
-void GeneratorVisitor::visit(NodeId* node) {}
-void GeneratorVisitor::visit(NodeBinOp* node) {
-    node->left->accept(this);
-    node->right->accept(this);
+
+void GeneratorVisitor::visit(SymbolVar* sym, bool result) {}
+void GeneratorVisitor::visit(SymbolVarLocal* sym, bool result) {
+    auto label = g.add_global_variable(sym);
+    // TODO: expression
+}
+void GeneratorVisitor::visit(SymbolVarGlobal* sym, bool result) {
+    auto label = g.add_global_variable(sym);
+    // TODO: expression
+}
+
+void GeneratorVisitor::visit(NodeVarDecl* node, bool result) {
+    for (auto& sym : node->syms) {
+        sym->accept(this, false);
+    }
+    if (node->exp != nullptr) {
+        node->exp->accept(this, false);
+        if (node->syms[0]->get_type()->equivalent_to(SYMBOL_DOUBLE)) {
+            g.gen_pop_double(Register::XMM0);
+            g.gen(Instruction::MOVSD,
+                  {node->syms[0]->get_name() & OperandFlag::QWORD &
+                       OperandFlag::INDIRECT & OperandFlag::VAR,
+                   Register::XMM0});
+            return;
+        }
+        g.gen(Instruction::POP, {node->syms[0]->get_name() & OperandFlag::VAR &
+                                 OperandFlag::INDIRECT & OperandFlag::DWORD});
+    }
+}
+void GeneratorVisitor::visit(NodeVarDecls* node, bool result) {
+    for (auto& var : node->vars) {
+        var->accept(this, false);
+    }
+}
+void GeneratorVisitor::visit(NodeConstDecl* node, bool result) {
+    node->sym->accept(this, false);
+}
+void GeneratorVisitor::visit(NodeConstDecls* node, bool result) {
+    for (auto& var : node->consts) {
+        var->accept(this, false);
+    }
+}
+void GeneratorVisitor::visit(NodeTypeDecl* node, bool result) {}
+void GeneratorVisitor::visit(NodeTypeDecls* node, bool result) {}
+void GeneratorVisitor::visit(NodeFormalParamSection* node, bool result) {}
+void GeneratorVisitor::visit(NodeProcedureDecl* node, bool result) {}
+void GeneratorVisitor::visit(NodeFunctionDecl* node, bool result) {}
+
+// ok
+void GeneratorVisitor::visit(NodeId* node, bool result) {
+    g.gen(Instruction::COMMENT, {"NodeId"});
+    auto var = node->get_name() & OperandFlag::VAR;
+
+    if (node->sym_type->equivalent_to(SYMBOL_DOUBLE)) {
+        g.gen(Instruction::MOV, {Register::EAX, var});
+        if (result) {
+            g.gen(Instruction::MOVSD,
+                  {Register::XMM0, Register::EAX + 0 & OperandFlag::QWORD});
+            g.gen_push_double(Register::XMM0);
+        } else {
+            g.gen(Instruction::PUSH, {Register::EAX});
+            // g.gen(Instruction::LEA, {Register::EAX, var});
+        }
+        return;
+    }
+
+    // always return char*
+    if (node->sym_type->equivalent_to(SYMBOL_STRING)) {
+        if (result) {
+            g.gen(Instruction::PUSH, {var & OperandFlag::INDIRECT &
+                                      get_size_flag(node->sym_type->size)});
+        } else {
+            g.gen(Instruction::LEA, {Register::EAX, var});
+            g.gen(Instruction::PUSH, {Register::EAX});
+        }
+    }
+
+    if (node->sym_type->equivalent_to(SYMBOL_INTEGER)) {
+        if (result) {
+            g.gen(Instruction::PUSH, {var & OperandFlag::INDIRECT &
+                                      get_size_flag(node->sym_type->size)});
+        } else {
+            g.gen(Instruction::PUSH, {var});
+            g.gen(Instruction::LEA, {Register::EAX, var});
+        }
+    }
+}
+
+// ok
+void GeneratorVisitor::visit(NodeBinOp* node, bool result) {
+    node->left->accept(this, true);
+    node->right->accept(this, true);
     if (node->sym_type->equivalent_to(SYMBOL_INTEGER)) {
         g.gen(Instruction::POP, {Register::EBX});  // right
         g.gen(Instruction::POP, {Register::EAX});  // left
@@ -113,12 +192,16 @@ void GeneratorVisitor::visit(NodeBinOp* node) {
               {Register::ESP + 0 & OperandFlag::QWORD, Register::XMM1});
         return;
     }
-    g.gen(Instruction::PUSH, {Register::EAX});
+    if (result) {
+        g.gen(Instruction::PUSH, {Register::EAX});
+    }
 }
 
-void GeneratorVisitor::visit(NodeUnOp* node) {
-    node->operand->accept(this);
-    if (equivalent(node->sym_type, SYMBOL_INTEGER, SYMBOL_BOOLEAN)) {
+// ok
+void GeneratorVisitor::visit(NodeUnOp* node, bool result) {
+    node->operand->accept(this, true);
+    if (node->sym_type->equivalent_to(SYMBOL_INTEGER) ||
+        node->sym_type->equivalent_to(SYMBOL_BOOLEAN)) {
         g.gen(Instruction::POP, {Register::EAX});
         if (node->token.is({TokenType::OPER})) {
             switch (node->token.get_value<Operators>()) {
@@ -153,10 +236,10 @@ void GeneratorVisitor::visit(NodeUnOp* node) {
     }
 }
 
-// TODO: float
-void GeneratorVisitor::visit(NodeRelOp* node) {
-    node->left->accept(this);
-    node->right->accept(this);
+// ok
+void GeneratorVisitor::visit(NodeRelOp* node, bool result) {
+    node->left->accept(this, true);
+    node->right->accept(this, true);
     if (node->left->sym_type->equivalent_to(SYMBOL_INTEGER)) {
         g.gen(Instruction::POP, {Register::EBX});
         g.gen(Instruction::POP, {Register::EAX});
@@ -212,12 +295,14 @@ void GeneratorVisitor::visit(NodeRelOp* node) {
         g.gen(Instruction::PUSH, {Register::EAX});
     }
 }
+
 // ok
-void GeneratorVisitor::visit(NodeBoolean* node) {
+void GeneratorVisitor::visit(NodeBoolean* node, bool result) {
     g.gen(Instruction::PUSH, {node->token == Keywords::TRUE});
 }
+
 // ok
-void GeneratorVisitor::visit(NodeNumber* node) {
+void GeneratorVisitor::visit(NodeNumber* node, bool result) {
     if (node->token == TokenType::LITERAL_INTEGER) {
         int result = node->token.get_value<int>();
         g.gen(Instruction::PUSH, {result & OperandFlag::DWORD});
@@ -228,13 +313,14 @@ void GeneratorVisitor::visit(NodeNumber* node) {
                label & OperandFlag::INDIRECT & OperandFlag::QWORD});
         g.gen(Instruction::SUB, {Register::ESP, 8});
         g.gen(Instruction::MOVSD,
-              {Register::ESP + 0 & OperandFlag::QWORD, Register::XMM0});
+              {Register::ESP & OperandFlag::INDIRECT & OperandFlag::QWORD,
+               Register::XMM0});
     }
 }
 
 // ok
-void GeneratorVisitor::visit(NodeCast* node) {
-    node->exp->accept(this);
+void GeneratorVisitor::visit(NodeCast* node, bool result) {
+    node->exp->accept(this, true);
     // cast int to double
     // SemanticVisitor only adds an integer to double cast, so there are no
     // extra checks
@@ -244,12 +330,16 @@ void GeneratorVisitor::visit(NodeCast* node) {
 }
 
 // ok
-void GeneratorVisitor::visit(NodeString* node) {
+void GeneratorVisitor::visit(NodeString* node, bool result) {
     g.gen(Instruction::PUSH,
           {g.add_constant(node->token.get_value<std::string>())});
 }
-void GeneratorVisitor::visit(NodeFuncCall* node) {
-    for (auto& params : std::views::reverse(node->params)) params->accept(this);
+
+// TODO:
+void GeneratorVisitor::visit(NodeFuncCall* node, bool result) {
+    g.gen(Instruction::COMMENT, {"FuncCall"});
+    for (auto& params : std::views::reverse(node->params))
+        params->accept(this, true);  // TODO: result for var
     auto sym_proc = std::dynamic_pointer_cast<SymbolProcedure>(
         node->var_ref->get_sym_type());
     if (sym_proc->is_standard_io()) {
@@ -259,32 +349,132 @@ void GeneratorVisitor::visit(NodeFuncCall* node) {
         if (sym_proc->is_writeln_proc() || sym_proc->is_write_proc()) {
             g.gen(Instruction::CALL, {"_printf"});
         }
-        g.gen(Instruction::ADD, {Register::ESP, 4});
+        int offset = 0;
+        for (auto& params : node->params) offset += params->sym_type->size;
+        g.gen(Instruction::ADD, {Register::ESP, offset + 4});
 
         return;
     }
 }
-void GeneratorVisitor::visit(NodeArrayAccess* node) {}
-void GeneratorVisitor::visit(NodeRecordAccess* node) {}
-void GeneratorVisitor::visit(NodeProgram* node) {
-    node->block->accept(this);
+void GeneratorVisitor::visit(NodeArrayAccess* node, bool result) {}
+void GeneratorVisitor::visit(NodeRecordAccess* node, bool result) {}
+
+// ok
+void GeneratorVisitor::visit(NodeProgram* node, bool result) {
+    node->block->accept(this, result);
+    g.gen(Instruction::MOV, {Register::EAX, 0});
     g.gen(Instruction::RET, {});
-}
-void GeneratorVisitor::visit(NodeCallStatement* node) {
-    node->func_call->accept(this);
 }
 
 // ok
-void GeneratorVisitor::visit(NodeCompoundStatement* node) {
-    for (auto& statement : node->stmts) statement->accept(this);
+void GeneratorVisitor::visit(NodeCallStatement* node, bool result) {
+    node->func_call->accept(this, result);
 }
-void GeneratorVisitor::visit(NodeForStatement* node) {}
-void GeneratorVisitor::visit(NodeWhileStatement* node) {}
-void GeneratorVisitor::visit(NodeIfStatement* node) {}
-void GeneratorVisitor::visit(NodeAssigmentStatement* node) {}
-void GeneratorVisitor::visit(NodeSimpleType* node) {}
-void GeneratorVisitor::visit(NodeRange* node) {}
-void GeneratorVisitor::visit(NodeArrayType* node) {}
-void GeneratorVisitor::visit(NodeFieldSelection* node) {}
-void GeneratorVisitor::visit(NodeRecordType* node) {}
+
+// ok
+void GeneratorVisitor::visit(NodeCompoundStatement* node, bool result) {
+    for (auto& statement : node->stmts) statement->accept(this, result);
+}
+void GeneratorVisitor::visit(NodeForStatement* node, bool result) {
+    auto label_for_start = g.add_label("for_start");
+    auto label_for_end = g.add_label("for_end");
+
+    node->param->accept(this, false);
+    node->start_exp->accept(this, true);
+
+    // assign
+    g.gen(Instruction::POP, {Register::EAX});
+    g.gen(Instruction::POP, {Register::EBX});
+    g.gen(Instruction::MOV,
+          {Register::EBX & OperandFlag::INDIRECT, Register::EAX});
+
+    g.set_label(label_for_start);
+    node->param->accept(this, true);
+    node->end_exp->accept(this, true);
+
+    g.gen(Instruction::POP, {Register::EBX});  // end_exp
+    g.gen(Instruction::POP, {Register::EAX});  // param
+
+    if (node->dir->token == Keywords::TO) {
+        g.gen_int_cmp(Instruction::SETLE);
+    } else {
+        g.gen_int_cmp(Instruction::SETGE);
+    }
+    g.gen(Instruction::CMP, {Register::EAX, 0});
+    g.gen(Instruction::JE, {label_for_end});
+    g.gen(Instruction::CMP, {Register::EAX, 0});
+    g.gen(Instruction::JE, {label_for_end});
+
+    node->stmt->accept(this, true);
+
+    node->param->accept(this, false);
+    g.gen(Instruction::POP, {Register::EAX});
+
+    if (node->dir->token == Keywords::TO) {
+        g.gen(Instruction::ADD,
+              {Register::EAX & OperandFlag::INDIRECT, 1 & OperandFlag::DWORD});
+    } else {
+        g.gen(Instruction::SUB,
+              {Register::EAX & OperandFlag::INDIRECT, 1 & OperandFlag::DWORD});
+    }
+
+    g.gen(Instruction::JMP, {label_for_start});
+    g.set_label(label_for_end);
+}
+void GeneratorVisitor::visit(NodeWhileStatement* node, bool result) {
+    auto label_while_start = g.add_label("while_start");
+    auto label_while_end = g.add_label("while_end");
+    g.set_label(label_while_start);
+
+    node->exp->accept(this, true);
+    g.gen(Instruction::POP, {Register::EAX});
+    g.gen(Instruction::CMP, {Register::EAX, 0});
+    g.gen(Instruction::JE, {label_while_end});
+
+    node->stmt->accept(this, true);
+    g.gen(Instruction::JMP, {label_while_start});
+    g.set_label(label_while_end);
+}
+void GeneratorVisitor::visit(NodeIfStatement* node, bool result) {
+    node->exp->accept(this, true);
+    auto label_if = g.add_label("if");
+    auto label_else = g.add_label("else");
+    auto label_if_end = g.add_label("if_end");
+    g.gen(Instruction::POP, {Register::EAX});
+    g.gen(Instruction::CMP, {Register::EAX, 0});
+    if (node->else_stmt != nullptr) {
+        g.gen(Instruction::JE, {label_else});
+    } else {
+        g.gen(Instruction::JE, {label_if_end});
+    }
+    node->stmt->accept(this, true);
+    g.gen(Instruction::JMP, {label_if_end});
+    if (node->else_stmt != nullptr) {
+        g.set_label(label_else);
+        node->else_stmt->accept(this, true);
+    }
+    g.set_label(label_if_end);
+}
+void GeneratorVisitor::visit(NodeAssigmentStatement* node, bool result) {
+    g.gen(Instruction::COMMENT, {"Assigment"});
+    node->var_ref->accept(this, false);
+    node->exp->accept(this, true);
+    if (node->var_ref->sym_type->equivalent_to(SYMBOL_DOUBLE)) {
+        g.gen_pop_double(Register::XMM0);
+        g.gen(Instruction::POP, {Register::EAX});
+        g.gen(Instruction::MOVSD,
+              {Register::EAX & OperandFlag::QWORD & OperandFlag::INDIRECT,
+               Register::XMM0});
+        return;
+    }
+    g.gen(Instruction::POP, {Register::EAX});
+    g.gen(Instruction::POP, {Register::EBX});
+    g.gen(Instruction::MOV,
+          {Register::EBX & OperandFlag::INDIRECT, Register::EAX});
+}
+void GeneratorVisitor::visit(NodeSimpleType* node, bool result) {}
+void GeneratorVisitor::visit(NodeRange* node, bool result) {}
+void GeneratorVisitor::visit(NodeArrayType* node, bool result) {}
+void GeneratorVisitor::visit(NodeFieldSelection* node, bool result) {}
+void GeneratorVisitor::visit(NodeRecordType* node, bool result) {}
 }  // namespace visitor
