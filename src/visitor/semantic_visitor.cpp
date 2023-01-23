@@ -48,6 +48,7 @@ void SemanticVisitor::visit(NodeConstDecl *node) {
         sym =
             std::make_shared<SymbolConstLocal>(node->id->get_name(), sym_type);
     }
+    node->sym = sym;
     sym_table_stack->push(node->id, sym);
 }
 

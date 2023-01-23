@@ -23,12 +23,14 @@ void GeneratorVisitor::visit(SymbolVarLocal* sym, bool result) {
     auto label = g.add_global_variable(sym);
     // TODO: expression
 }
+
+// ok
 void GeneratorVisitor::visit(SymbolVarGlobal* sym, bool result) {
     g.gen(Instruction::COMMENT, {"SymbolVarGlobal"});
     auto label = g.add_global_variable(sym);
-    // TODO: expression
 }
 
+// ok
 void GeneratorVisitor::visit(NodeVarDecl* node, bool result) {
     g.gen(Instruction::COMMENT, {"START NodeVarDecl"});
     for (auto& sym : node->syms) {
@@ -48,16 +50,31 @@ void GeneratorVisitor::visit(NodeVarDecl* node, bool result) {
                                  OperandFlag::INDIRECT & OperandFlag::DWORD});
     }
 }
+
+// ok
 void GeneratorVisitor::visit(NodeVarDecls* node, bool result) {
     g.gen(Instruction::COMMENT, {"START NodeVarDecls"});
     for (auto& var : node->vars) {
         var->accept(this, false);
     }
 }
+
+// ok
 void GeneratorVisitor::visit(NodeConstDecl* node, bool result) {
     g.gen(Instruction::COMMENT, {"START NodeConstDecl"});
     node->sym->accept(this, false);
+    node->exp->accept(this, false);
+    if (node->sym->get_type()->equivalent_to(SYMBOL_DOUBLE)) {
+        g.gen_pop_double(Register::XMM0);
+        g.gen(Instruction::MOVSD, {node->sym->get_name() & OperandFlag::QWORD &
+                                       OperandFlag::INDIRECT & OperandFlag::VAR,
+                                   Register::XMM0});
+        return;
+    }
+    g.gen(Instruction::POP, {node->sym->get_name() & OperandFlag::VAR &
+                             OperandFlag::INDIRECT & OperandFlag::DWORD});
 }
+
 void GeneratorVisitor::visit(NodeConstDecls* node, bool result) {
     g.gen(Instruction::COMMENT, {"START NodeConstDecls"});
     for (auto& var : node->consts) {
