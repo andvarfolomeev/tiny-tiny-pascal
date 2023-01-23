@@ -22,6 +22,9 @@ class SymbolArray : public SymbolType {
     bool equivalent_to(std::shared_ptr<SymbolType> other) override;
     std::string to_str() override;
     std::shared_ptr<SymbolType> get_inner_type();
+    std::pair<std::shared_ptr<parser::NodeExpression>,
+              std::shared_ptr<parser::NodeExpression>>
+    get_bounds();
 
    protected:
     std::shared_ptr<SymbolType> type;
