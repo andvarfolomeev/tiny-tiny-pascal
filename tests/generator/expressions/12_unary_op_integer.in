@@ -1,0 +1,4 @@
+begin
+writeln(- 3);
+writeln(not 3);
+end.

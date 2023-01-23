@@ -1,0 +1,4 @@
+begin
+writeln(-1.5);
+writeln(-2.6);
+end.

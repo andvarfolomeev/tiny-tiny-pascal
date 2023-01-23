@@ -1,0 +1,3 @@
+begin
+writeln(11 shr 1);
+end.

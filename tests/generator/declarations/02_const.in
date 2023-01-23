@@ -1,0 +1,2 @@
+const a: integer = 10; d: double = 1.20; s: string = 'hello';
+begin writeln(a, ' ', d, ' ', s); end.

@@ -1,0 +1,11 @@
+var d: double;
+begin
+d := 10.123;
+writeln(d);
+d -= 2.3;
+writeln(d);
+d += 3.4;
+writeln(d);
+d *= 3;
+writeln(d);
+end.

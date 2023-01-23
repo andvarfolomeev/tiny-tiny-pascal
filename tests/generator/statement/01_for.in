@@ -1,0 +1,12 @@
+var i: integer; var j, k: integer;
+begin
+for i := 0 to 10 do begin writeln(i); end;
+for i := 10 downto 0 do begin writeln(i); end;
+for j := 0 to 20 do begin
+    for k := 0 to 20 do begin
+        write(j, ' ', k);
+        if (k <> 20) then write(', ');
+    end;
+    writeln();
+end;
+end.

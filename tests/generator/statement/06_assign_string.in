@@ -1,0 +1,9 @@
+var s: string;
+begin
+s := 'hello, world';
+writeln(s);
+s := 'hello';
+writeln(s);
+s := 'world';
+writeln(s);
+end.

@@ -1,0 +1,11 @@
+var i: integer;
+begin
+i := 10;
+writeln(i);
+i += 10;
+writeln(i);
+i -= 15;
+writeln(i);
+i *= 10;
+writeln(i);
+end.

@@ -1,0 +1,2 @@
+var i: integer = 10; d: double = 2.3; s: string = 'hello, world';
+begin writeln(i, ' ', d, ' ', s); end.

@@ -1022,12 +1022,6 @@ _deps
 *.i*86
 *.x86_64
 *.hex
-!tests/scanner/*.out
-!tests/simple_parser/*.out
-!tests/parser/*/*.out
-!tests/semantic/*.out
-!tests/semantic/*/*.out
-!tests/semantic/*/*/*.out
 
 # Debug files
 *.dSYM/
@@ -1050,3 +1044,16 @@ dkms.conf
 *.dis
 
 build/
+
+tests/compiled_test/
+!tests/compiled_test/compile.ps1
+
+!tests/scanner/*.out
+!tests/simple_parser/*.out
+!tests/parser/*/*.out
+!tests/semantic/*.out
+!tests/semantic/*/*.out
+!tests/semantic/*/*/*.out
+!tests/generator/*.out
+!tests/generator/*/*.out
+!tests/generator/*/*/*.out

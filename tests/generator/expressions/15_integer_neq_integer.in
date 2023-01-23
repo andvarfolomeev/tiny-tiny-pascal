@@ -1,0 +1,4 @@
+begin
+writeln(3 < 10);
+writeln(10 < 3);
+end.

@@ -1,0 +1,3 @@
+begin
+writeln(11 mod 2);
+end.

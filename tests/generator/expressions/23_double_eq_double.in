@@ -1,0 +1,4 @@
+begin
+writeln(3.0 = 3.0);
+writeln(3.3 = 3.0);
+end.

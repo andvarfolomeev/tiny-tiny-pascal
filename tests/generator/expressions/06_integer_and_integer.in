@@ -1,0 +1,3 @@
+begin
+writeln(%101 and %1100); // %0100
+end.
