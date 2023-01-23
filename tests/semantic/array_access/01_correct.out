@@ -133,9 +133,9 @@ main
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 | id                          | type of object              | ret type                                                                               |
 ------------------------------------------------------------------------------------------------------------------------------------------------------
-| a                           | local var                   | array of integer                                                                       |
-| a2d                         | local var                   | array of array of integer                                                              |
-| a3d                         | local var                   | array of array of array of integer                                                     |
-| a2d_                        | local var                   | array of array of integer                                                              |
-| a3d_                        | local var                   | array of array of array of integer                                                     |
+| a                           | global var                  | array of integer                                                                       |
+| a2d                         | global var                  | array of array of integer                                                              |
+| a3d                         | global var                  | array of array of array of integer                                                     |
+| a2d_                        | global var                  | array of array of integer                                                              |
+| a3d_                        | global var                  | array of array of array of integer                                                     |
 ------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -16,7 +16,7 @@ void SemanticVisitor::visit(NodeBlock *node) {
 void SemanticVisitor::visit(NodeVarDecl *node) {
     for (auto &id : node->ids) {
         std::shared_ptr<SymbolVar> sym;
-        if (sym_table_stack->size() > 1) {
+        if (sym_table_stack->size() > 2) {
             sym = std::make_shared<SymbolVarLocal>(id->get_name(),
                                                    get_symbol_type(node->type));
         } else {
@@ -41,7 +41,7 @@ void SemanticVisitor::visit(NodeConstDecl *node) {
     auto sym_type = (node->type != nullptr) ? get_symbol_type(node->type)
                                             : node->exp->get_sym_type();
     std::shared_ptr<SymbolVar> sym;
-    if (sym_table_stack->size() > 1) {
+    if (sym_table_stack->size() > 2) {
         sym =
             std::make_shared<SymbolConstGlobal>(node->id->get_name(), sym_type);
     } else {
@@ -368,7 +368,7 @@ void SemanticVisitor::visit(NodeArrayAccess *node) {
             << node->var_ref->get_sym_type()->to_str()
             << " does not allow to take the index" << make_exc_end;
     }
-    if (node->index->get_sym_type() != SYMBOL_INTEGER) {
+    if (!node->index->get_sym_type()->equivalent_to(SYMBOL_INTEGER)) {
         throw make_exc<SemanticException>(node->index)
             << "Expected integer expression in array access" << make_exc_end;
     }

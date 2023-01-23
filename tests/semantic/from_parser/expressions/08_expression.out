@@ -347,11 +347,11 @@ main
 | b                           | const param                 | integer                                                                                |
 | c                           | const param                 | integer                                                                                |
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-| a                           | local var                   | double                                                                                 |
-| b                           | local var                   | double                                                                                 |
-| c                           | local var                   | double                                                                                 |
-| d                           | local var                   | double                                                                                 |
-| ai                          | local var                   | integer                                                                                |
-| bi                          | local var                   | integer                                                                                |
-| ci                          | local var                   | integer                                                                                |
+| a                           | global var                  | double                                                                                 |
+| b                           | global var                  | double                                                                                 |
+| c                           | global var                  | double                                                                                 |
+| d                           | global var                  | double                                                                                 |
+| ai                          | global var                  | integer                                                                                |
+| bi                          | global var                  | integer                                                                                |
+| ci                          | global var                  | integer                                                                                |
 ------------------------------------------------------------------------------------------------------------------------------------------------------
