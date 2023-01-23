@@ -156,7 +156,21 @@ std::string GeneratorTester::get_answer(const std::string& path_in) {
     Generator g;
     auto generation_visitor = std::make_shared<visitor::GeneratorVisitor>(g);
     generation_visitor->visit(head.get());
-    g.write(answer);
+    auto generator_out = std::ofstream("../tests/generator_out.asm");
+    g.write(generator_out);
+    generator_out.flush();
+    generator_out.close();
+    FILE* pipe = popen("powershell ../tests/compile.ps1", "r");
+    if (!pipe) {
+        answer << "Error: Failed to open pipe";
+        return answer.str();
+    }
+    char buffer[128];
+    while (!feof(pipe)) {
+        if (fgets(buffer, 128, pipe) != NULL) {
+            answer << buffer;
+        }
+    }
     return answer.str();
 }
 }  // namespace tester
