@@ -1,6 +1,8 @@
 #ifndef TINY_TINY_PASCAL_GENERATOR_H
 #define TINY_TINY_PASCAL_GENERATOR_H
 
+#include <tsl/ordered_map.h>
+
 #include <magic_enum.hpp>
 #include <sstream>
 #include <string>
@@ -13,7 +15,7 @@
 
 enum class DefaultConstant { TRUE, FALSE, DOUBLE_MINUS_ONE };
 
-enum class Section { TEXT, DATA };
+enum class Section { TEXT, DATA, BSS };
 
 enum class Register {
     EAX,
@@ -33,9 +35,14 @@ enum class Register {
 };
 
 enum class Instruction {
+    COMMENT,
+
     DB,
+    DW,
     DD,
     DQ,
+
+    RESD,
 
     ADD,
     SUB,
@@ -79,6 +86,12 @@ enum class Instruction {
     CVTTSD2SI,
     CVTSI2SD,
 
+    JMP,
+    JL,
+    JG,
+    JE,
+
+    LEA,
     PUSH,
     POP,
     CALL,
@@ -102,6 +115,8 @@ enum class OperandFlag {
     TWORD = 1 << 8,
     QUOTED = 1 << 9
 };
+
+OperandFlag get_size_flag(int size);
 
 class Operand {
    public:
@@ -163,6 +178,8 @@ class Generator {
 
     void set(Section section, std::string label);
 
+    std::string add_label(std::string title = "");
+
     std::string add_constant(int value);
     std::string add_constant(double value);
     std::string add_constant(DefaultConstant dc, int value);
@@ -172,6 +189,13 @@ class Generator {
     std::string add_constant(
         const std::vector<std::shared_ptr<parser::NodeExpression>> &params,
         bool newline = false);
+
+    std::string add_global_variable(SymbolVar *var) {
+        std::string label_name = "var_" + var->get_name();
+        auto instruction = Instruction::RESD;
+        gen(Section::BSS, label_name, instruction, {0});
+        return label_name;
+    }
 
     std::string get(DefaultConstant c);
 
@@ -183,12 +207,15 @@ class Generator {
     std::string current_label;
 
     int constant_counter = 0;
+    int label_counter = 0;
 
     // DefaultConstant, constant label
     std::map<DefaultConstant, Operand> default_constants;
 
     // Section, Label, std::vector<Command>
-    std::map<Section, std::map<std::string, std::vector<Command>>> data;
+    tsl::ordered_map<Section,
+                     tsl::ordered_map<std::string, std::vector<Command>>>
+        data;
 };
 
 #endif  // TINY_TINY_PASCAL_GENERATOR_H

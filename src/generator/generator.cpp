@@ -1,7 +1,9 @@
 #include "generator.h"
 
+#include <algorithm>
 #include <numeric>
 #include <sstream>
+
 Operand::Operand(OperandValue value)
     : value(std::move(value)), flags(0), offset(0) {
     if (get_if<SymbolVar>(&value)) set_flag(OperandFlag::VAR);
@@ -100,6 +102,18 @@ Operand operator&(std::string value, OperandFlag flag) {
     op = op & flag;
     return op;
 }
+OperandFlag get_size_flag(int size) {
+    switch (size) {
+        case 1:
+            return OperandFlag::BYTE;
+        case 2:
+            return OperandFlag::WORD;
+        case 4:
+            return OperandFlag::DWORD;
+        default:
+            return OperandFlag::QWORD;
+    }
+}
 Command::Command(
     Instruction instruction,
     std::initializer_list<std::variant<Operand, OperandValue>> _operands)
@@ -115,6 +129,16 @@ Command::Command(
 }
 std::string Command::to_string() {
     std::ostringstream res;
+    if (instruction == Instruction::COMMENT) {
+        res << "\t; ";
+        for (auto it = operands.begin(); it != operands.end(); ++it) {
+            if (it != operands.begin()) {
+                res << ", ";
+            }
+            res << it->to_string();
+        }
+        return res.str();
+    }
     res << "\t" << magic_enum::enum_name<Instruction>(instruction);
     if (!operands.empty()) res << "\t";
     for (auto it = operands.begin(); it != operands.end(); ++it) {
@@ -182,11 +206,23 @@ void Generator::gen_pop_double(Register reg) {
 }
 
 void Generator::set_section(Section section) { current_section = section; }
-void Generator::set_label(std::string label) { current_label = label; }
+void Generator::set_label(std::string label) {
+    current_label = label;
+    if (!data[current_section].contains(label)) {
+        data[current_section][current_label] = std::vector<Command>();
+    }
+}
 
 void Generator::set(Section section, std::string label) {
     set_section(section);
     set_label(label);
+}
+
+std::string Generator::add_label(std::string title) {
+    label_counter++;
+    std::string label_name =
+        "label_" + title + "_" + std::to_string(label_counter);
+    return label_name;
 }
 
 std::string Generator::add_constant(int value) {
@@ -266,7 +302,10 @@ void Generator::write(std::ostream &os, std::vector<Command> commands) {
 void Generator::write(std::ostream &os) {
     write(os, prolog);
     for (auto &[section_enum, section_label] : data) {
-        os << "\n\tSECTION ." << magic_enum::enum_name(section_enum) << "\n";
+        std::string section = std::string(magic_enum::enum_name(section_enum));
+        std::transform(section.begin(), section.end(), section.begin(),
+                       ::tolower);
+        os << "\n\tSECTION ." << section << "\n";
         for (auto &[label_name, label_commands] : section_label) {
             os << label_name << ":\n";
             write(os, label_commands);
