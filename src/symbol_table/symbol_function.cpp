@@ -45,7 +45,7 @@ int SymbolProcedure::get_offset_of_params() {
         if (!sym_var->is_param()) {
             break;
         }
-        res += sym_var->offset;
+        res += sym_var->size;
     }
     return res;
 }

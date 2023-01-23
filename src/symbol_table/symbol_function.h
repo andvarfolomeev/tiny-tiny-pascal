@@ -15,7 +15,7 @@ class SymbolProcedure : public SymbolType {
           locals(std::move(locals)),
           body(std::move(body)),
           ret(nullptr) {
-        offset = 0;  // TODO:
+        size = 0;  // TODO:
     }
 
     void set_body(std::shared_ptr<parser::NodeCompoundStatement> body_);

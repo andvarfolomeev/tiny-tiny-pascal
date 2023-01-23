@@ -18,6 +18,7 @@ class SemanticVisitor : public BaseVisitor {
     SemanticVisitor() : sym_table_stack(std::make_shared<SymbolTableStack>()) {
         sym_table_stack->alloc_with_builtin();
     }
+
     void visit(NodeKeyword* node) override;
     void visit(NodeBlock* node) override;
     void visit(NodeVarDecl* node) override;
@@ -62,6 +63,7 @@ class SemanticVisitor : public BaseVisitor {
         const std::shared_ptr<NodeRecordType>& type);
     std::shared_ptr<SymbolType> get_symbol_type(
         const std::shared_ptr<NodeArrayType>& array_type);
+    std::shared_ptr<Symbol> get_symbol_by_id(NodeId* id);
     std::shared_ptr<SymbolType> get_symbol_type_by_id(NodeId* id);
     static std::shared_ptr<SymbolType> solve_casting(NodeBinOp* node);
     static void solve_casting(std::shared_ptr<SymbolType> left_st,

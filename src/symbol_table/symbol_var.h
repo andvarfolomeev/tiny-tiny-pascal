@@ -4,16 +4,23 @@
 #include "symbol.h"
 #include "symbol_type.h"
 
+namespace visitor {
+class GeneratorVisitor;
+class BaseVisitorWithResult;
+}  // namespace visitor
+
 class SymbolVar : public Symbol {
    public:
     SymbolVar(std::string name, std::shared_ptr<SymbolType> type)
         : Symbol(name), type(std::move(type)) {
-        offset = this->type->offset;
+        size = this->type->size;
     }
     std::string get_type_of_object_str() override;
     std::string get_ret_type_str() override;
     std::shared_ptr<SymbolType> get_type();
     virtual bool is_param();
+    virtual void accept(visitor::GeneratorVisitor *visitor);
+    virtual void accept(visitor::BaseVisitorWithResult *visitor, bool result);
 
    protected:
     std::shared_ptr<SymbolType> type;
@@ -24,6 +31,8 @@ class SymbolVarLocal : public SymbolVar {
     SymbolVarLocal(std::string name, std::shared_ptr<SymbolType> type)
         : SymbolVar(name, type) {}
     std::string get_type_of_object_str() override;
+    void accept(visitor::GeneratorVisitor *visitor) override;
+    void accept(visitor::BaseVisitorWithResult *visitor, bool result) override;
 };
 
 class SymbolVarGlobal : public SymbolVar {
@@ -31,26 +40,28 @@ class SymbolVarGlobal : public SymbolVar {
     SymbolVarGlobal(std::string name, std::shared_ptr<SymbolType> type)
         : SymbolVar(name, type) {}
     std::string get_type_of_object_str() override;
+    void accept(visitor::GeneratorVisitor *visitor) override;
+    void accept(visitor::BaseVisitorWithResult *visitor, bool result) override;
 };
 
-class SymbolConstLocal : public SymbolVar {
+class SymbolConstLocal : public SymbolVarLocal {
    public:
     SymbolConstLocal(std::string name, std::shared_ptr<SymbolType> type)
-        : SymbolVar(name, type) {}
+        : SymbolVarLocal(name, type) {}
     std::string get_type_of_object_str() override;
 };
 
-class SymbolConstGlobal : public SymbolVar {
+class SymbolConstGlobal : public SymbolVarGlobal {
    public:
     SymbolConstGlobal(std::string name, std::shared_ptr<SymbolType> type)
-        : SymbolVar(name, type) {}
+        : SymbolVarGlobal(name, type) {}
     std::string get_type_of_object_str() override;
 };
 
-class SymbolParam : public SymbolVar {
+class SymbolParam : public SymbolVarLocal {
    public:
     SymbolParam(std::string name, std::shared_ptr<SymbolType> type)
-        : SymbolVar(name, type) {}
+        : SymbolVarLocal(name, type) {}
     std::string get_type_of_object_str() override;
     bool is_param() override;
 };

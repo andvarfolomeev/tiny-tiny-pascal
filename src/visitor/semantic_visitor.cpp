@@ -8,22 +8,23 @@
 namespace visitor {
 using namespace parser;
 
-void SemanticVisitor::visit([[maybe_unused]] NodeKeyword *node) {}
+void SemanticVisitor::visit(NodeKeyword *node) {}
 void SemanticVisitor::visit(NodeBlock *node) {
     for (auto &decl : node->declarations) decl->accept(this);
     node->compound_statement->accept(this);
 }
 void SemanticVisitor::visit(NodeVarDecl *node) {
     for (auto &id : node->ids) {
+        std::shared_ptr<SymbolVar> sym;
         if (sym_table_stack->size() > 1) {
-            sym_table_stack->push(
-                id, std::make_shared<SymbolVarLocal>(
-                        id->get_name(), get_symbol_type(node->type)));
+            sym = std::make_shared<SymbolVarLocal>(id->get_name(),
+                                                   get_symbol_type(node->type));
         } else {
-            sym_table_stack->push(
-                id, std::make_shared<SymbolVarGlobal>(
-                        id->get_name(), get_symbol_type(node->type)));
+            sym = std::make_shared<SymbolVarGlobal>(
+                id->get_name(), get_symbol_type(node->type));
         }
+        node->syms.push_back(sym);
+        sym_table_stack->push(id, sym);
     }
     node->type->accept(this);
 }
@@ -39,13 +40,15 @@ void SemanticVisitor::visit(NodeConstDecl *node) {
     }
     auto sym_type = (node->type != nullptr) ? get_symbol_type(node->type)
                                             : node->exp->get_sym_type();
+    std::shared_ptr<SymbolVar> sym;
     if (sym_table_stack->size() > 1) {
-        sym_table_stack->push(node->id, std::make_shared<SymbolConstGlobal>(
-                                            node->id->get_name(), sym_type));
+        sym =
+            std::make_shared<SymbolConstGlobal>(node->id->get_name(), sym_type);
     } else {
-        sym_table_stack->push(node->id, std::make_shared<SymbolConstLocal>(
-                                            node->id->get_name(), sym_type));
+        sym =
+            std::make_shared<SymbolConstLocal>(node->id->get_name(), sym_type);
     }
+    sym_table_stack->push(node->id, sym);
 }
 
 void SemanticVisitor::visit(NodeConstDecls *node) {
@@ -121,6 +124,7 @@ void SemanticVisitor::visit(NodeFunctionDecl *node) {
  * @param node
  */
 void SemanticVisitor::visit(NodeId *node) {
+    node->sym = get_symbol_by_id(node);
     node->sym_type = get_symbol_type_by_id(node);  // maybe check functions
 }
 
@@ -194,6 +198,11 @@ void SemanticVisitor::visit(NodeBinOp *node) {
                         return;
                     }
                 case scanner::Operators::SUB:
+                    if (left_st->is_arithmetic() && right_st->is_arithmetic()) {
+                        node->sym_type = solve_casting(node);
+                        return;
+                    }
+                    break;
                 case scanner::Operators::MUL:
                     if (left_st->is_arithmetic() && right_st->is_arithmetic()) {
                         node->sym_type = solve_casting(node);
@@ -438,6 +447,9 @@ void SemanticVisitor::visit(NodeIfStatement *node) {
         throw make_exc<SemanticException>(node->exp)
             << "Boolean expected" << make_exc_end;
     node->stmt->accept(this);
+    if (node->else_stmt != nullptr) {
+        node->else_stmt->accept(this);
+    }
 }
 void SemanticVisitor::visit(NodeAssigmentStatement *node) {
     node->var_ref->accept(this);
@@ -561,6 +573,17 @@ std::shared_ptr<SymbolType> SemanticVisitor::get_symbol_type(
     }
     return sym_type;
 }
+
+std::shared_ptr<Symbol> SemanticVisitor::get_symbol_by_id(NodeId *id) {
+    auto sym = sym_table_stack->get(id->get_name());
+    auto sym_var = std::dynamic_pointer_cast<SymbolVar>(sym);
+    if (sym_var != nullptr) return sym_var;
+    auto sym_proc = std::dynamic_pointer_cast<SymbolProcedure>(sym);
+    if (sym_proc != nullptr) return sym_proc;
+    throw make_exc<SemanticException>(id)
+        << id->get_name() << " is not var" << make_exc_end;
+}
+
 std::shared_ptr<SymbolType> SemanticVisitor::get_symbol_type_by_id(NodeId *id) {
     auto sym = sym_table_stack->get(id->get_name());
     auto sym_var = std::dynamic_pointer_cast<SymbolVar>(sym);

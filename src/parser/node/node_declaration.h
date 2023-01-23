@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "../../scanner/token.h"
+#include "../../symbol_table/symbol_var.h"
 #include "node.h"
 #include "node_expression.h"
 #include "node_statement.h"
@@ -21,6 +22,9 @@ class NodeBlock : public NodeDecl {
         : declarations(std::move(declarations)),
           compound_statement(std::move(compound_statement)) {}
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
+    void accept(BaseVisitorWithResult *visitor, bool result) override {
+        visitor->visit(this, result);
+    }
 
     std::vector<std::shared_ptr<NodeDecl>> declarations;
     std::shared_ptr<NodeCompoundStatement> compound_statement;
@@ -33,8 +37,12 @@ class NodeVarDecl : public NodeDecl {
                 std::shared_ptr<NodeExpression> exp)
         : ids(std::move(ids)), type(std::move(type)), exp(std::move(exp)) {}
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
+    void accept(BaseVisitorWithResult *visitor, bool result) override {
+        visitor->visit(this, result);
+    }
 
     std::vector<std::shared_ptr<NodeId>> ids;
+    std::vector<std::shared_ptr<SymbolVar>> syms;
     std::shared_ptr<NodeType> type;
     std::shared_ptr<NodeExpression> exp;  // may be nullptr
 };
@@ -44,6 +52,9 @@ class NodeVarDecls : public NodeDecl {
     explicit NodeVarDecls(std::vector<std::shared_ptr<NodeVarDecl>> vars)
         : vars(std::move(vars)) {}
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
+    void accept(BaseVisitorWithResult *visitor, bool result) override {
+        visitor->visit(this, result);
+    }
     std::vector<std::shared_ptr<NodeVarDecl>> vars;
 };
 
@@ -53,7 +64,11 @@ class NodeConstDecl : public NodeDecl {
                   std::shared_ptr<NodeExpression> exp)
         : id(std::move(id)), type(std::move(type)), exp(std::move(exp)) {}
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
+    void accept(BaseVisitorWithResult *visitor, bool result) override {
+        visitor->visit(this, result);
+    }
     std::shared_ptr<NodeId> id;
+    std::shared_ptr<SymbolVar> sym;
     std::shared_ptr<NodeType> type;  // may be nullptr
     std::shared_ptr<NodeExpression> exp;
 };
@@ -63,6 +78,9 @@ class NodeConstDecls : public NodeDecl {
     explicit NodeConstDecls(std::vector<std::shared_ptr<NodeConstDecl>> consts)
         : consts(std::move(consts)) {}
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
+    void accept(BaseVisitorWithResult *visitor, bool result) override {
+        visitor->visit(this, result);
+    }
     std::vector<std::shared_ptr<NodeConstDecl>> consts;
 };
 
@@ -71,6 +89,9 @@ class NodeTypeDecl : public NodeDecl {
     NodeTypeDecl(std::shared_ptr<NodeId> id, std::shared_ptr<NodeType> type)
         : id(std::move(id)), type(std::move(type)) {}
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
+    void accept(BaseVisitorWithResult *visitor, bool result) override {
+        visitor->visit(this, result);
+    }
     std::shared_ptr<NodeId> id;
     std::shared_ptr<NodeType> type;
 };
@@ -80,6 +101,9 @@ class NodeTypeDecls : public NodeDecl {
     explicit NodeTypeDecls(std::vector<std::shared_ptr<NodeTypeDecl>> types)
         : types(std::move(types)) {}
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
+    void accept(BaseVisitorWithResult *visitor, bool result) override {
+        visitor->visit(this, result);
+    }
     std::vector<std::shared_ptr<NodeTypeDecl>> types;
 };
 
@@ -95,6 +119,9 @@ class NodeFormalParamSection : public NodeDecl {
     std::vector<std::shared_ptr<NodeId>> get_ids() { return ids; };
     std::shared_ptr<NodeType> get_type() { return type; };
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
+    void accept(BaseVisitorWithResult *visitor, bool result) override {
+        visitor->visit(this, result);
+    }
     std::shared_ptr<NodeKeyword> modifier;
     std::vector<std::shared_ptr<NodeId>> ids;
     std::shared_ptr<NodeType> type;
@@ -110,6 +137,9 @@ class NodeProcedureDecl : public NodeDecl {
           params(std::move(params)),
           block(std::move(block)) {}
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
+    void accept(BaseVisitorWithResult *visitor, bool result) override {
+        visitor->visit(this, result);
+    }
     std::shared_ptr<NodeId> id;
     std::vector<std::shared_ptr<NodeFormalParamSection>> params;
     std::shared_ptr<NodeBlock> block;
@@ -123,6 +153,9 @@ class NodeFunctionDecl : public NodeProcedureDecl {
         std::shared_ptr<NodeBlock> block, std::shared_ptr<NodeType> type)
         : NodeProcedureDecl(id, params, block), type(std::move(type)) {}
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
+    void accept(BaseVisitorWithResult *visitor, bool result) override {
+        visitor->visit(this, result);
+    }
     std::shared_ptr<NodeType> type;
 };
 }  // namespace parser

@@ -15,6 +15,9 @@ class NodeProgram : SyntaxNode {
     NodeProgram(std::shared_ptr<NodeId> name, std::shared_ptr<NodeBlock> block)
         : name(std::move(name)), block(std::move(block)) {}
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
+    void accept(BaseVisitorWithResult *visitor, bool result) override {
+        visitor->visit(this, result);
+    }
     std::shared_ptr<NodeId> name;
     std::shared_ptr<NodeBlock> block;
 };

@@ -4,13 +4,18 @@
 #include <utility>
 
 #include "../../scanner/token.h"
+#include "../../symbol_table/symbol_var.h"
 #include "node.h"
 #include "node_base_expression.h"
 
 namespace parser {
 using namespace scanner;
 
-class NodeVarRef : public NodeExpression {};
+class NodeVarRef : public NodeExpression {
+   public:
+    virtual void accept(BaseVisitor *visitor) = 0;
+    void accept(BaseVisitorWithResult *visitor, bool result) = 0;
+};
 
 class NodeId : public NodeVarRef {
    public:
@@ -19,7 +24,11 @@ class NodeId : public NodeVarRef {
     Token &get_token();
     Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
+    void accept(BaseVisitorWithResult *visitor, bool result) override {
+        visitor->visit(this, result);
+    }
     Token token;
+    std::shared_ptr<Symbol> sym;
 };
 
 class NodeBoolean : public NodeExpression {
@@ -27,6 +36,9 @@ class NodeBoolean : public NodeExpression {
     explicit NodeBoolean(Token token) : token(std::move(token)) {}
     Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
+    void accept(BaseVisitorWithResult *visitor, bool result) override {
+        visitor->visit(this, result);
+    }
     Token token;
 };
 
@@ -39,6 +51,9 @@ class NodeBinOp : public NodeExpression {
           right(std::move(right)) {}
     Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
+    void accept(BaseVisitorWithResult *visitor, bool result) override {
+        visitor->visit(this, result);
+    }
     Token token;
     std::shared_ptr<NodeExpression> left;
     std::shared_ptr<NodeExpression> right;
@@ -51,6 +66,9 @@ class NodeUnOp : public NodeExpression {
         : token(std::move(token)), operand(std::move(operand)) {}
     Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
+    void accept(BaseVisitorWithResult *visitor, bool result) override {
+        visitor->visit(this, result);
+    }
     Token token;
     std::shared_ptr<NodeExpression> operand;
 };
@@ -64,6 +82,9 @@ class NodeRelOp : public NodeExpression {
           right(std::move(right)) {}
     Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
+    void accept(BaseVisitorWithResult *visitor, bool result) override {
+        visitor->visit(this, result);
+    }
     Token token;
     std::shared_ptr<NodeExpression> left;
     std::shared_ptr<NodeExpression> right;
@@ -74,6 +95,9 @@ class NodeNumber : public NodeExpression {
     explicit NodeNumber(Token token) : token(std::move(token)) {}
     Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
+    void accept(BaseVisitorWithResult *visitor, bool result) override {
+        visitor->visit(this, result);
+    }
     Token token;
 };
 
@@ -86,6 +110,9 @@ class NodeCast : public NodeExpression {
     }
     Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
+    void accept(BaseVisitorWithResult *visitor, bool result) override {
+        visitor->visit(this, result);
+    }
     std::shared_ptr<NodeExpression> exp;
 };
 
@@ -94,6 +121,9 @@ class NodeString : public NodeExpression {
     explicit NodeString(Token token) : token(std::move(token)) {}
     Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
+    void accept(BaseVisitorWithResult *visitor, bool result) override {
+        visitor->visit(this, result);
+    }
     Token token;
 };
 
@@ -104,6 +134,9 @@ class NodeFuncCall : public NodeVarRef {
         : var_ref(std::move(var_ref)), params(std::move(params)) {}
     Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
+    void accept(BaseVisitorWithResult *visitor, bool result) override {
+        visitor->visit(this, result);
+    }
     std::shared_ptr<NodeVarRef> var_ref;
     std::vector<std::shared_ptr<NodeExpression>> params;
 };
@@ -115,6 +148,9 @@ class NodeArrayAccess : public NodeVarRef {
         : var_ref(std::move(var_ref)), index(std::move(index)) {}
     Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
+    void accept(BaseVisitorWithResult *visitor, bool result) override {
+        visitor->visit(this, result);
+    }
     std::shared_ptr<NodeVarRef> var_ref;
     std::shared_ptr<NodeExpression> index;
 };
@@ -126,6 +162,9 @@ class NodeRecordAccess : public NodeVarRef {
         : var_ref(std::move(var_ref)), field(std::move(field)) {}
     Position get_pos() override;
     void accept(BaseVisitor *visitor) override { visitor->visit(this); }
+    void accept(BaseVisitorWithResult *visitor, bool result) override {
+        visitor->visit(this, result);
+    }
     std::shared_ptr<NodeVarRef> var_ref;
     std::shared_ptr<NodeId> field;
 };
