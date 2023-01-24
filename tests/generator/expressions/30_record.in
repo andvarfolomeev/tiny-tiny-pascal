@@ -1,7 +1,8 @@
-var a: record x: integer; y: array[0..10] of integer; end;
+var a: record x: double; z: double; y: array[0..10] of integer; end;
 begin
 a.x := 10;
+a.z := 2.3;
 a.y[1] := 40;
 a.y[2] := 30;
-writeln(a.x, ' ', a.y[1], ' ', a.y[2]);
+writeln(a.x, ' ', a.z, ' ', a.y[1], ' ', a.y[2]);
 end.
