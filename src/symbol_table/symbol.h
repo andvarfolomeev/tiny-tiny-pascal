@@ -17,6 +17,7 @@ class Symbol {
     virtual bool is_type() { return false; }
 
     int size = 4;
+    int offset = 0;
 
    protected:
     std::string name;

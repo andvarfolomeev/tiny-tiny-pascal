@@ -53,7 +53,13 @@ const auto SYMBOL_STRING = std::make_shared<SymbolString>();
 class SymbolRecord : public SymbolType {
    public:
     explicit SymbolRecord(std::shared_ptr<SymbolTable> fields)
-        : SymbolType("record"), fields(std::move(fields)) {}
+        : SymbolType("record"), fields(std::move(fields)) {
+        size = 0;
+        for (auto& field : *this->fields) {
+            size += field.second->size;
+            field.second->offset = size;
+        }
+    }
     std::string get_type_of_object_str() override;
     bool equivalent_to(std::shared_ptr<SymbolType> other) override;
     std::string to_str() override;
