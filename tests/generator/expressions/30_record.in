@@ -1,0 +1,7 @@
+var a: record x: integer; y: array[0..10] of integer; end;
+begin
+a.x := 10;
+a.y[1] := 40;
+a.y[2] := 30;
+writeln(a.x, ' ', a.y[1], ' ', a.y[2]);
+end.
