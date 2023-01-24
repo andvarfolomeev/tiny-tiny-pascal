@@ -2,7 +2,6 @@
 
 #include <ranges>
 
-#include "../parser/node/node_base_expression.h"
 #include "../parser/node/nodes.h"
 #include "../symbol_table/symbol_function.h"
 #include "../symbol_table/symbol_type_array.h"
@@ -413,13 +412,48 @@ void GeneratorVisitor::visit(NodeArrayAccess* node, bool result) {
     g.gen(Instruction::IMUL, {Register::EBX, 4 & OperandFlag::DWORD});
     g.gen(Instruction::ADD, {Register::EAX, Register::EBX});
     if (result) {
+        if (node->sym_type->size == 8) {
+            g.gen(Instruction::MOVSD,
+                  {Register::XMM0,
+                   Register::EAX & OperandFlag::INDIRECT & OperandFlag::QWORD});
+            g.gen(Instruction::SUB, {Register::ESP, 8});
+            g.gen(Instruction::MOVSD,
+                  {Register::ESP & OperandFlag::INDIRECT & OperandFlag::QWORD,
+                   Register::XMM0});
+            return;
+        }
         g.gen(Instruction::PUSH,
               {Register::EAX & OperandFlag::INDIRECT & OperandFlag::DWORD});
     } else {
         g.gen(Instruction::PUSH, {Register::EAX});
     }
 }
-void GeneratorVisitor::visit(NodeRecordAccess* node, bool result) {}
+void GeneratorVisitor::visit(NodeRecordAccess* node, bool result) {
+    g.gen(Instruction::COMMENT, {"START NodeRecordAccess"});
+    node->var_ref->accept(this, false);
+    g.gen(Instruction::POP, {Register::EAX});
+    auto fields =
+        std::dynamic_pointer_cast<SymbolRecord>(node->var_ref->sym_type)
+            ->get_fields();
+    auto offset = fields->get(node->field->get_name())->offset;
+    g.gen(Instruction::ADD, {Register::EAX, offset & OperandFlag::DWORD});
+    if (result) {
+        if (node->sym_type->size == 8) {
+            g.gen(Instruction::MOVSD,
+                  {Register::XMM0,
+                   Register::EAX & OperandFlag::INDIRECT & OperandFlag::QWORD});
+            g.gen(Instruction::SUB, {Register::ESP, 8});
+            g.gen(Instruction::MOVSD,
+                  {Register::ESP & OperandFlag::INDIRECT & OperandFlag::QWORD,
+                   Register::XMM0});
+            return;
+        }
+        g.gen(Instruction::PUSH,
+              {Register::EAX & OperandFlag::INDIRECT & OperandFlag::DWORD});
+    } else {
+        g.gen(Instruction::PUSH, {Register::EAX});
+    }
+}
 
 // ok
 void GeneratorVisitor::visit(NodeProgram* node, bool result) {
