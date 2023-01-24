@@ -1,9 +1,9 @@
 #include "generator.h"
 
 #include <algorithm>
-#include <numeric>
 #include <sstream>
 
+#include "../symbol_table/symbol_type.h"
 #include "../symbol_table/symbol_type_array.h"
 
 Operand::Operand(OperandValue value)
@@ -297,6 +297,9 @@ std::string Generator::add_global_variable(SymbolVar *var) {
     std::string label_name = "var_" + var->get_name();
     if (std::dynamic_pointer_cast<SymbolArray>(var->get_type()) != nullptr) {
         gen(Section::BSS, label_name, Instruction::RESB, {"4"});
+    } else if (auto rec =
+                   std::dynamic_pointer_cast<SymbolRecord>(var->get_type())) {
+        gen(Section::BSS, label_name, Instruction::RESB, {rec->size});
     } else if (var->get_type()->equivalent_to(SYMBOL_STRING)) {
         gen(Section::BSS, label_name, Instruction::RESB, {"4"});
     } else if (var->get_type()->equivalent_to(SYMBOL_DOUBLE)) {
